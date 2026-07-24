@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit_gsheets import GSheetsConnection
 import pandas as pd
 import datetime
 import os
@@ -10,7 +11,17 @@ st.set_page_config(
     layout="wide"
 )
 
-DATA_FILE = "ivf_lab_parameters_log.csv"
+# =====================================================================
+# CẤU HÌNH ĐƯỜNG LINK GOOGLE SHEETS CỦA BẠN TẠI ĐÂY
+# Hãy thay đường link dưới đây bằng link Google Sheets của bạn ở Bước 1
+# =====================================================================
+URL_GOOGLE_SHEET = "https://docs.google.com/spreadsheets/d/1tvMxEhCCEj1FRQT3tTt2ayLFUimJzhNcaiizZDGp9ag/edit?usp=sharing"
+
+# Kết nối trực tuyến tới Google Sheets
+try:
+    conn = st.connection("gsheets", type=GSheetsConnection)
+except Exception:
+    conn = None
 
 # 2. ĐỊNH NGHĨA CẤU HÌNH CHI TIẾT CÁC THIẾT BỊ
 CHAMBER_FIELDS = {
@@ -108,16 +119,17 @@ DEVICE_CONFIGS = {
     }
 }
 
-# 3. Khởi tạo cơ sở dữ liệu ngầm (.csv)
-if os.path.exists(DATA_FILE):
-    df_history = pd.read_csv(DATA_FILE)
-else:
+# 3. ĐỌC DỮ LIỆU TỪ GOOGLE SHEETS XUỐNG APP
+try:
+    df_history = conn.read(spreadsheet=URL_GOOGLE_SHEET, ttl="0d")
+    # Làm sạch dữ liệu trống nếu có
+    df_history = df_history.dropna(subset=["Thời gian"])
+except Exception:
     df_history = pd.DataFrame(columns=["Thời gian", "Thiết bị", "Thông số", "Giá trị", "Chuyên viên", "Ghi chú"])
 
-# Đảm bảo cột Thời gian ở định dạng chuỗi, tạo cột phụ "Ngày" để phục vụ lọc dữ liệu
+# Tạo cột phụ Ngày phục vụ bộ lọc
 if not df_history.empty:
     df_history["Thời gian"] = df_history["Thời gian"].astype(str)
-    # Tách chuỗi lấy phần yyyy-mm-dd
     df_history["Ngày_Phụ"] = df_history["Thời gian"].str.slice(0, 10)
 else:
     df_history["Ngày_Phụ"] = pd.Series(dtype='str')
@@ -125,7 +137,7 @@ else:
 if "inspector_name" not in st.session_state:
     st.session_state.inspector_name = ""
 
-st.title("🔬 Hệ Thống Nhập Thông Số Labo IVF")
+st.title("🔬 Hệ Thống Nhập Thông Số Labo IVF (Cloud)")
 
 # --- THÔNG TIN PHIÊN LÀM VIỆC ---
 st.markdown("### 👤 Thông tin phiên làm việc")
@@ -157,7 +169,6 @@ with col_left:
         
         input_values = {}
         for field_name, config in current_fields.items():
-            
             if field_name.startswith("Cài đặt:"):
                 if not has_printed_setting_header:
                     st.markdown("---")
@@ -191,7 +202,7 @@ with col_left:
         st.markdown("---")        
         note = st.text_area("Ghi chú / Trạng thái bất thường (Nếu có):", height=70)
         
-        submit_btn = st.form_submit_button("💾 XÁC NHẬN LƯU VÀO APP")
+        submit_btn = st.form_submit_button("💾 XÁC NHẬN LƯU VÀO GOOGLE SHEETS")
         
         if submit_btn:
             if not st.session_state.inspector_name.strip():
@@ -208,6 +219,8 @@ with col_left:
                         
                     new_rows.append({
                         "Thời gian": now_str,
+                                            new_rows.append({
+                        "Thời gian": now_str,
                         "Thiết bị": selected_device,
                         "Thông số": field_name,
                         "Giá trị": str(display_value),
@@ -216,55 +229,52 @@ with col_left:
                     })
                 
                 new_df = pd.DataFrame(new_rows)
-                df_history = pd.concat([df_history, new_df], ignore_index=True)
-                                # Lưu vào file CSV sau khi đã loại bỏ cột phụ Ngày_Phụ
-                if "Ngày_Phụ" in df_history.columns:
-                    df_save = df_history.drop(columns=["Ngày_Phụ"])
-                else:
-                    df_save = df_history
-                df_save.to_csv(DATA_FILE, index=False)
                 
-                st.success(f"🎉 Đã lưu thành công dữ liệu cho {selected_device}!")
-                st.rerun()
+                # Loại bỏ cột Ngày_Phụ trước khi đẩy lên Google Sheets để giữ file sạch
+                if "Ngày_Phụ" in df_history.columns:
+                    df_history_clean = df_history.drop(columns=["Ngày_Phụ"])
+                else:
+                    df_history_clean = df_history
 
-# ----------------- BÊN PHẢI: XEM NHẬT KÝ LỊCH SỬ PHÂN CHIA THEO NGÀY -----------------
+                # Ptến hành gộp dữ liệu cũ và dữ liệu mới
+                updated_df = pd.concat([df_history_clean, new_df], ignore_index=True)
+                
+                # Ghi trực tiếp đè lên file Google Sheets trực tuyến
+                if conn is not None:
+                    conn.update(spreadsheet=URL_GOOGLE_SHEET, data=updated_df)
+                    st.success(f"🎉 Đã lưu và đồng bộ thành công lên Google Sheets!")
+                    st.rerun()
+                else:
+                    st.error("❌ Không thể kết nối internet tới Google Sheets!")
+
+# ----------------- BÊN PHẢI: XEM NHẬT KÝ LỊCH SỬ TỪ GOOGLE SHEETS -----------------
 with col_right:
-    st.subheader("📋 Nhật ký lịch sử trên ứng dụng")
+    st.subheader("📋 Nhật ký lịch sử trực tuyến")
     
     if df_history.empty:
-        st.info("Chưa có thông số nào được ghi lại.")
+        st.info("Chưa có thông số nào được ghi lại trên Google Sheets.")
     else:
-        # TẠO BỘ LỌC THỜI GIAN THEO NGÀY/THÁNG
         st.markdown("🔍 **Bộ lọc tìm kiếm nhật ký**")
         filter_col1, filter_col2 = st.columns(2)
         
         with filter_col1:
-            # Chọn thiết bị cần xem
             filter_device = st.selectbox("1. Xem theo thiết bị:", ["Tất cả"] + list(DEVICE_CONFIGS.keys()))
         
         with filter_col2:
-            # Lấy danh sách các ngày thực tế đã từng nhập dữ liệu trong file để hiển thị (Mới nhất lên đầu)
             available_days = sorted(list(df_history["Ngày_Phụ"].dropna().unique()), reverse=True)
-            
-            # Nếu chưa có ngày nào hợp lệ, lấy ngày hôm nay làm mặc định
             if not available_days:
                 available_days = [str(datetime.date.today())]
-                
             selected_day = st.selectbox("2. Chọn ngày trong tháng:", available_days)
         
-        # TIẾN HÀNH LỌC DỮ LIỆU ĐỒNG THỜI THEO THIẾT BỊ VÀ NGÀY
         df_filtered = df_history[df_history["Ngày_Phụ"] == selected_day]
         
         if filter_device != "Tất cả":
             df_filtered = df_filtered[df_filtered["Thiết bị"] == filter_device]
             
-        # Hiển thị tiêu đề thông báo số lượng dòng tìm thấy
         st.markdown(f"📅 Kết quả ngày **{selected_day}** | Thiết bị: **{filter_device}** ({len(df_filtered)} bản ghi)")
         
         if df_filtered.empty:
             st.warning("Không có dữ liệu ghi nhận nào khớp với bộ lọc đã chọn.")
         else:
-            # Ẩn cột Ngày_Phụ trước khi đưa lên bảng để giao diện gọn gàng
             df_display = df_filtered.drop(columns=["Ngày_Phụ"])
             st.dataframe(df_display.iloc[::-1], use_container_width=True, hide_index=True)
-
