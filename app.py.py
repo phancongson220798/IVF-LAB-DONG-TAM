@@ -13,7 +13,7 @@ st.set_page_config(
 
 # =====================================================================
 # CẤU HÌNH ĐƯỜNG LINK GOOGLE SHEETS CỦA BẠN TẠI ĐÂY
-# Hãy thay đường link dưới đây bằng link Google Sheets của bạn ở Bước 1
+# Thay đường link dưới đây bằng link Google Sheets có quyền chỉnh sửa của bạn
 # =====================================================================
 URL_GOOGLE_SHEET = "https://docs.google.com/spreadsheets/d/1tvMxEhCCEj1FRQT3tTt2ayLFUimJzhNcaiizZDGp9ag/edit?usp=sharing"
 
@@ -122,7 +122,6 @@ DEVICE_CONFIGS = {
 # 3. ĐỌC DỮ LIỆU TỪ GOOGLE SHEETS XUỐNG APP
 try:
     df_history = conn.read(spreadsheet=URL_GOOGLE_SHEET, ttl="0d")
-    # Làm sạch dữ liệu trống nếu có
     df_history = df_history.dropna(subset=["Thời gian"])
 except Exception:
     df_history = pd.DataFrame(columns=["Thời gian", "Thiết bị", "Thông số", "Giá trị", "Chuyên viên", "Ghi chú"])
@@ -219,8 +218,6 @@ with col_left:
                         
                     new_rows.append({
                         "Thời gian": now_str,
-                                            new_rows.append({
-                        "Thời gian": now_str,
                         "Thiết bị": selected_device,
                         "Thông số": field_name,
                         "Giá trị": str(display_value),
@@ -230,16 +227,13 @@ with col_left:
                 
                 new_df = pd.DataFrame(new_rows)
                 
-                # Loại bỏ cột Ngày_Phụ trước khi đẩy lên Google Sheets để giữ file sạch
                 if "Ngày_Phụ" in df_history.columns:
                     df_history_clean = df_history.drop(columns=["Ngày_Phụ"])
                 else:
                     df_history_clean = df_history
-
-                # Ptến hành gộp dữ liệu cũ và dữ liệu mới
+                    
                 updated_df = pd.concat([df_history_clean, new_df], ignore_index=True)
                 
-                # Ghi trực tiếp đè lên file Google Sheets trực tuyến
                 if conn is not None:
                     conn.update(spreadsheet=URL_GOOGLE_SHEET, data=updated_df)
                     st.success(f"🎉 Đã lưu và đồng bộ thành công lên Google Sheets!")
@@ -265,7 +259,7 @@ with col_right:
             if not available_days:
                 available_days = [str(datetime.date.today())]
             selected_day = st.selectbox("2. Chọn ngày trong tháng:", available_days)
-        
+            
         df_filtered = df_history[df_history["Ngày_Phụ"] == selected_day]
         
         if filter_device != "Tất cả":
