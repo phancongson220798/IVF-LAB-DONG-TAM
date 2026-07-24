@@ -1,0 +1,270 @@
+import streamlit as st
+import pandas as pd
+import datetime
+import os
+
+# 1. Cấu hình giao diện dashboard
+st.set_page_config(
+    page_title="IVF Lab Parameter Input",
+    page_icon="🔬",
+    layout="wide"
+)
+
+DATA_FILE = "ivf_lab_parameters_log.csv"
+
+# 2. ĐỊNH NGHĨA CẤU HÌNH CHI TIẾT CÁC THIẾT BỊ
+CHAMBER_FIELDS = {
+    "Cài đặt: Nhiệt trái (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+    "Cài đặt: Nhiệt phải (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+    "Cài đặt: Nhiệt giữa (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+    "Cài đặt: Nhiệt trung tâm (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+    "Cài đặt: Nhiệt khí (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+    "Cài đặt: CO2 (%)": {"type": "number", "default": 5.0, "step": 0.1, "format": "%.1f"},
+    
+    "Thực tế: Nhiệt trái (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+    "Thực tế: Nhiệt phải (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+    "Thực tế: Nhiệt giữa (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+    "Thực tế: Nhiệt trung tâm (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+    "Thực tế: Nhiệt khí (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+    "Thực tế: CO2 (%)": {"type": "number", "default": 5.0, "step": 0.1, "format": "%.1f"}
+}
+
+DEVICE_CONFIGS = {
+    "Tủ A1": {
+        "Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+        "CO2 (%)": {"type": "number", "default": 5.0, "step": 0.1, "format": "%.1f"},
+        "Sục khí": {"type": "checkbox", "default": False}
+    },
+    "Tủ A2": {
+        "Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+        "CO2 (%)": {"type": "number", "default": 5.0, "step": 0.1, "format": "%.1f"},
+        "Sục khí": {"type": "checkbox", "default": False}
+    },
+    "Tủ A3": {
+        "Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+        "CO2 (%)": {"type": "number", "default": 5.0, "step": 0.1, "format": "%.1f"},
+        "Sục khí": {"type": "checkbox", "default": False}
+    },
+    "Tủ A4": {
+        "Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+        "CO2 (%)": {"type": "number", "default": 5.0, "step": 0.1, "format": "%.1f"},
+        "O2 (%)": {"type": "number", "default": 5.0, "step": 0.1, "format": "%.1f"},
+        "Sục khí": {"type": "checkbox", "default": False}
+    },
+    "Tủ A5": {
+        "Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+        "CO2 (%)": {"type": "number", "default": 5.0, "step": 0.1, "format": "%.1f"},
+        "O2 (%)": {"type": "number", "default": 5.0, "step": 0.1, "format": "%.1f"},
+        "Sục khí": {"type": "checkbox", "default": False}
+    },
+    "Chamber 1": CHAMBER_FIELDS,
+    "Chamber 2": CHAMBER_FIELDS,
+    "BT37 1": {
+        "Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+        "Flow (mL/min)": {"type": "number", "default": 30.0, "step": 1.0, "format": "%.0f"}
+    },
+    "BT37 2": {
+        "Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+        "Flow (mL/min)": {"type": "number", "default": 30.0, "step": 1.0, "format": "%.0f"}
+    },
+    "BT37 3": {
+        "Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+        "Flow (mL/min)": {"type": "number", "default": 30.0, "step": 1.0, "format": "%.0f"}
+    },
+    "BT37 4": {
+        "Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+        "Flow (mL/min)": {"type": "number", "default": 30.0, "step": 1.0, "format": "%.0f"}
+    },
+    "Tủ ấm LAB": {
+        "Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"}
+    },
+    "Tủ ấm phòng TT": {
+        "Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"}
+    },
+    "Tủ ấm LS1": {
+        "Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"}
+    },
+    "Tủ ấm LS2": {
+        "Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"}
+    },
+    "WorkStation CH": {
+        "Nhiệt trái (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+        "Nhiệt phải (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+        "Nhiệt kính (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"}
+    },
+    "WorkStation Đ-R": {
+        "Nhiệt trái (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+        "Nhiệt phải (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+        "Nhiệt kính (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"}
+    },
+    "Điều áp 1": {
+        "Áp suất (PSI)": {"type": "number", "default": 15.0, "step": 0.1, "format": "%.1f"}
+    },
+    "Điều áp 2": {
+        "Áp suất (PSI)": {"type": "number", "default": 15.0, "step": 0.1, "format": "%.1f"}
+    },
+    "Điều áp 3": {
+        "Áp suất (PSI)": {"type": "number", "default": 15.0, "step": 0.1, "format": "%.1f"}
+    }
+}
+
+# 3. Khởi tạo cơ sở dữ liệu ngầm (.csv)
+if os.path.exists(DATA_FILE):
+    df_history = pd.read_csv(DATA_FILE)
+else:
+    df_history = pd.DataFrame(columns=["Thời gian", "Thiết bị", "Thông số", "Giá trị", "Chuyên viên", "Ghi chú"])
+
+# Đảm bảo cột Thời gian ở định dạng chuỗi, tạo cột phụ "Ngày" để phục vụ lọc dữ liệu
+if not df_history.empty:
+    df_history["Thời gian"] = df_history["Thời gian"].astype(str)
+    # Tách chuỗi lấy phần yyyy-mm-dd
+    df_history["Ngày_Phụ"] = df_history["Thời gian"].str.slice(0, 10)
+else:
+    df_history["Ngày_Phụ"] = pd.Series(dtype='str')
+
+if "inspector_name" not in st.session_state:
+    st.session_state.inspector_name = ""
+
+st.title("🔬 Hệ Thống Nhập Thông Số Labo IVF")
+
+# --- THÔNG TIN PHIÊN LÀM VIỆC ---
+st.markdown("### 👤 Thông tin phiên làm việc")
+st.session_state.inspector_name = st.text_input(
+    "Nhập tên Chuyên viên kiểm tra (Chỉ cần điền 1 lần khi mở app):",
+    value=st.session_state.inspector_name
+)
+
+st.markdown("---")
+
+col_left, col_right = st.columns(2)
+
+# ----------------- BÊN TRÁI: FORM NHẬP LIỆU ĐỘNG -----------------
+with col_left:
+    st.subheader("📥 Form điền thông số")
+    
+    selected_device = st.selectbox("Chọn thiết bị kiểm tra:", list(DEVICE_CONFIGS.keys()))
+    current_fields = DEVICE_CONFIGS[selected_device]
+    
+    with st.form("ivf_dynamic_form", clear_on_submit=False):
+        st.markdown(f"✍️ *Đang ghi nhận cho:* **{selected_device}**")
+        if st.session_state.inspector_name:
+            st.caption(f"👤 Người thực hiện hiện tại: **{st.session_state.inspector_name}**")
+        else:
+            st.caption("⚠️ *Lưu ý: Bạn chưa điền tên Chuyên viên ở phía trên cùng.*")
+            
+        has_printed_setting_header = False
+        has_printed_actual_header = False
+        
+        input_values = {}
+        for field_name, config in current_fields.items():
+            
+            if field_name.startswith("Cài đặt:"):
+                if not has_printed_setting_header:
+                    st.markdown("---")
+                    st.markdown("⚙️ **THÔNG SỐ CÀI ĐẶT**")
+                    has_printed_setting_header = True
+                clean_label = field_name.replace("Cài đặt: ", "")
+            elif field_name.startswith("Thực tế:"):
+                if not has_printed_actual_header:
+                    st.markdown("---")
+                    st.markdown("📊 **THÔNG SỐ THỰC TẾ**")
+                    has_printed_actual_header = True
+                clean_label = field_name.replace("Thực tế: ", "")
+            else:
+                clean_label = field_name
+
+            if config["type"] == "number":
+                input_values[field_name] = st.number_input(
+                    label=clean_label,
+                    value=config["default"],
+                    step=config["step"],
+                    format=config["format"],
+                    key=f"num_{selected_device}_{field_name}"
+                )
+            elif config["type"] == "checkbox":
+                input_values[field_name] = st.checkbox(
+                    label=clean_label,
+                    value=config["default"],
+                    key=f"chk_{selected_device}_{field_name}"
+                )
+        
+        st.markdown("---")        
+        note = st.text_area("Ghi chú / Trạng thái bất thường (Nếu có):", height=70)
+        
+        submit_btn = st.form_submit_button("💾 XÁC NHẬN LƯU VÀO APP")
+        
+        if submit_btn:
+            if not st.session_state.inspector_name.strip():
+                st.error("⚠️ Lỗi: Vui lòng kéo lên đầu trang và điền tên Chuyên viên kiểm tra trước!")
+            else:
+                now_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                new_rows = []
+                
+                for field_name, value in input_values.items():
+                    if isinstance(value, bool):
+                        display_value = "Có (Đang bật)" if value else "Không"
+                    else:
+                        display_value = value
+                        
+                    new_rows.append({
+                        "Thời gian": now_str,
+                        "Thiết bị": selected_device,
+                        "Thông số": field_name,
+                        "Giá trị": str(display_value),
+                        "Chuyên viên": st.session_state.inspector_name,
+                        "Ghi chú": note
+                    })
+                
+                new_df = pd.DataFrame(new_rows)
+                df_history = pd.concat([df_history, new_df], ignore_index=True)
+                                # Lưu vào file CSV sau khi đã loại bỏ cột phụ Ngày_Phụ
+                if "Ngày_Phụ" in df_history.columns:
+                    df_save = df_history.drop(columns=["Ngày_Phụ"])
+                else:
+                    df_save = df_history
+                df_save.to_csv(DATA_FILE, index=False)
+                
+                st.success(f"🎉 Đã lưu thành công dữ liệu cho {selected_device}!")
+                st.rerun()
+
+# ----------------- BÊN PHẢI: XEM NHẬT KÝ LỊCH SỬ PHÂN CHIA THEO NGÀY -----------------
+with col_right:
+    st.subheader("📋 Nhật ký lịch sử trên ứng dụng")
+    
+    if df_history.empty:
+        st.info("Chưa có thông số nào được ghi lại.")
+    else:
+        # TẠO BỘ LỌC THỜI GIAN THEO NGÀY/THÁNG
+        st.markdown("🔍 **Bộ lọc tìm kiếm nhật ký**")
+        filter_col1, filter_col2 = st.columns(2)
+        
+        with filter_col1:
+            # Chọn thiết bị cần xem
+            filter_device = st.selectbox("1. Xem theo thiết bị:", ["Tất cả"] + list(DEVICE_CONFIGS.keys()))
+        
+        with filter_col2:
+            # Lấy danh sách các ngày thực tế đã từng nhập dữ liệu trong file để hiển thị (Mới nhất lên đầu)
+            available_days = sorted(list(df_history["Ngày_Phụ"].dropna().unique()), reverse=True)
+            
+            # Nếu chưa có ngày nào hợp lệ, lấy ngày hôm nay làm mặc định
+            if not available_days:
+                available_days = [str(datetime.date.today())]
+                
+            selected_day = st.selectbox("2. Chọn ngày trong tháng:", available_days)
+        
+        # TIẾN HÀNH LỌC DỮ LIỆU ĐỒNG THỜI THEO THIẾT BỊ VÀ NGÀY
+        df_filtered = df_history[df_history["Ngày_Phụ"] == selected_day]
+        
+        if filter_device != "Tất cả":
+            df_filtered = df_filtered[df_filtered["Thiết bị"] == filter_device]
+            
+        # Hiển thị tiêu đề thông báo số lượng dòng tìm thấy
+        st.markdown(f"📅 Kết quả ngày **{selected_day}** | Thiết bị: **{filter_device}** ({len(df_filtered)} bản ghi)")
+        
+        if df_filtered.empty:
+            st.warning("Không có dữ liệu ghi nhận nào khớp với bộ lọc đã chọn.")
+        else:
+            # Ẩn cột Ngày_Phụ trước khi đưa lên bảng để giao diện gọn gàng
+            df_display = df_filtered.drop(columns=["Ngày_Phụ"])
+            st.dataframe(df_display.iloc[::-1], use_container_width=True, hide_index=True)
+
