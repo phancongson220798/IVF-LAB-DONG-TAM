@@ -15,14 +15,14 @@ st.set_page_config(
 # CẤU HÌNH THÔNG TIN BIỂU MẪU GOOGLE FORMS CỦA BẠN TẠI ĐÂY
 # Bạn cần thay thế link Form và các mã entry tương ứng ở đây để app hoạt động
 # =====================================================================
-FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdyYeaBLuWBHQkA-0S6LD_UkLabCmuOLhBPZdgRCF4KxRjUWw/formResponse"
+FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdzPIpDVuHudnDQpNL39iODQdjZCWRGpI__Y5tI3qRw-aDpOw/formResponse"
 
-ENTRY_THOI_GIAN = "entry.1208343403"
-ENTRY_THIET_BI = "entry.708086797"
-ENTRY_THONG_SO = "entry.1303762242"
-ENTRY_GIA_TRI = "entry.594501047"
-ENTRY_CHUYEN_VIEN = "entry.666373778"
-ENTRY_GHI_CHU = "entry.1130830415"
+ENTRY_THOI_GIAN = "entry.354649550"
+ENTRY_THIET_BI = "entry.839283793"
+ENTRY_THONG_SO = "entry.1493359847"
+ENTRY_GIA_TRI = "entry.1654406867"
+ENTRY_CHUYEN_VIEN = "entry.2134976502"
+ENTRY_GHI_CHU = "entry.1315883282"
 
 # Đường link Google Sheets của bạn ở chế độ công khai (Bất kỳ ai có liên kết đều có thể xem)
 # Hãy giữ nguyên đoạn đuôi '/gviz/tq?tqx=out:csv' để app tự ép file thành dạng CSV khi đọc
