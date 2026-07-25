@@ -1,7 +1,7 @@
 import streamlit as st
-from streamlit_gsheets import GSheetsConnection
 import pandas as pd
 import datetime
+import requests
 import os
 
 # 1. Cấu hình giao diện dashboard
@@ -12,16 +12,21 @@ st.set_page_config(
 )
 
 # =====================================================================
-# CẤU HÌNH ĐƯỜNG LINK GOOGLE SHEETS CỦA BẠN TẠI ĐÂY
-# Thay đường link dưới đây bằng link Google Sheets có quyền chỉnh sửa của bạn
+# CẤU HÌNH THÔNG TIN BIỂU MẪU GOOGLE FORMS CỦA BẠN TẠI ĐÂY
+# Bạn cần thay thế link Form và các mã entry tương ứng ở đây để app hoạt động
 # =====================================================================
-URL_GOOGLE_SHEET = "https://docs.google.com/spreadsheets/d/1tvMxEhCCEj1FRQT3tTt2ayLFUimJzhNcaiizZDGp9ag/edit?usp=sharing"
+FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdyYeaBLuWBHQkA-0S6LD_UkLabCmuOLhBPZdgRCF4KxRjUWw/formResponse"
 
-# Kết nối trực tuyến tới Google Sheets
-try:
-    conn = st.connection("gsheets", type=GSheetsConnection)
-except Exception:
-    conn = None
+ENTRY_THOI_GIAN = "entry.1208343403"
+ENTRY_THIET_BI = "entry.708086797"
+ENTRY_THONG_SO = "entry.1303762242"
+ENTRY_GIA_TRI = "entry.594501047"
+ENTRY_CHUYEN_VIEN = "entry.666373778"
+ENTRY_GHI_CHU = "entry.1130830415"
+
+# Đường link Google Sheets của bạn ở chế độ công khai (Bất kỳ ai có liên kết đều có thể xem)
+# Hãy giữ nguyên đoạn đuôi '/gviz/tq?tqx=out:csv' để app tự ép file thành dạng CSV khi đọc
+URL_GOOGLE_SHEET = "https://google.com"
 
 # 2. ĐỊNH NGHĨA CẤU HÌNH CHI TIẾT CÁC THIẾT BỊ
 CHAMBER_FIELDS = {
@@ -119,9 +124,9 @@ DEVICE_CONFIGS = {
     }
 }
 
-# 3. ĐỌC DỮ LIỆU TỪ GOOGLE SHEETS XUỐNG APP
+# 3. ĐỌC DỮ LIỆU LỊCH SỬ TỪ LINK GOOGLE SHEETS
 try:
-    df_history = conn.read(spreadsheet=URL_GOOGLE_SHEET, ttl="0d")
+    df_history = pd.read_csv(URL_GOOGLE_SHEET)
     df_history = df_history.dropna(subset=["Thời gian"])
 except Exception:
     df_history = pd.DataFrame(columns=["Thời gian", "Thiết bị", "Thông số", "Giá trị", "Chuyên viên", "Ghi chú"])
@@ -136,7 +141,7 @@ else:
 if "inspector_name" not in st.session_state:
     st.session_state.inspector_name = ""
 
-st.title("🔬 Hệ Thống Nhập Thông Số Labo IVF (Cloud)")
+st.title("🔬 Hệ Thống Nhập Thông Số Labo IVF (Cloud Forms)")
 
 # --- THÔNG TIN PHIÊN LÀM VIỆC ---
 st.markdown("### 👤 Thông tin phiên làm việc")
@@ -201,52 +206,51 @@ with col_left:
         st.markdown("---")        
         note = st.text_area("Ghi chú / Trạng thái bất thường (Nếu có):", height=70)
         
-        submit_btn = st.form_submit_button("💾 XÁC NHẬN LƯU VÀO GOOGLE SHEETS")
+        submit_btn = st.form_submit_button("💾 XÁC NHẬN LƯU VÀO HỆ THỐNG")
         
         if submit_btn:
             if not st.session_state.inspector_name.strip():
                 st.error("⚠️ Lỗi: Vui lòng kéo lên đầu trang và điền tên Chuyên viên kiểm tra trước!")
             else:
                 now_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                new_rows = []
                 
+                success_count = 0
+                success_count = 0
+                # Lặp gửi từng hàng thông số sang Google Form trực tuyến
                 for field_name, value in input_values.items():
                     if isinstance(value, bool):
                         display_value = "Có (Đang bật)" if value else "Không"
                     else:
                         display_value = value
-                        
-                    new_rows.append({
-                        "Thời gian": now_str,
-                        "Thiết bị": selected_device,
-                        "Thông số": field_name,
-                        "Giá trị": str(display_value),
-                        "Chuyên viên": st.session_state.inspector_name,
-                        "Ghi chú": note
-                    })
-                
-                new_df = pd.DataFrame(new_rows)
-                
-                if "Ngày_Phụ" in df_history.columns:
-                    df_history_clean = df_history.drop(columns=["Ngày_Phụ"])
-                else:
-                    df_history_clean = df_history
                     
-                updated_df = pd.concat([df_history_clean, new_df], ignore_index=True)
+                    form_data = {
+                        ENTRY_THOI_GIAN: now_str,
+                        ENTRY_THIET_BI: selected_device,
+                        ENTRY_THONG_SO: field_name,
+                        ENTRY_GIA_TRI: str(display_value),
+                        ENTRY_CHUYEN_VIEN: st.session_state.inspector_name,
+                        ENTRY_GHI_CHU: note
+                    }
+                    
+                    try:
+                        res = requests.post(FORM_URL, data=form_data)
+                        if res.status_code == 200:
+                            success_count += 1
+                    except Exception:
+                        pass
                 
-                if conn is not None:
-                    conn.update(spreadsheet=URL_GOOGLE_SHEET, data=updated_df)
-                    st.success(f"🎉 Đã lưu và đồng bộ thành công lên Google Sheets!")
+                if success_count > 0:
+                    st.success(f"🎉 Đã lưu thành công dữ liệu cho {selected_device} vào hệ thống!")
                     st.rerun()
                 else:
-                    st.error("❌ Không thể kết nối internet tới Google Sheets!")
+                    st.error("❌ Lỗi kết nối internet! Không thể đẩy dữ liệu lên Cloud.")
 
 # ----------------- BÊN PHẢI: XEM NHẬT KÝ LỊCH SỬ TỪ GOOGLE SHEETS -----------------
 with col_right:
     st.subheader("📋 Nhật ký lịch sử trực tuyến")
     
     if df_history.empty:
-        st.info("Chưa có thông số nào được ghi lại trên Google Sheets.")
+        st.info("Chưa có thông số nào được ghi lại trên Trang tính.")
     else:
         st.markdown("🔍 **Bộ lọc tìm kiếm nhật ký**")
         filter_col1, filter_col2 = st.columns(2)
@@ -259,7 +263,7 @@ with col_right:
             if not available_days:
                 available_days = [str(datetime.date.today())]
             selected_day = st.selectbox("2. Chọn ngày trong tháng:", available_days)
-            
+        
         df_filtered = df_history[df_history["Ngày_Phụ"] == selected_day]
         
         if filter_device != "Tất cả":
