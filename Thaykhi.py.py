@@ -146,10 +146,11 @@ if not st.session_state.data.empty:
     # Hiển thị bảng dạng cuộn ngang tối ưu di động
     st.dataframe(final_df, use_container_width=True)
     
-    # PHẦN 3: GIẢI PHÁP NÚT BẤM HTML THUẦN (Giải quyết triệt để lỗi Name/Type Error của st.link_button)
+    # PHẦN 3: GIẢI PHÁP NÚT BẤM HTML THUẦN (Đã sửa lỗi xung đột dấu ngoặc nhọn f-string)
     st.markdown(" ")
-    html_button = f"""
-    <a href="{GOOGLE_SHEET_URL}" target="_blank" style="text-decoration: none;">
+    
+    # Sử dụng nối chuỗi bằng dấu cộng (+) thay vì f-string để tránh lỗi cú pháp dấu ngoặc nhọn của CSS
+    html_button = '<a href="' + GOOGLE_SHEET_URL + '" target="_blank" style="text-decoration: none;">' + """
         <div style="
             background-color: #0073e6;
             color: white;
@@ -165,6 +166,7 @@ if not st.session_state.data.empty:
     </a>
     """
     st.markdown(html_button, unsafe_allow_html=True)
+
 
 else:
     st.info("Chưa có dữ liệu. Hãy nhập thông tin ở form phía trên.")
