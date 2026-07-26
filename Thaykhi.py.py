@@ -148,9 +148,9 @@ if not st.session_state.data.empty:
     # Hiển thị bảng dạng cuộn ngang tối ưu di động
     st.dataframe(final_df, use_container_width=True)
     
-    # PHẦN 3: LIÊN KẾT ĐƯỜNG DẪN XEM BÁO CÁO TOÀN DIỆN
+# PHẦN 3: LIÊN KẾT ĐƯỜNG DẪN XEM BÁO CÁO TOÀN DIỆN
     st.markdown(" ")
-    st.link_button("📈 Xem Báo Cáo & In Ấn (Google Sheet)", GOOGLE_SHEET_URL, use_container_width=True, type="primary")
+    st.link_button("📈 Xem Báo Cáo & In Ấn (Google Sheet)", GOOGLE_SHEET_URL, type="primary")
 
 else:
     st.info("Chưa có dữ liệu. Hãy nhập thông tin ở form phía trên.")
