@@ -35,10 +35,10 @@ st.markdown("""
 
 st.title("🔬 Nhập Liệu Lab IVF")
 
-# File lưu trữ dữ liệu
-DATA_FILE = "dulieu_thongso_tu.xlsx"
+# ĐỔI THÀNH FILE CSV (Khắc phục triệt để lỗi thiếu thư viện openpyxl của hệ thống)
+DATA_FILE = "dulieu_thongso_tu.csv"
 
-# Khởi tạo file Excel nếu chưa tồn tại
+# Khởi tạo file CSV nếu chưa tồn tại
 if not os.path.exists(DATA_FILE):
     df_init = pd.DataFrame(columns=[
         "Ngày đo", "Hạng mục kiểm tra", 
@@ -46,7 +46,8 @@ if not os.path.exists(DATA_FILE):
         "O2 Đo Được (%)", "O2 Hiệu Chuẩn (%)",
         "VOCs (PPM)", "Bụi 0.3µm", "Bụi 0.5µm", "Bụi 5µm", "Ghi chú"
     ])
-    df_init.to_excel(DATA_FILE, index=False)
+    # Sử dụng utf-8-sig để khi mở bằng Excel không bị lỗi hiển thị tiếng Việt (lỗi font)
+    df_init.to_csv(DATA_FILE, index=False, encoding="utf-8-sig")
 
 # Phân loại các hạng mục kiểm tra
 tu_chi_co2 = ["Tủ A1", "Tủ A2", "Tủ A3", "Chamber 1", "Chamber 2"]
@@ -72,7 +73,7 @@ with st.form("data_entry_form", clear_on_submit=True):
         st.warning("☣️ THÔNG SỐ VOCs KHÔNG KHÍ")
         vocs = st.number_input("Nồng độ VOCs thực tế (PPM)", min_value=0.0, max_value=100.0, step=0.01, format="%.2f")
         
-    # TRƯỜNG HỢP 2: Chọn đo Độ bụi (Xếp dọc trên điện thoại để không bị méo ô nhập)
+    # TRƯỜNG HỢP 2: Chọn đo Độ bụi
     elif hang_muc == "Độ bụi":
         st.info("🛡️ THÔNG SỐ ĐỘ BỤI PHÒNG LAB")
         bui_03 = st.number_input("Kích thước hạt 0.3 µm", min_value=0, value=0, step=1)
@@ -83,12 +84,10 @@ with st.form("data_entry_form", clear_on_submit=True):
     else:
         st.success(f"📊 THÔNG SỐ TỦ: {hang_muc.upper()}")
         
-        # Nhóm CO2
         st.markdown("**[Thông số CO2]**")
         co2_do = st.number_input("CO2 đo được (%)", min_value=0.0, max_value=20.0, step=0.1, format="%.1f")
         co2_hc = st.number_input("CO2 hiệu chuẩn (Nếu có, %) ", min_value=0.0, max_value=20.0, step=0.1, format="%.1f")
         
-        # Nhóm O2 (Nếu thuộc tủ yêu cầu đo cả O2)
         if hang_muc in tu_co2_va_o2:
             st.markdown("---")
             st.markdown("**[Thông số O2]**")
@@ -98,7 +97,6 @@ with st.form("data_entry_form", clear_on_submit=True):
     st.markdown("---")
     ghi_chu = st.text_area("📝 Ghi chú thêm (nếu có)", placeholder="Nhập tình trạng thiết bị...")
     
-    # Nút bấm to, rõ ràng, dễ bấm bằng ngón cái trên điện thoại
     submit_button = st.form_submit_button("💾 LƯU DỮ LIỆU")
 
 # Xử lý dữ liệu sau khi bấm Lưu
@@ -117,31 +115,31 @@ if submit_button:
         "Ghi chú": ghi_chu
     }
     
-    df_old = pd.read_excel(DATA_FILE)
+    # Đọc và ghi bằng định dạng CSV mã hóa utf-8-sig
+    df_old = pd.read_csv(DATA_FILE, encoding="utf-8-sig")
     df_new = pd.concat([df_old, pd.DataFrame([new_data])], ignore_index=True)
-    df_new.to_excel(DATA_FILE, index=False)
+    df_new.to_csv(DATA_FILE, index=False, encoding="utf-8-sig")
     
     st.success(f"🎉 Đã lưu dữ liệu {hang_muc} thành công!")
     st.rerun()
 
-# --- XEM LỊCH SỬ TRÊN ĐIỆN THOẠI ---
+# --- XEM LỊCH SỬ DỮ LIỆU ---
 st.markdown("---")
 st.subheader("📊 Lịch Sử Đã Nhập")
 
 try:
-    df_display = pd.read_excel(DATA_FILE)
+    df_display = pd.read_csv(DATA_FILE, encoding="utf-8-sig")
     if not df_display.empty:
-        # Streamlit hỗ trợ kéo vuốt ngang bảng trên điện thoại rất mượt
         st.dataframe(df_display.iloc[::-1], use_container_width=True)
         
         st.markdown("---")
-        # Nút tải file Excel dạng Mobile-friendly
+        # Nút tải file CSV tương thích tốt nhất với Excel
         with open(DATA_FILE, "rb") as f:
             st.download_button(
-                label="📥 TẢI FILE EXCEL (.XLSX)",
+                label="📥 TẢI FILE DỮ LIỆU (.CSV / EXCEL)",
                 data=f,
-                file_name=f"IVF_Lab_Data_{datetime.now().strftime('%Y%m%d')}.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                file_name=f"IVF_Lab_Data_{datetime.now().strftime('%Y%m%d')}.csv",
+                mime="text/csv"
             )
     else:
         st.info("Chưa có dữ liệu nào được ghi nhận.")
