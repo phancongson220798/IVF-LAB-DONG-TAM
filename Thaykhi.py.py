@@ -4,14 +4,8 @@ import datetime
 import os
 import requests
 
-# Cấu hình trang ứng dụng (Bắt buộc thiết lập ban đầu)
-st.set_page_config(page_title="IVF Gas Management", layout="centered") # Dùng centered để gom cụm nội dung vừa màn hình dọc
-
-# Đường dẫn file dữ liệu lưu trữ cục bộ trên máy chủ Web
-DATA_FILE = "lich_thay_binh_khi.csv"
-
-# --- 🔗 CẤU HÌNH ĐƯỜNG DẪN GOOGLE (BẮT BUỘC THAY ĐỔI THEO FORM CỦA BẠN) ---
-# Link gửi dữ liệu: Đổi đuôi "/viewform" của Google Form thành "/formResponse"
+# --- 1. CẤU HÌNH ĐƯỜNG DẪN GOOGLE (BẮT BUỘC ĐỂ Ở ĐẦU FILE, KHÔNG ĐỔI TÊN BIẾN) ---
+# Quy tắc: Thay cụm từ "/viewform" ở cuối link Form thành "/formResponse"
 GOOGLE_FORM_URL = "https://google.com"
 
 # Link xem dữ liệu trên Web: Dán link trang Google Sheet hiển thị kết quả của bạn vào đây
@@ -26,6 +20,12 @@ FORM_ENTRIES = {
     "SoLuong": "entry.50738552",       # Mã câu hỏi Số Lượng
     "NguoiThucHien": "entry.1553074860"  # Mã câu hỏi Người Thực Hiện
 }
+
+# Cấu hình trang ứng dụng (Dùng centered để gom cụm nội dung vừa màn hình dọc mobile)
+st.set_page_config(page_title="IVF Gas Management", layout="centered")
+
+# Đường dẫn file dữ liệu lưu trữ cục bộ trên máy chủ Web
+DATA_FILE = "lich_thay_binh_khi.csv"
 
 def send_to_google_form(date_val, gas_val, sn_val, branch_val, qty_val, user_val):
     """Gửi dữ liệu ẩn lên Google Form bằng phương thức POST để tự động ghi vào Google Sheet"""
@@ -63,7 +63,7 @@ st.markdown("<h2 style='text-align: center; color: #0073e6;'>🔬 GIÁM SÁT THA
 st.markdown("<p style='text-align: center; font-size: 14px; color: gray;'>Hệ thống quản lý IVF LAB trực tuyến</p>", unsafe_allow_html=True)
 st.markdown("---")
 
-# PHẦN 1: NHẬP DỮ LIỆU MỚI (Đưa ra màn hình chính, thiết kế dạng thẻ cuộn dọc)
+# PHẦN 1: NHẬP DỮ LIỆU MỚI (Đưa ra màn hình chính, thiết kế dạng thẻ cuộn dọc mobile)
 st.markdown("### 📝 Cập Nhật Lịch Thay Khí")
 
 # Ô chọn loại khí (để bắt sự kiện ẩn hiện S/N lập tức trên mobile)
@@ -112,10 +112,8 @@ if submit_button:
             form_status = send_to_google_form(date_input, gas_type, final_sn, final_branch, quantity_input, final_user)
             if form_status:
                 status.update(label="🎉 Thành công!", state="complete")
-                st.success("Đã đồng bộ Google Sheet!")
             else:
-                status.update(label="⚠️ Lỗi kết nối mạng!", state="error")
-                st.warning("Đã lưu local, chưa đồng bộ được Google Sheet.")
+                status.update(label="⚠️ Lỗi mạng, chưa đồng bộ!", state="error")
         
         st.rerun()
 
@@ -148,9 +146,25 @@ if not st.session_state.data.empty:
     # Hiển thị bảng dạng cuộn ngang tối ưu di động
     st.dataframe(final_df, use_container_width=True)
     
-# PHẦN 3: LIÊN KẾT ĐƯỜNG DẪN XEM BÁO CÁO TOÀN DIỆN
+    # PHẦN 3: GIẢI PHÁP NÚT BẤM HTML THUẦN (Giải quyết triệt để lỗi Name/Type Error của st.link_button)
     st.markdown(" ")
-    st.link_button("📈 Xem Báo Cáo & In Ấn (Google Sheet)", GOOGLE_SHEET_URL, type="primary")
+    html_button = f"""
+    <a href="{GOOGLE_SHEET_URL}" target="_blank" style="text-decoration: none;">
+        <div style="
+            background-color: #0073e6;
+            color: white;
+            padding: 12px 20px;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+        ">
+            📈 XEM BÁO CÁO & IN ẤN (GOOGLE SHEET)
+        </div>
+    </a>
+    """
+    st.markdown(html_button, unsafe_allow_html=True)
 
 else:
     st.info("Chưa có dữ liệu. Hãy nhập thông tin ở form phía trên.")
