@@ -5,7 +5,7 @@ import os
 import requests
 
 # 1. CẤU HÌNH GIAO DIỆN DI ĐỘNG
-st.set_page_config(page_title="Lab IVF Input", layout="centered", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Lab IVF CALIB", layout="centered", initial_sidebar_state="collapsed")
 
 st.markdown("""
     <style>
@@ -14,7 +14,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("🔬 Nhập Liệu Lab IVF")
+st.title("🔬 NHẬP LIỆU NỒNG ĐỘ KHÍ")
 
 # --- CẤU HÌNH GOOGLE FORM (THAY ĐỔI THÔNG TIN CỦA BẠN TẠI ĐY) ---
 GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeWMkxWJa34E8kapIn5cikjlmKWHM2GUZg7YAHk4-ILZVI9Sw/formResponse"
