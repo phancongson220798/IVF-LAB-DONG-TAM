@@ -1,205 +1,188 @@
 import streamlit as st
 import pandas as pd
 import datetime
+import os
 import io
 import requests
 
-# 1. Cấu hình giao diện tối ưu hiển thị cho thiết bị di động/tablet và máy tính
-st.set_page_config(page_title="CYLINDER DATA MONITORING", layout="wide", initial_sidebar_state="collapsed")
+# Cấu hình trang ứng dụng
+st.set_page_config(page_title="Quản Lý Thay Bình Khí - Hỗ Trợ Sinh Sản", layout="wide")
 
-# Khởi tạo CSS phóng to nút bấm, dễ thao tác bằng ngón tay
-st.markdown("""
-    <style>
-    .stSelectbox, .stTextInput, .stNumberInput { font-size: 16px !important; }
-    div.stButton > button:first-child {
-        width: 100% !important; height: 50px !important; font-size: 16px !important;
-        font-weight: bold !important; background-color: #2e7d32 !important; color: white !important; border-radius: 8px !important;
-    }
-    div.stDownloadButton > button:first-child {
-        width: 100% !important; height: 50px !important; font-size: 16px !important;
-        font-weight: bold !important; background-color: #1565c0 !important; color: white !important; border-radius: 8px !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
+# Đường dẫn file dữ liệu lưu trữ cục bộ
+DATA_FILE = "lich_thay_binh_khi.csv"
 
-# 🌟 CẤU HÌNH THÔNG TIN GOOGLE FORM & GOOGLE SHEET (HÃY SỬA LẠI THEO ĐÚNG LINK CỦA BẠN)
+# --- CẤU HÌNH GỬI GOOGLE FORM (THAY CÁC GIÁ TRỊ NÀY BẰNG LINK CỦA BẠN) ---
+# Điền link Form phản hồi (Thay từ "/viewform" thành "/formResponse")
 GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSd0YQ-_0PCshNtxRNBWQRaz_SM2oLEniAXYWFbLsoN60EhU9A/formResponse"
-GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/146k5ESeQ5ce5sOiOzQUDUj4YZCXFBELSVADQoZNKlJ0/edit?usp=sharing"
 
-# Hàm tải dữ liệu cũ (Đọc trực tiếp từ Google Sheet link CSV)
-@st.cache_data(ttl=2) 
-def load_sync_data():
+# Điền các mã Entry tương ứng với từng câu hỏi trên Google Form của bạn
+FORM_ENTRIES = {
+    "NgayThay": "entry.1339704382",      # Mã câu hỏi Ngày Thay
+    "LoaiKhi": "entry.1451757059",       # Mã câu hỏi Loại Khí
+    "SoSN": "entry.1403367164",          # Mã câu hỏi Số S/N
+    "NhanhThay": "entry.2138926284",     # Mã câu hỏi Nhánh Thay
+    "SoLuong": "entry.50738552",       # Mã câu hỏi Số Lượng
+    "NguoiThucHien": "entry.1553074860"  # Mã câu hỏi Người Thực Hiện
+}
+
+def send_to_google_form(date_val, gas_val, sn_val, branch_val, qty_val, user_val):
+    """Gửi dữ liệu ẩn lên Google Form bằng phương thức POST"""
+    payload = {
+        FORM_ENTRIES["NgayThay"]: str(date_val),
+        FORM_ENTRIES["LoaiKhi"]: str(gas_val),
+        FORM_ENTRIES["SoSN"]: str(sn_val),
+        FORM_ENTRIES["NhanhThay"]: str(branch_val),
+        FORM_ENTRIES["SoLuong"]: str(qty_val),
+        FORM_ENTRIES["NguoiThucHien"]: str(user_val)
+    }
     try:
-        df = pd.read_csv(GOOGLE_SHEET_CSV_URL)
-        # Loại bỏ các cột trống không tên nếu có
-        df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
-        return df
+        response = requests.post(GOOGLE_FORM_URL, data=payload, timeout=5)
+        # HTTP 200 có nghĩa là dữ liệu đã được đẩy lên Google Form thành công
+        return response.status_code == 200
     except Exception:
-        return pd.DataFrame()
+        return False
 
-# Khởi tạo bộ nhớ tạm lưu bản ghi cục bộ hiển thị "TỨC THÌ"
-if 'local_records' not in st.session_state:
-    st.session_state.local_records = []
+# --- QUẢN LÝ DỮ LIỆU CỤC BỘ ---
+def load_data():
+    if os.path.exists(DATA_FILE):
+        df = pd.read_csv(DATA_FILE)
+        df['Ngày Thay'] = pd.to_datetime(df['Ngày Thay']).dt.date
+        if "Số S/N (Khí trộn)" not in df.columns:
+            df["Số S/N (Khí trộn)"] = "-"
+        return df
+    else:
+        return pd.DataFrame(columns=["Ngày Thay", "Loại Khí", "Số S/N (Khí trộn)", "Nhánh Thay", "Số Lượng Bình", "Người Thực Hiện"])
 
-# Tải dữ liệu tổng hợp từ đám mây
-df_cloud = load_sync_data()
+# Tải dữ liệu vào session state để quản lý
+if 'data' not in st.session_state:
+    st.session_state.data = load_data()
 
 # TIÊU ĐỀ ỨNG DỤNG
-st.title("🔬 THAY BÌNH KHÍ - IVF LAB")
-st.caption("Nhập liệu từ App → Đẩy ngầm qua Google Form → Đồng bộ tự động về lịch sử hiển thị")
+st.title("🔬 HỆ THỐNG GIÁM SÁT THAY BÌNH KHÍ - IVF LAB")
 st.markdown("---")
 
-# PHẦN 1: NHẬP DỮ LIỆU TRỰC TIẾP TRÊN APP
-st.header("📝 ĐIỀN THÔNG TIN THAY BÌNH KHÍ")
+# PHẦN 1: NHẬP DỮ LIỆU MỚI
+st.sidebar.header("📝 Thêm Lịch Thay Bình Khí")
 
-gas_type = st.selectbox("Loại khí", ["Khí Nitơ (N2)", "Khí CO2", "Khí trộn (Trigas)"])
+# Chọn loại khí ngoài Form để Streamlit bắt sự kiện đổi giao diện lập tức
+gas_type = st.sidebar.selectbox("Loại khí", ["Khí Nitơ (N2)", "Khí CO2", "Khí trộn (Trigas)"])
 
+# Tạo ô nhập S/N động
 sn_input = "-"
 if gas_type == "Khí trộn (Trigas)":
-    sn_input = st.text_input("Số S/N (Bắt buộc cho Khí trộn)", placeholder="Nhập mã S/N của bình khí trộn")
+    sn_input = st.sidebar.text_input("Số S/N (Bắt buộc cho Khí trộn)", placeholder="Nhập mã S/N của bình khí trộn")
 
-with st.form(key='add_form', clear_on_submit=True):
-    col_input1, col_input2 = st.columns(2)
-    with col_input1:
-        date_input = st.date_input("Ngày thay khí", datetime.date.today())
-        branch_input = st.text_input("Nhánh thay (Ví dụ: Nhánh A, Tủ 1...)", placeholder="Nhập vị trí/nhánh")
-    with col_input2:
-        quantity_input = st.number_input("Số lượng bình thay", min_value=1, step=1, value=1)
-        user_input = st.text_input("Người thực hiện", placeholder="Nhập tên nhân viên")
+with st.sidebar.form(key='add_form', clear_on_submit=True):
+    date_input = st.date_input("Ngày thay", datetime.date.today())
+    branch_input = st.text_input("Nhánh thay (Ví dụ: Nhánh A, Tủ 1...)", placeholder="Nhập vị trí/nhánh")
+    quantity_input = st.number_input("Số lượng bình thay", min_value=1, step=1, value=1)
+    user_input = st.text_input("Người thực hiện", placeholder="Nhập tên nhân viên")
     
-    submit_button = st.form_submit_button(label='Lưu và Đồng Bộ Hệ Thống')
+    submit_button = st.form_submit_button(label='Lưu thông tin')
 
 if submit_button:
-    if not branch_input or not user_input:
-        st.error("Vui lòng điền đầy đủ thông tin Nhánh thay và Người thực hiện!")
-    elif gas_type == "Khí trộn (Trigas)" and (not sn_input or sn_input.strip() == "-"):
-        st.error("⚠️ Bắt buộc phải nhập số S/N đối với Khí trộn (Trigas)!")
+    # Kiểm tra điều kiện bắt buộc
+    if gas_type == "Khí trộn (Trigas)" and (not sn_input or sn_input.strip() == "-"):
+        st.sidebar.error("❌ Vui lòng nhập số S/N cho Khí trộn!")
+    elif not branch_input.strip() or not user_input.strip():
+        st.sidebar.error("❌ Vui lòng điền đầy đủ Nhánh thay và Người thực hiện!")
     else:
-        final_sn = sn_input.strip() if gas_type == "Khí trộn (Trigas)" else "-"
-        date_str = date_input.strftime('%Y-%m-%d')
-        
-        # Tạo dòng dữ liệu tạm thời
-        new_local_row = {
-            "ngay_thay_tam": date_str,
-            "loai_khi_tam": gas_type,
-            "sn_tam": final_sn,
-            "nhanh_tam": branch_input,
-            "so_luong_tam": int(quantity_input),
-            "nguoi_tam": user_input
-        }
-        st.session_state.local_records.append(new_local_row)
-        
-                # GỬI NGẦM DỮ LIỆU LÊN GOOGLE FORM
-        # ⚠️ Hãy thay các số 111111, 222222... bằng số thật bạn vừa tìm được trong Notepad:
-        form_data = {
-            'entry.1339704382': gas_type,         # Thay 'entry.222222' bằng Mã số của ô "Loại khí"
-            'entry.1403367164': final_sn,         # Thay 'entry.333333' bằng Mã số của ô "Số S/N (Khí trộn)"
-            'entry.2138926284': branch_input,     # Thay 'entry.444444' bằng Mã số của ô "Nhánh thay"
-            'entry.50738552': int(quantity_input), # Thay 'entry.555555' bằng Mã số của ô "Số lượng bình thay"
-            'entry.1553074860': user_input        # Thay 'entry.666666' bằng Mã số của ô "Người thực hiện"
-        }
+        # Làm sạch chuỗi đầu vào
+        sn_clean = sn_input.strip()
+        branch_clean = branch_input.strip()
+        user_clean = user_input.strip()
 
+        # Tạo dòng dữ liệu mới cho bộ nhớ Local
+        new_row = pd.DataFrame([{
+            "Ngày Thay": date_input,
+            "Loại Khí": gas_type,
+            "Số S/N (Khí trộn)": sn_clean,
+            "Nhánh Thay": branch_clean,
+            "Số Lượng Bình": quantity_input,
+            "Người Thực Hiện": user_clean
+        }])
         
-        try:
-            response = requests.post(GOOGLE_FORM_URL, data=form_data)
-            if response.status_code == 200:
-                st.success("🎉 Đã cập nhật tức thì lên hệ thống lịch sử!")
-            else:
-                st.warning("⚠️ Đã lưu trên App, dữ liệu đám mây đang được đồng bộ chậm.")
-        except Exception:
-            st.warning("⚠️ Chế độ lưu tạm: Hệ thống sẽ đẩy lên Google Sheet khi thiết bị có mạng internet.")
+        # Cập nhật session state và lưu file local
+        updated_df = pd.concat([st.session_state.data, new_row], ignore_index=True)
+        st.session_state.data = updated_df
+        updated_df.to_csv(DATA_FILE, index=False)
+        
+        # GỬI DỮ LIỆU SANG GOOGLE FORM (TỰ ĐỘNG LÊN GOOGLE SHEET)
+        with st.spinner("🔄 Đang gửi dữ liệu lên Google Sheets..."):
+            form_status = send_to_google_form(date_input, gas_type, sn_clean, branch_clean, quantity_input, user_clean)
             
-        st.cache_data.clear()
+        if form_status:
+            st.sidebar.success("🎉 Đã lưu local và đồng bộ Google Sheets thành công!")
+        else:
+            st.sidebar.warning("⚠️ Đã lưu local nhưng lỗi kết nối Internet (Không thể gửi tới Google Sheet).")
+            
         st.rerun()
 
+# PHẦN 2: THỐNG KÊ & BỘ LỌC
+st.header("📊 Danh Sách & Bộ Lọc Dữ Liệu")
+
+col1, col2, col3 = st.columns(3)
+with col1:
+    filter_gas = st.multiselect("Lọc theo loại khí", options=st.session_state.data["Loại Khí"].unique(), default=st.session_state.data["Loại Khí"].unique())
+with col2:
+    filter_branch = st.multiselect("Lọc theo nhánh", options=st.session_state.data["Nhánh Thay"].unique(), default=st.session_state.data["Nhánh Thay"].unique())
+with col3:
+    today = datetime.date.today()
+    start_of_month = today.replace(day=1)
+    date_range = st.date_input("Khoảng thời gian", value=(start_of_month, today))
+
+# Áp dụng bộ lọc vào dataframe
+df_filtered = st.session_state.data.copy()
+
+if filter_gas:
+    df_filtered = df_filtered[df_filtered["Loại Khí"].isin(filter_gas)]
+if filter_branch:
+    df_filtered = df_filtered[df_filtered["Nhánh Thay"].isin(filter_branch)]
+    
+# Sửa lỗi logic lọc khoảng ngày
+if isinstance(date_range, tuple) and len(date_range) == 2:
+    df_filtered = df_filtered[(df_filtered["Ngày Thay"] >= date_range[0]) & (df_filtered["Ngày Thay"] <= date_range[1])]
+
+# Hiển thị bảng dữ liệu cục bộ
+st.dataframe(df_filtered, use_container_width=True)
+
+# PHẦN 3: XUẤT DỮ LIỆU EXCEL / CSV
+st.subheader("💾 Xuất báo cáo")
+
+def to_excel(df):
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        df.to_excel(writer, index=False, sheet_name='Lịch Thay Bình Khí')
+    return output.getvalue()
+
+col_ex1, col_ex2 = st.columns(2)
+with col_ex1:
+    st.download_button(
+        label="📥 Tải file CSV",
+        data=df_filtered.to_csv(index=False).encode('utf-8'),
+        file_name=f"lich_thay_binh_khi_{datetime.date.today()}.csv",
+        mime="text/csv"
+    )
+with col_ex2:
+    excel_data = to_excel(df_filtered)
+    st.download_button(
+        label="📥 Tải file Excel",
+        data=excel_data,
+        file_name=f"lich_thay_binh_khi_{datetime.date.today()}.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+
+# PHẦN 4: XÓA DỮ LIỆU CỤC BỘ
 st.markdown("---")
-
-# PHẦN 2: BỘ LỌC LỊCH SỬ HIỂN THỊ ĐỘNG
-st.header("📊 LỊCH SỬ THAY BÌNH KHÍ")
-
-df_display = pd.DataFrame()
-
-# Khớp nối thông minh dữ liệu Google Sheet đám mây
-if not df_cloud.empty and len(df_cloud.columns) >= 6:
-    cols = list(df_cloud.columns)
-    df_display['Ngày Thay_Raw'] = df_cloud[cols[1]] # Ánh xạ cột Ngày thay của Form
-    df_display['Loại Khí'] = df_cloud[cols[2]]
-    df_display['Số S/N (Khí trộn)'] = df_cloud[cols[3]]
-    df_display['Nhánh Thay'] = df_cloud[cols[4]]
-    df_display['Số Lượng'] = df_cloud[cols[5]]
-    df_display['Người Thực Hiện'] = df_cloud[cols[6]] if len(cols) > 6 else df_cloud[cols[5]]
-
-# Khớp nối dữ liệu vừa gõ tạm thời trên App (nếu có)
-if st.session_state.local_records:
-    df_local = pd.DataFrame(st.session_state.local_records)
-    df_local_mapped = pd.DataFrame()
-    df_local_mapped['Ngày Thay_Raw'] = df_local['ngay_thay_tam']
-    df_local_mapped['Loại Khí'] = df_local['loai_khi_tam']
-    df_local_mapped['Số S/N (Khí trộn)'] = df_local['sn_tam']
-    df_local_mapped['Nhánh Thay'] = df_local['nhanh_tam']
-    df_local_mapped['Số Lượng'] = df_local['so_luong_tam']
-    df_local_mapped['Người Thực Hiện'] = df_local['nguoi_tam']
-    
-    df_display = pd.concat([df_local_mapped, df_display], ignore_index=True)
-
-# TIÊN HÀNH XỬ LÝ LỌC VÀ SẮP XẾP KHI CÓ DỮ LIỆU
-if not df_display.empty:
-    df_display = df_display.drop_duplicates(subset=['Ngày Thay_Raw', 'Loại Khí', 'Số S/N (Khí trộn)', 'Nhánh Thay'], keep='first')
-    
-    # Ép kiểu thời gian để sắp xếp toán học
-    df_display['Date_Parsed'] = pd.to_datetime(df_display['Ngày Thay_Raw'], errors='coerce')
-    df_display = df_display.dropna(subset=['Date_Parsed']) # Lọc sạch hàng lỗi ngày tháng
-    
-    # SẮP XẾP: Ngày thay mới nhất lên đầu bảng
-    df_display = df_display.sort_values(by='Date_Parsed', ascending=False)
-    
-    # Tạo nhãn định dạng hiển thị
-    df_display['Ngày Thay'] = df_display['Date_Parsed'].dt.strftime('%d/%m/%Y')
-    df_display['Tháng_Năm'] = df_display['Date_Parsed'].dt.strftime('%m/%Y')
-    
-    # 🌟 SỬA LỖI: Lọc sạch giá trị None hoặc trống trước khi đưa vào ô chọn Bộ lọc
-    raw_months = df_display['Tháng_Năm'].dropna().unique()
-    available_months = sorted([str(m) for m in raw_months if str(m).strip() != "" and str(m) != "nan"], reverse=True)
-            
-    if available_months:
-        filter_col, _ = st.columns(2)
-        with filter_col:
-            selected_month = st.selectbox("Chọn tháng cần theo dõi và báo cáo:", available_months)
-            
-        # Lọc theo tháng được chọn
-        filtered_df = df_display[df_display['Tháng_Năm'] == selected_month].copy()
-        
-        display_cols = ["Ngày Thay", "Loại Khí", "Số S/N (Khí trộn)", "Nhánh Thay", "Số Lượng", "Người Thực Hiện"]
-        final_df = filtered_df[display_cols].reset_index(drop=True)
-        
-        # Hiển thị bảng dữ liệu sạch lên màn hình Web
-        st.dataframe(final_df, use_container_width=True)
-        st.markdown("---")
-        
-        # PHẦN 3: XUẤT FILE EXCEL
-        st.header("📥 Xuất Báo Cáo")
-        action_col1, action_col2 = st.columns(2)
-        with action_col2:
-            if st.button("🔄 Làm mới & Đồng bộ lại đám mây"):
-                st.session_state.local_records = [] 
-                st.cache_data.clear()
-                st.rerun()
-                
-        with action_col1:
-            # 🌟 SỬA LỖI: Đảm bảo sheet_name luôn nhận chuỗi chữ (String) hợp lệ
-            sheet_title = f"Tháng {str(selected_month).replace('/', '-')}"
-            
-            buffer = io.BytesIO()
-            with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
-                final_df.to_excel(writer, index=False, sheet_name=sheet_title[:30]) # Giới hạn 30 ký tự theo quy định Excel
-                
-            st.download_button(
-                label=f"📥 Tải File Excel Báo Cáo (Tháng {selected_month})",
-                data=buffer.getvalue(),
-                file_name=f"Bao_cao_binh_khi_thang_{str(selected_month).replace('/', '_')}.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            )
-    else:
-        st.info("Hệ thống chưa phân loại được danh sách tháng. Vui lòng kiểm tra lại cột Ngày thay trên Google Sheet.")
-else:
-    st.info("Hệ thống chưa có dữ liệu lịch sử. Vui lòng thực hiện nhập liệu ở biểu mẫu phía trên.")
+with st.expander("⚠️ Khu vực quản trị (Xóa dữ liệu cục bộ)"):
+    st.warning("Hành động này chỉ xóa dữ liệu lưu tại máy chủ local. Dữ liệu trên Google Sheet (thông qua Google Form) sẽ không bị ảnh hưởng do không có API liên kết ngược.")
+    confirm_delete = st.text_input("Nhập chữ 'XOA' để xác nhận", placeholder="XOA")
+    if st.button("Xóa toàn bộ dữ liệu"):
+        if confirm_delete == "XOA":
+            if os.path.exists(DATA_FILE):
+                os.remove(DATA_FILE)
+            st.session_state.data = pd.DataFrame(columns=["Ngày Thay", "Loại Khí", "Số S/N (Khí trộn)", "Nhánh Thay", "Số Lượng Bình", "Người Thực Hiện"])
+            st.success("💥 Đã xóa toàn bộ dữ liệu lịch sử cục bộ!")
+            st.rerun()
+        else:
+            st.error("Mã xác nhận không đúng.")
