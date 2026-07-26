@@ -74,19 +74,19 @@ DEVICE_CONFIGS = {
     "Chamber 1": CHAMBER_FIELDS,
     "Chamber 2": CHAMBER_FIELDS,
     "BT37 1": {
-        "Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+        "Nhiệt độ (°C)": {"type": "number", "default": 375.0, "step": 0.1, "format": "%.1f"},
         "Flow (mL/min)": {"type": "number", "default": 30.0, "step": 1.0, "format": "%.0f"}
     },
     "BT37 2": {
-        "Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+        "Nhiệt độ (°C)": {"type": "number", "default": 35.0, "step": 0.1, "format": "%.1f"},
         "Flow (mL/min)": {"type": "number", "default": 30.0, "step": 1.0, "format": "%.0f"}
     },
     "BT37 3": {
-        "Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+        "Nhiệt độ (°C)": {"type": "number", "default": 35.0, "step": 0.1, "format": "%.1f"},
         "Flow (mL/min)": {"type": "number", "default": 30.0, "step": 1.0, "format": "%.0f"}
     },
     "BT37 4": {
-        "Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+        "Nhiệt độ (°C)": {"type": "number", "default": 35.0, "step": 0.1, "format": "%.1f"},
         "Flow (mL/min)": {"type": "number", "default": 30.0, "step": 1.0, "format": "%.0f"}
     },
     "Tủ ấm LAB": {
