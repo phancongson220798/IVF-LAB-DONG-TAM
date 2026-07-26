@@ -3,14 +3,45 @@ import pandas as pd
 import datetime
 import os
 import io
+import requests
 
 # Cấu hình trang ứng dụng
 st.set_page_config(page_title="Quản Lý Thay Bình Khí - Hỗ Trợ Sinh Sản", layout="wide")
 
-# Đường dẫn file dữ liệu lưu trữ
+# Đường dẫn file dữ liệu lưu trữ cục bộ
 DATA_FILE = "lich_thay_binh_khi.csv"
 
-# Hàm khởi tạo hoặc tải dữ liệu cũ
+# --- CẤU HÌNH GOOGLE FORM TRUNG GIAN (THAY CÁC GIÁ TRỊ NÀY BẰNG LINK CỦA BẠN) ---
+# Quy tắc: Thay cụm từ "/viewform" ở cuối link Form thành "/formResponse"
+GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSd0YQ-_0PCshNtxRNBWQRaz_SM2oLEniAXYWFbLsoN60EhU9A/formResponse"
+
+# Điền các mã Entry tương ứng với từng câu hỏi trên Google Form của bạn
+FORM_ENTRIES = {
+    "NgayThay": "entry.1339704382",      # Mã câu hỏi Ngày Thay
+    "LoaiKhi": "entry.1451757059",       # Mã câu hỏi Loại Khí
+    "SoSN": "entry.1403367164",          # Mã câu hỏi Số S/N
+    "NhanhThay": "entry.2138926284",     # Mã câu hỏi Nhánh Thay
+    "SoLuong": "entry.50738552",       # Mã câu hỏi Số Lượng
+    "NguoiThucHien": "entry.1553074860"  # Mã câu hỏi Người Thực Hiện
+}
+
+def send_to_google_form(date_val, gas_val, sn_val, branch_val, qty_val, user_val):
+    """Gửi dữ liệu ẩn lên Google Form bằng phương thức POST để đẩy về Google Sheet"""
+    payload = {
+        FORM_ENTRIES["NgayThay"]: str(date_val),
+        FORM_ENTRIES["LoaiKhi"]: str(gas_val),
+        FORM_ENTRIES["SoSN"]: str(sn_val),
+        FORM_ENTRIES["NhanhThay"]: str(branch_val),
+        FORM_ENTRIES["SoLuong"]: str(qty_val),
+        FORM_ENTRIES["NguoiThucHien"]: str(user_val)
+    }
+    try:
+        response = requests.post(GOOGLE_FORM_URL, data=payload, timeout=5)
+        return response.status_code == 200
+    except Exception:
+        return False
+
+# --- HÀM KHỞI TẠO HOẶC TẢI DỮ LIỆU CŨ ---
 def load_data():
     if os.path.exists(DATA_FILE):
         df = pd.read_csv(DATA_FILE)
@@ -51,30 +82,43 @@ with st.sidebar.form(key='add_form', clear_on_submit=True):
 
 if submit_button:
     # Kiểm tra điều kiện bắt buộc
-    if not branch_input or not user_input:
+    if not branch_input.strip() or not user_input.strip():
         st.sidebar.error("Vui lòng điền đầy đủ thông tin Nhánh thay và Người thực hiện!")
     elif gas_type == "Khí trộn (Trigas)" and (not sn_input or sn_input.strip() == "-"):
         st.sidebar.error("⚠️ Bắt buộc phải nhập số S/N đối với Khí trộn (Trigas)!")
     else:
-        # Chuẩn hóa giá trị S/N trước khi lưu
+        # Chuẩn hóa giá trị trước khi lưu
         final_sn = sn_input.strip() if gas_type == "Khí trộn (Trigas)" else "-"
+        final_branch = branch_input.strip()
+        final_user = user_input.strip()
         
         # Tạo dòng dữ liệu mới
         new_row = {
             "Ngày Thay": date_input,
             "Loại Khí": gas_type,
             "Số S/N (Khí trộn)": final_sn,
-            "Nhánh Thay": branch_input,
+            "Nhánh Thay": final_branch,
             "Số Lượng Bình": quantity_input,
-            "Người Thực Hiện": user_input
+            "Người Thực Hiện": final_user
         }
-        # Cập nhật vào DataFrame
+        
+        # Cập nhật vào DataFrame cục bộ
         st.session_state.data = pd.concat([st.session_state.data, pd.DataFrame([new_row])], ignore_index=True)
-        # Lưu vào file cứng CSV
         st.session_state.data.to_csv(DATA_FILE, index=False)
-        st.sidebar.success("🎉 Đã lưu dữ liệu thành công!")
+        
+        # ĐỒNG BỘ SANG GOOGLE FORM TRUNG GIAN
+        with st.spinner("🔄 Đang gửi dữ liệu lên Google Sheets..."):
+            form_status = send_to_google_form(date_input, gas_type, final_sn, final_branch, quantity_input, final_user)
+            
+        if form_status:
+            st.sidebar.success("🎉 Đã lưu local và đồng bộ Google Sheets thành công!")
+        else:
+            st.sidebar.warning("⚠️ Đã lưu local nhưng lỗi kết nối (Không thể gửi tới Google Sheet).")
+            
+        # Làm mới trang để cập nhật bảng dữ liệu ngay lập tức
+        st.rerun()
 
-# PHẦN 2: LỌC VÀ THỐNG KÊ THEO THÁNG (Đã sửa lỗi phân chia cột)
+# PHẦN 2: LỌC VÀ THỐNG KÊ THEO THÁNG
 st.header("📊 Bộ Lọc Lịch Sử Theo Tháng")
 
 if not st.session_state.data.empty:
@@ -93,7 +137,7 @@ if not st.session_state.data.empty:
         if m not in available_months:
             available_months.append(m)
     
-    # Bộ lọc trên giao diện chính (Đã sửa lỗi không truyền tham số số lượng cột)
+    # Bộ lọc trên giao diện chính
     col1, col2 = st.columns([1, 3])  
     with col1:
         selected_month = st.selectbox("Chọn tháng cần theo dõi:", available_months)
@@ -111,12 +155,12 @@ if not st.session_state.data.empty:
     # Hiển thị bảng dữ liệu
     st.dataframe(final_df, use_container_width=True)
     
-    # PHẦN 3: XUẤT FILE EXCEL
+    # PHẦN 3: XUẤT FILE EXCEL (Đã sửa đổi engine sang xlsxwriter để tránh lỗi)
     st.markdown("---")
     st.header("📥 Xuất Dữ Liệu")
     
     buffer = io.BytesIO()
-    with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+    with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
         final_df.to_excel(writer, index=False, sheet_name=f"Tháng {selected_month.replace('/', '-')}")
     
     st.download_button(
