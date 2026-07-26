@@ -30,14 +30,12 @@ URL_GOOGLE_SHEET = "https://google.com"
 CHAMBER_FIELDS = {
     "Cài đặt: Nhiệt trái (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
     "Cài đặt: Nhiệt phải (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
-    "Cài đặt: Nhiệt giữa (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
     "Cài đặt: Nhiệt trung tâm (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
     "Cài đặt: Nhiệt khí (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
     "Cài đặt: CO2 (%)": {"type": "number", "default": 6.0, "step": 0.1, "format": "%.1f"},
     
     "Thực tế: Nhiệt trái (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
     "Thực tế: Nhiệt phải (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
-    "Thực tế: Nhiệt giữa (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
     "Thực tế: Nhiệt trung tâm (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
     "Thực tế: Nhiệt khí (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
     "Thực tế: CO2 (%)": {"type": "number", "default": 6.0, "step": 0.1, "format": "%.1f"}
@@ -74,7 +72,7 @@ DEVICE_CONFIGS = {
     "Chamber 1": CHAMBER_FIELDS,
     "Chamber 2": CHAMBER_FIELDS,
     "BT37 1": {
-        "Nhiệt độ (°C)": {"type": "number", "default": 375.0, "step": 0.1, "format": "%.1f"},
+        "Nhiệt độ (°C)": {"type": "number", "default": 35.0, "step": 0.1, "format": "%.1f"},
         "Flow (mL/min)": {"type": "number", "default": 30.0, "step": 1.0, "format": "%.0f"}
     },
     "BT37 2": {
@@ -96,10 +94,10 @@ DEVICE_CONFIGS = {
         "Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"}
     },
     "Tủ ấm LS1": {
-        "Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"}
+        "Nhiệt độ (°C)": {"type": "number", "default": 38.0, "step": 0.1, "format": "%.1f"}
     },
     "Tủ ấm LS2": {
-        "Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"}
+        "Nhiệt độ (°C)": {"type": "number", "default": 38.0, "step": 0.1, "format": "%.1f"}
     },
     "WorkStation CH": {
         "Nhiệt trái (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
@@ -112,13 +110,13 @@ DEVICE_CONFIGS = {
         "Nhiệt kính (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"}
     },
     "Điều áp 1": {
-        "Áp suất (PSI)": {"type": "number", "default": 15.0, "step": 0.1, "format": "%.1f"}
+        "Áp suất (PSI)": {"type": "number", "default": 20.0, "step": 0.1, "format": "%.1f"}
     },
     "Điều áp 2": {
         "Áp suất (PSI)": {"type": "number", "default": 15.0, "step": 0.1, "format": "%.1f"}
     },
     "Điều áp 3": {
-        "Áp suất (PSI)": {"type": "number", "default": 15.0, "step": 0.1, "format": "%.1f"}
+        "Áp suất (PSI)": {"type": "number", "default": 10.0, "step": 0.1, "format": "%.1f"}
     }
 }
 
