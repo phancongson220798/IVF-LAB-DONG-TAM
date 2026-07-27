@@ -88,16 +88,19 @@ DEVICE_CONFIGS = {
         "Flow (mL/min)": {"type": "number", "default": 30.0, "step": 1.0, "format": "%.0f"}
     },
     "Tủ ấm LAB": {
-        "Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"}
+        "Cài đặt: Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
+        "Thực tế: Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"}
     },
     "Tủ ấm phòng TT": {
         "Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"}
     },
     "Tủ ấm LS1": {
-        "Nhiệt độ (°C)": {"type": "number", "default": 38.0, "step": 0.1, "format": "%.1f"}
+        "Cài đặt: Nhiệt độ (°C)": {"type": "number", "default": 38.0, "step": 0.1, "format": "%.1f"},
+        "Thực tế: Nhiệt độ (°C)": {"type": "number", "default": 38.0, "step": 0.1, "format": "%.1f"}
     },
     "Tủ ấm LS2": {
-        "Nhiệt độ (°C)": {"type": "number", "default": 38.0, "step": 0.1, "format": "%.1f"}
+        "Cài đặt: Nhiệt độ (°C)": {"type": "number", "default": 38.0, "step": 0.1, "format": "%.1f"},
+        "Thực tế: Nhiệt độ (°C)": {"type": "number", "default": 38.0, "step": 0.1, "format": "%.1f"}
     },
     "WorkStation CH": {
         "Nhiệt trái (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
