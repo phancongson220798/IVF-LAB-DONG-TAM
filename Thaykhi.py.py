@@ -10,7 +10,8 @@ GOOGLE_FORM_URL = "https://google.com"
 
 # Link xem dữ liệu trên Web: Dán link trang Google Sheet hiển thị kết quả của bạn vào đây
 GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSd0YQ-_0PCshNtxRNBWQRaz_SM2oLEniAXYWFbLsoN60EhU9A/formResponse"
-
+# Link Google Sheet dùng để XEM dữ liệu (link chia sẻ/xuất bản Sheet của bạn)
+GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/146k5ESeQ5ce5sOiOzQUDUj4YZCXFBELSVADQoZNKlJ0/edit?usp=sharing"
 # Điền các mã Entry tương ứng với từng câu hỏi trên Google Form của bạn
 FORM_ENTRIES = {
     "NgayThay": "entry.1339704382",      # Mã câu hỏi Ngày Thay
