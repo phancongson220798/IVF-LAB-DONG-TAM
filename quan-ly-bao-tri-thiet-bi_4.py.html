@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1B2430">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bảo Trì & Lọc">
+<meta name="format-detection" content="telephone=no">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%231B2430'/%3E%3Ctext x='50' y='62' font-size='48' text-anchor='middle'%3E%F0%9F%9B%A0%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%231B2430'/%3E%3Ctext x='50' y='62' font-size='48' text-anchor='middle'%3E%F0%9F%9B%A0%3C/text%3E%3C/svg%3E">
+<link id="manifestLink" rel="manifest" href="">
+<title>Bảo Trì & Lọc — Hệ thống theo dõi thiết bị</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B2430;
+    --bg:#EDF0F1;
+    --panel:#FFFFFF;
+    --accent:#256D63;
+    --accent-dark:#1B4F49;
+    --accent2:#3E5C8A;
+    --overdue:#C0392B;
+    --overdue-bg:#FBEAE8;
+    --soon:#B5651D;
+    --soon-bg:#FBF0E4;
+    --ok:#2E7D4F;
+    --ok-bg:#E9F5EE;
+    --neutral:#5B6B73;
+    --line:#D7DCDD;
+    --shadow: 0 1px 2px rgba(27,36,48,0.06), 0 4px 14px rgba(27,36,48,0.05);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .display{font-family:'Oswald', sans-serif; letter-spacing:0.01em;}
+  .mono{font-family:'IBM Plex Mono', monospace;}
+
+  header.topbar{
+    background:linear-gradient(180deg, var(--ink) 0%, #232E3C 100%);
+    color:#fff;
+    padding:22px 28px 26px;
+  }
+  .topbar-inner{
+    max-width:1180px;
+    margin:0 auto;
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:16px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:#8FA6A1;
+    margin:0 0 6px;
+  }
+  .title{
+    font-family:'Oswald', sans-serif;
+    font-weight:600;
+    font-size:30px;
+    margin:0;
+    letter-spacing:0.01em;
+  }
+  .stats-groups{display:flex; gap:22px; flex-wrap:wrap;}
+  .stats-group-label{
+    font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase;
+    color:#8FA6A1; margin:0 0 6px 2px;
+  }
+  .stats-row{display:flex; gap:10px; flex-wrap:wrap;}
+  .stat-chip{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:10px;
+    padding:9px 16px;
+    min-width:104px;
+    text-align:center;
+  }
+  .stat-chip .n{font-family:'IBM Plex Mono',monospace; font-size:22px; font-weight:600; line-height:1;}
+  .stat-chip .l{font-size:10.5px; color:#B9C4C9; letter-spacing:0.06em; text-transform:uppercase; margin-top:4px;}
+  .stat-chip.overdue .n{color:#F0897C;}
+  .stat-chip.soon .n{color:#F0B36A;}
+  .stat-chip.ok .n{color:#7FCF9E;}
+
+  main{max-width:1180px; margin:0 auto; padding:22px 28px 80px;}
+
+  /* Tabs */
+  .tabs{display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap;}
+  .tab-btn{
+    flex:1; min-width:220px;
+    background:var(--panel); border:1.5px solid var(--line); border-radius:12px;
+    padding:14px 18px; cursor:pointer; text-align:left;
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    transition:all .15s ease;
+  }
+  .tab-btn:hover{border-color:var(--accent);}
+  .tab-btn .t-name{font-family:'Oswald',sans-serif; font-size:16px; font-weight:600; color:var(--ink);}
+  .tab-btn .t-desc{font-size:11.5px; color:var(--neutral); margin-top:2px;}
+  .tab-btn .t-count{font-family:'IBM Plex Mono',monospace; font-size:20px; font-weight:600; color:var(--neutral);}
+  .tab-btn.active{border-color:var(--tabcolor); background:var(--tabbg);}
+  .tab-btn.active .t-count{color:var(--tabcolor);}
+  .tab-btn[data-tab="maintenance"]{--tabcolor:var(--accent2); --tabbg:#EEF1F7;}
+  .tab-btn[data-tab="filter"]{--tabcolor:var(--accent); --tabbg:#EAF3F1;}
+
+  .toolbar{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    margin-bottom:18px;
+  }
+  .filter-btn{
+    border:1px solid var(--line);
+    background:var(--panel);
+    color:var(--neutral);
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:13px;
+    font-weight:500;
+    padding:8px 14px;
+    border-radius:20px;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .filter-btn:hover{border-color:var(--accent);}
+  .filter-btn.active{background:var(--ink); color:#fff; border-color:var(--ink);}
+  .spacer{flex:1;}
+  .btn{
+    font-family:'IBM Plex Sans',sans-serif;
+    font-weight:600;
+    font-size:13.5px;
+    border-radius:8px;
+    padding:10px 16px;
+    cursor:pointer;
+    border:1px solid transparent;
+    display:inline-flex; align-items:center; gap:7px;
+    transition:transform .1s ease, filter .15s ease;
+  }
+  .btn:active{transform:scale(0.97);}
+  .btn-primary{background:var(--accent); color:#fff;}
+  .btn-primary:hover{filter:brightness(1.08);}
+  .btn-ghost{background:var(--panel); color:var(--ink); border-color:var(--line);}
+  .btn-ghost:hover{border-color:var(--accent); color:var(--accent);}
+  .btn-sm{padding:6px 11px; font-size:12.5px; border-radius:6px;}
+
+  .empty{
+    background:var(--panel); border:1px dashed var(--line); border-radius:14px;
+    padding:50px 20px; text-align:center; color:var(--neutral);
+  }
+  .empty .display{font-size:19px; color:var(--ink); margin-bottom:6px;}
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(310px, 1fr));
+    gap:14px;
+  }
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:16px 16px 14px;
+    box-shadow:var(--shadow);
+    display:flex;
+    gap:14px;
+    position:relative;
+    border-left:4px solid var(--line);
+  }
+  .card.overdue{border-left-color:var(--overdue);}
+  .card.soon{border-left-color:var(--soon);}
+  .card.ok{border-left-color:var(--ok);}
+
+  .gauge{
+    width:60px; height:60px; border-radius:50%; flex:none;
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+  }
+  .gauge::before{
+    content:'';
+    position:absolute; inset:0; border-radius:50%;
+    background: conic-gradient(var(--gcolor) calc(var(--pct) * 1%), var(--line) 0);
+  }
+  .gauge::after{
+    content:''; position:absolute; inset:7px; border-radius:50%; background:var(--panel);
+  }
+  .gauge span{
+    position:relative; z-index:1;
+    font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:12.5px; color:var(--ink);
+    text-align:center; line-height:1.05;
+  }
+  .gauge span small{display:block; font-size:8px; font-weight:400; color:var(--neutral); text-transform:uppercase; letter-spacing:0.04em;}
+
+  .card-body{flex:1; min-width:0;}
+  .card-top{display:flex; justify-content:space-between; align-items:flex-start; gap:8px;}
+  .card-name{font-family:'Oswald',sans-serif; font-size:16.5px; font-weight:600; margin:0 0 2px;}
+  .card-loc{font-size:12px; color:var(--neutral); margin:0 0 8px;}
+  .badge{
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-weight:600;
+    letter-spacing:0.04em; text-transform:uppercase;
+    padding:3px 8px; border-radius:5px; white-space:nowrap;
+  }
+  .badge.overdue{background:var(--overdue-bg); color:var(--overdue);}
+  .badge.soon{background:var(--soon-bg); color:var(--soon);}
+  .badge.ok{background:var(--ok-bg); color:var(--ok);}
+
+  .card-meta{font-size:12.5px; color:var(--ink); line-height:1.7;}
+  .card-meta b{font-weight:600;}
+  .card-meta .lbl{color:var(--neutral); display:inline-block; min-width:98px;}
+  .card-actions{display:flex; gap:6px; margin-top:10px;}
+  .icon-btn{
+    border:1px solid var(--line); background:var(--panel); color:var(--neutral);
+    border-radius:6px; padding:5px 9px; font-size:12px; cursor:pointer; font-family:'IBM Plex Sans',sans-serif;
+  }
+  .icon-btn:hover{border-color:var(--accent); color:var(--accent);}
+  .icon-btn.danger:hover{border-color:var(--overdue); color:var(--overdue);}
+
+  /* Modal */
+  .overlay{
+    position:fixed; inset:0; background:rgba(27,36,48,0.5);
+    display:none; align-items:flex-start; justify-content:center;
+    padding:40px 16px; overflow-y:auto; z-index:50;
+  }
+  .overlay.show{display:flex;}
+  .modal{
+    background:var(--panel); border-radius:16px; width:100%; max-width:480px;
+    padding:24px 24px 20px; box-shadow:0 20px 60px rgba(0,0,0,0.25);
+  }
+  .modal h2{font-family:'Oswald',sans-serif; font-size:20px; margin:0 0 4px;}
+  .modal .modal-sub{font-size:12.5px; color:var(--neutral); margin:0 0 16px;}
+  .field{margin-bottom:13px;}
+  .field label{display:block; font-size:12px; font-weight:600; color:var(--neutral); margin-bottom:5px; text-transform:uppercase; letter-spacing:0.03em;}
+  .field input, .field select, .field textarea{
+    width:100%; border:1px solid var(--line); border-radius:8px; padding:9px 11px;
+    font-family:'IBM Plex Sans',sans-serif; font-size:13.5px; color:var(--ink); background:#FAFBFB;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{outline:2px solid var(--accent); outline-offset:1px; background:#fff;}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .row3{display:grid; grid-template-columns:1fr 100px; gap:10px;}
+  .modal-actions{display:flex; justify-content:flex-end; gap:8px; margin-top:18px;}
+
+  /* Settings panel */
+  .settings-panel{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px;
+    padding:18px 18px 16px; margin-bottom:18px; display:none;
+  }
+  .settings-panel.show{display:block;}
+  .settings-panel h3{font-family:'Oswald',sans-serif; font-size:16px; margin:0 0 4px;}
+  .settings-panel p.hint{font-size:12.5px; color:var(--neutral); margin:0 0 14px; line-height:1.6;}
+  .code-block{
+    background:#1B2430; color:#DCE6E3; font-family:'IBM Plex Mono',monospace; font-size:11.5px;
+    border-radius:10px; padding:14px; overflow-x:auto; white-space:pre; line-height:1.6; margin:10px 0;
+  }
+  .steps{font-size:13px; line-height:1.85; color:var(--ink); padding-left:18px; margin:10px 0;}
+  .settings-row{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
+  .settings-row input{flex:1; min-width:220px;}
+
+  .toast-wrap{position:fixed; bottom:20px; right:20px; z-index:80; display:flex; flex-direction:column; gap:8px;}
+  .toast{
+    background:var(--ink); color:#fff; padding:11px 16px; border-radius:8px; font-size:13px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.25); animation:slidein .2s ease;
+  }
+  .toast.err{background:var(--overdue);}
+  .toast.ok2{background:var(--ok);}
+  @keyframes slidein{from{transform:translateY(8px); opacity:0;} to{transform:translateY(0); opacity:1;}}
+
+  .notify-bar{
+    display:none;
+    background:var(--soon-bg); border:1px solid #E8C79A; color:#7A4413;
+    border-radius:12px; padding:12px 16px; margin-bottom:16px; font-size:13px; line-height:1.6;
+  }
+  .notify-bar.show{display:block;}
+  .notify-bar b{font-family:'Oswald',sans-serif;}
+
+  @media (max-width:520px){
+    .row2, .row3{grid-template-columns:1fr;}
+    .title{font-size:24px;}
+    .tab-btn{min-width:100%;}
+  }
+
+  /* ---- Mobile app shell ---- */
+  .install-banner{
+    display:none;
+    background:#FFF7E6; border:1px solid #EAD6A0; color:#7A5A12;
+    border-radius:12px; padding:11px 14px; margin-bottom:16px; font-size:12.5px; line-height:1.6;
+    align-items:center; justify-content:space-between; gap:10px;
+  }
+  .install-banner.show{display:flex;}
+  .install-banner button{
+    border:none; background:transparent; color:#7A5A12; font-weight:700; font-size:15px; cursor:pointer; padding:2px 6px;
+  }
+
+  .bottom-nav{ display:none; }
+  .fab{ display:none; }
+
+  @media (max-width:768px){
+    body{ padding-bottom: calc(78px + env(safe-area-inset-bottom)); }
+    header.topbar{ padding:18px 18px 20px; }
+    main{ padding:16px 14px 24px; }
+    .title{ font-size:21px; }
+    .stats-groups{ gap:14px; }
+    .stat-chip{ min-width:0; flex:1; padding:8px 8px; }
+
+    /* hide desktop tab cards + inline add button; bottom nav replaces them */
+    .tabs{ display:none; }
+    #addBtn{ display:none; }
+    #settingsBtn{ display:none; }
+
+    .toolbar{ position:sticky; top:0; z-index:10; background:var(--bg); padding:8px 0 10px; margin:-4px 0 14px; }
+    .toolbar .filter-btn{ flex:none; }
+
+    .bottom-nav{
+      display:flex; position:fixed; left:0; right:0; bottom:0; z-index:60;
+      background:var(--panel); border-top:1px solid var(--line);
+      padding:8px 10px calc(8px + env(safe-area-inset-bottom));
+      box-shadow:0 -4px 16px rgba(27,36,48,0.08);
+      gap:8px;
+    }
+    .bn-btn{
+      flex:1; border:none; background:transparent; border-radius:12px;
+      padding:8px 4px 6px; display:flex; flex-direction:column; align-items:center; gap:3px;
+      color:var(--neutral); font-family:'IBM Plex Sans',sans-serif; cursor:pointer;
+    }
+    .bn-btn .bn-icon{ font-size:19px; line-height:1; }
+    .bn-btn .bn-label{ font-size:10.5px; font-weight:600; }
+    .bn-btn .bn-count{
+      font-family:'IBM Plex Mono',monospace; font-size:9px; background:var(--line); color:var(--ink);
+      border-radius:8px; padding:0 6px; margin-top:1px;
+    }
+    .bn-btn.active{ color:var(--accent2); }
+    .bn-btn.active[data-tab="filter"]{ color:var(--accent); }
+    .bn-btn.active .bn-count{ background:currentColor; color:#fff; }
+
+    .fab{
+      display:flex; align-items:center; justify-content:center;
+      position:fixed; right:16px; bottom:calc(84px + env(safe-area-inset-bottom)); z-index:61;
+      width:56px; height:56px; border-radius:50%; border:none;
+      background:var(--accent); color:#fff; font-size:26px; cursor:pointer;
+      box-shadow:0 8px 20px rgba(37,109,99,0.4);
+    }
+    .fab:active{ transform:scale(0.94); }
+
+    /* bottom-sheet style modal */
+    .overlay{ align-items:flex-end; padding:0; }
+    .modal{
+      max-width:none; width:100%; border-radius:18px 18px 0 0;
+      max-height:88vh; overflow-y:auto;
+      padding:18px 18px calc(18px + env(safe-area-inset-bottom));
+      animation:sheetup .22s ease;
+    }
+    @keyframes sheetup{ from{ transform:translateY(24px); opacity:0; } to{ transform:translateY(0); opacity:1; } }
+
+    .grid{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div>
+      <p class="eyebrow">Hệ thống theo dõi thiết bị</p>
+      <h1 class="title">Bảo Trì &amp; Thay Lọc Định Kỳ</h1>
+    </div>
+    <div class="stats-groups" id="statsRow"></div>
+  </div>
+</header>
+
+<main>
+
+  <div class="install-banner" id="installBanner">
+    <span id="installBannerText"></span>
+    <button id="installBannerClose">✕</button>
+  </div>
+
+  <div class="tabs" id="tabsRow">
+    <button class="tab-btn active" data-tab="maintenance">
+      <div>
+        <div class="t-name">🛠 Bảo trì thiết bị</div>
+      </div>
+      <div class="t-count" id="countMaintenance">0</div>
+    </button>
+    <button class="tab-btn" data-tab="filter">
+      <div>
+        <div class="t-name">🧯 Thay lọc định kỳ</div>
+      </div>
+      <div class="t-count" id="countFilter">0</div>
+    </button>
+  </div>
+
+  <div class="notify-bar" id="notifyBar"></div>
+
+  <div class="settings-panel" id="settingsPanel">
+    <h3>Đồng bộ lên Google Sheet</h3>
+    <p class="hint">Dán đường liên kết Web App của Google Apps Script vào ô bên dưới. Dữ liệu sẽ được ghi vào 2 trang tính riêng: "BaoTri" và "ThayLoc". Nếu chưa có, làm theo hướng dẫn 4 bước phía dưới (chỉ cần làm 1 lần).</p>
+    <div class="settings-row">
+      <input type="text" id="sheetUrlInput" placeholder="https://script.google.com/macros/s/.../exec">
+      <button class="btn btn-ghost btn-sm" id="saveUrlBtn">Lưu liên kết</button>
+      <button class="btn btn-primary btn-sm" id="syncNowBtn">Đồng bộ ngay</button>
+    </div>
+    <details style="margin-top:14px;">
+      <summary style="cursor:pointer; font-size:13px; font-weight:600; color:var(--accent);">Hướng dẫn tạo Web App (4 bước)</summary>
+      <ol class="steps">
+        <li>Tạo một Google Sheet mới → vào menu <b>Tiện ích mở rộng (Extensions) → Apps Script</b>.</li>
+        <li>Xoá code mẫu, dán đoạn code bên dưới vào, rồi bấm <b>Lưu</b>.</li>
+        <li>Bấm <b>Triển khai (Deploy) → Bản triển khai mới (New deployment)</b> → chọn loại <b>Web app</b>. Mục "Execute as" chọn <b>Me</b>, mục "Who has access" chọn <b>Anyone</b> → bấm <b>Deploy</b> và cho phép quyền truy cập.</li>
+        <li>Copy đường liên kết Web App (kết thúc bằng <span class="mono">/exec</span>) và dán vào ô ở trên.</li>
+      </ol>
+      <div class="code-block" id="appsScriptCode">function doPost(e) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var data = JSON.parse(e.postData.contents);
+
+  var sheetMaint = ss.getSheetByName('BaoTri') || ss.insertSheet('BaoTri');
+  var sheetFilter = ss.getSheetByName('ThayLoc') || ss.insertSheet('ThayLoc');
+
+  sheetMaint.clearContents();
+  sheetMaint.appendRow(['Tên thiết bị','Vị trí','Hạng mục bảo trì','Người thực hiện','Chu kỳ',
+                         'Lần gần nhất','Hạn tiếp theo','Trạng thái','Ghi chú']);
+  sheetFilter.clearContents();
+  sheetFilter.appendRow(['Loại lọc','Người thực hiện','Chu kỳ',
+                          'Lần gần nhất','Hạn tiếp theo','Trạng thái','Ghi chú']);
+
+  data.items.forEach(function(item){
+    if (item.category === 'filter') {
+      sheetFilter.appendRow([item.type, item.performedBy, item.intervalText,
+                              item.lastDate, item.nextDue, item.statusText, item.notes]);
+    } else {
+      sheetMaint.appendRow([item.name, item.location, item.type, item.performedBy, item.intervalText,
+                             item.lastDate, item.nextDue, item.statusText, item.notes]);
+    }
+  });
+
+  return ContentService.createTextOutput(JSON.stringify({result:'success', count:data.items.length}))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doGet(e) {
+  return ContentService.createTextOutput(JSON.stringify({result:'ok'}))
+    .setMimeType(ContentService.MimeType.JSON);
+}</div>
+      <button class="btn btn-ghost btn-sm" id="copyCodeBtn">Sao chép code</button>
+    </details>
+  </div>
+
+  <div class="toolbar">
+    <button class="filter-btn active" data-filter="all">Tất cả</button>
+    <button class="filter-btn" data-filter="overdue">Quá hạn</button>
+    <button class="filter-btn" data-filter="soon">Sắp đến hạn</button>
+    <button class="filter-btn" data-filter="ok">Còn hạn</button>
+    <div class="spacer"></div>
+    <button class="btn btn-ghost" id="notifyPermBtn">🔔 Bật thông báo trình duyệt</button>
+    <button class="btn btn-ghost" id="settingsBtn">⚙ Google Sheet</button>
+    <button class="btn btn-primary" id="addBtn">+ Thêm mục</button>
+  </div>
+
+  <div id="listWrap"></div>
+
+</main>
+
+<button class="fab" id="fabBtn" aria-label="Thêm mục">+</button>
+
+<nav class="bottom-nav" id="bottomNav">
+  <button class="bn-btn active" data-tab="maintenance">
+    <span class="bn-icon">🛠</span>
+    <span class="bn-label">Bảo trì</span>
+    <span class="bn-count" id="bnCountMaintenance">0</span>
+  </button>
+  <button class="bn-btn" data-tab="filter">
+    <span class="bn-icon">🧯</span>
+    <span class="bn-label">Thay lọc</span>
+    <span class="bn-count" id="bnCountFilter">0</span>
+  </button>
+  <button class="bn-btn" id="bnSettingsBtn">
+    <span class="bn-icon">⚙</span>
+    <span class="bn-label">Google Sheet</span>
+  </button>
+</nav>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2 id="modalTitle">Thêm mục</h2>
+    <p class="modal-sub" id="modalSub">Đang thêm vào: Bảo trì thiết bị</p>
+    <input type="hidden" id="editId">
+    <input type="hidden" id="fCategory">
+    <div class="field" id="fNameWrap">
+      <label>Tên thiết bị</label>
+      <input type="text" id="fName">
+    </div>
+    <div class="field" id="fLocationWrap">
+      <label>Vị trí</label>
+      <input type="text" id="fLocation">
+    </div>
+    <div class="field">
+      <label id="fTypeLabel">Hạng mục bảo trì</label>
+      <input type="text" id="fType">
+    </div>
+    <div class="field" id="fPerformedByWrap">
+      <label>Người thực hiện</label>
+      <input type="text" id="fPerformedBy">
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label id="fDateLabel">Ngày bảo trì gần nhất</label>
+        <input type="date" id="fLastDate">
+      </div>
+      <div class="field">
+        <label>Chu kỳ</label>
+        <div class="row3">
+          <input type="number" min="1" id="fIntervalVal">
+          <select id="fIntervalUnit">
+            <option value="day">Ngày</option>
+            <option value="week">Tuần</option>
+            <option value="month" selected>Tháng</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Ghi chú (tuỳ chọn)</label>
+      <textarea id="fNotes" rows="2"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="cancelBtn">Huỷ</button>
+      <button class="btn btn-primary" id="saveBtn">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="confirmOverlay">
+  <div class="modal" style="max-width:360px;">
+    <h2 style="margin-bottom:10px;">Xoá mục này?</h2>
+    <p id="confirmMsg" style="font-size:13.5px; color:var(--neutral); margin:0 0 18px; line-height:1.6;"></p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="confirmCancelBtn">Huỷ</button>
+      <button class="btn" style="background:var(--overdue); color:#fff;" id="confirmOkBtn">Xoá</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+
+<script>
+(function(){
+  var STORE_KEY = 'equipment-list-v2';
+  var SETTINGS_KEY = 'app-settings-v1';
+  var state = { items: [], settings: { sheetUrl:'', notifyDays: 7 }, activeTab:'maintenance', statusFilter:'all' };
+
+  var CATEGORY_INFO = {
+    maintenance: { label:'Bảo trì thiết bị', typeLabel:'Hạng mục bảo trì', dateLabel:'Ngày bảo trì gần nhất', addLabel:'+ Thêm mục bảo trì' },
+    filter:      { label:'Thay lọc định kỳ', typeLabel:'Loại lọc', dateLabel:'Ngày thay lọc gần nhất', addLabel:'+ Thêm lịch thay lọc' }
+  };
+
+  function uid(){ return 'e' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+  function toast(msg, type){
+    var wrap = document.getElementById('toastWrap');
+    var el = document.createElement('div');
+    el.className = 'toast' + (type ? ' ' + type : '');
+    el.textContent = msg;
+    wrap.appendChild(el);
+    setTimeout(function(){ el.remove(); }, 3800);
+  }
+
+  var confirmOverlay = document.getElementById('confirmOverlay');
+  var pendingConfirmCb = null;
+  function showConfirm(msg, cb){
+    document.getElementById('confirmMsg').textContent = msg;
+    pendingConfirmCb = cb;
+    confirmOverlay.classList.add('show');
+  }
+  document.getElementById('confirmCancelBtn').onclick = function(){
+    confirmOverlay.classList.remove('show'); pendingConfirmCb = null;
+  };
+  document.getElementById('confirmOkBtn').onclick = function(){
+    confirmOverlay.classList.remove('show');
+    if(pendingConfirmCb) pendingConfirmCb();
+    pendingConfirmCb = null;
+  };
+  confirmOverlay.onclick = function(e){
+    if(e.target === confirmOverlay){ confirmOverlay.classList.remove('show'); pendingConfirmCb = null; }
+  };
+
+  function intervalDays(val, unit){
+    val = Number(val) || 0;
+    if(unit === 'day') return val;
+    if(unit === 'week') return val * 7;
+    return val * 30; // month approx
+  }
+  function intervalText(val, unit){
+    var u = unit === 'day' ? 'ngày' : (unit === 'week' ? 'tuần' : 'tháng');
+    return val + ' ' + u;
+  }
+  function addDays(dateStr, days){
+    var d = new Date(dateStr + 'T00:00:00');
+    d.setDate(d.getDate() + days);
+    return d;
+  }
+  function fmt(d){
+    if(typeof d === 'string') d = new Date(d + 'T00:00:00');
+    var dd = String(d.getDate()).padStart(2,'0');
+    var mm = String(d.getMonth()+1).padStart(2,'0');
+    var yy = d.getFullYear();
+    return dd + '/' + mm + '/' + yy;
+  }
+  function daysBetween(a, b){
+    return Math.round((a - b) / (1000*60*60*24));
+  }
+
+  function computeItem(item){
+    var totalDays = intervalDays(item.intervalVal, item.intervalUnit);
+    var nextDue = addDays(item.lastDate, totalDays);
+    var today = new Date(); today.setHours(0,0,0,0);
+    var daysLeft = daysBetween(nextDue, today);
+    var elapsedSince = daysBetween(today, new Date(item.lastDate + 'T00:00:00'));
+    var pct = totalDays > 0 ? Math.min(100, Math.max(0, Math.round((elapsedSince/totalDays)*100))) : 0;
+    var status = 'ok';
+    if(daysLeft < 0) status = 'overdue';
+    else if(daysLeft <= state.settings.notifyDays) status = 'soon';
+    return { nextDue: nextDue, daysLeft: daysLeft, pct: pct, status: status, totalDays: totalDays };
+  }
+
+  var statusLabel = { overdue:'Quá hạn', soon:'Sắp đến hạn', ok:'Còn hạn' };
+  var statusColor = { overdue:'var(--overdue)', soon:'var(--soon)', ok:'var(--ok)' };
+
+  function render(){
+    var allComputed = state.items.map(function(it){
+      var c = computeItem(it);
+      return Object.assign({}, it, c);
+    });
+
+    var stats = { overdue:0, soon:0, ok:0 };
+    var tabItems = allComputed.filter(function(c){ return c.category === state.activeTab; });
+    tabItems.forEach(function(c){ stats[c.status]++; });
+
+    document.getElementById('countMaintenance').textContent = allComputed.filter(function(c){ return c.category==='maintenance'; }).length;
+    document.getElementById('countFilter').textContent = allComputed.filter(function(c){ return c.category==='filter'; }).length;
+    document.getElementById('bnCountMaintenance').textContent = document.getElementById('countMaintenance').textContent;
+    document.getElementById('bnCountFilter').textContent = document.getElementById('countFilter').textContent;
+
+    function statsFor(cat){
+      var s = { overdue:0, soon:0, ok:0 };
+      allComputed.filter(function(c){ return c.category === cat; }).forEach(function(c){ s[c.status]++; });
+      return s;
+    }
+    function statsChips(s){
+      return '<div class="stat-chip overdue"><div class="n">'+s.overdue+'</div><div class="l">Quá hạn</div></div>' +
+             '<div class="stat-chip soon"><div class="n">'+s.soon+'</div><div class="l">Sắp đến hạn</div></div>' +
+             '<div class="stat-chip ok"><div class="n">'+s.ok+'</div><div class="l">Còn hạn</div></div>';
+    }
+    var sMaint = statsFor('maintenance');
+    var sFilter = statsFor('filter');
+    document.getElementById('statsRow').innerHTML =
+      '<div class="stats-group"><div class="stats-group-label">Bảo trì thiết bị</div><div class="stats-row">'+statsChips(sMaint)+'</div></div>' +
+      '<div class="stats-group"><div class="stats-group-label">Thay lọc định kỳ</div><div class="stats-row">'+statsChips(sFilter)+'</div></div>';
+
+    var bar = document.getElementById('notifyBar');
+    var due = tabItems.filter(function(c){ return c.status==='overdue' || c.status==='soon'; });
+    if(due.length){
+      due.sort(function(a,b){ return a.daysLeft - b.daysLeft; });
+      var names = due.slice(0,4).map(function(c){
+        return c.name + ' (' + (c.daysLeft < 0 ? 'quá ' + Math.abs(c.daysLeft) + ' ngày' : 'còn ' + c.daysLeft + ' ngày') + ')';
+      }).join(', ');
+      bar.classList.add('show');
+      bar.innerHTML = '<b>⚠ Cần chú ý:</b> ' + names + (due.length > 4 ? ' và ' + (due.length-4) + ' mục khác…' : '') + '.';
+    } else {
+      bar.classList.remove('show');
+    }
+
+    var filtered = state.statusFilter === 'all' ? tabItems : tabItems.filter(function(c){ return c.status === state.statusFilter; });
+    filtered.sort(function(a,b){ return a.daysLeft - b.daysLeft; });
+
+    var wrap = document.getElementById('listWrap');
+    if(!filtered.length){
+      var infoLbl = CATEGORY_INFO[state.activeTab].label.toLowerCase();
+      wrap.innerHTML = '<div class="empty"><div class="display">'+(tabItems.length ? 'Không có mục nào ở bộ lọc này' : 'Chưa có mục nào trong "'+CATEGORY_INFO[state.activeTab].label+'"')+'</div><div>'+(tabItems.length ? 'Thử chọn bộ lọc khác.' : 'Bấm "'+CATEGORY_INFO[state.activeTab].addLabel+'" để bắt đầu theo dõi '+infoLbl+'.')+'</div></div>';
+      return;
+    }
+
+    wrap.innerHTML = '<div class="grid">' + filtered.map(function(c){
+      var daysLabel = c.daysLeft < 0
+        ? ('<span>'+Math.abs(c.daysLeft)+'<small>ngày quá</small></span>')
+        : ('<span>'+c.daysLeft+'<small>ngày nữa</small></span>');
+      return '' +
+      '<div class="card '+c.status+'">' +
+        '<div class="gauge" style="--pct:'+c.pct+'; --gcolor:'+statusColor[c.status]+';">' + daysLabel + '</div>' +
+        '<div class="card-body">' +
+          '<div class="card-top">' +
+            '<div><p class="card-name">'+escapeHtml(c.name)+'</p><p class="card-loc">'+escapeHtml((c.category==='filter' ? c.performedBy : c.location)||'—')+'</p></div>' +
+            '<span class="badge '+c.status+'">'+statusLabel[c.status]+'</span>' +
+          '</div>' +
+          '<div class="card-meta">' +
+            (c.category==='filter' ? '' : '<div><span class="lbl">'+CATEGORY_INFO[c.category].typeLabel+':</span> <b>'+escapeHtml(c.type||'—')+'</b></div>') +
+            (c.category==='filter' ? '' : '<div><span class="lbl">Người thực hiện:</span> '+escapeHtml(c.performedBy||'—')+'</div>') +
+            '<div><span class="lbl">Chu kỳ:</span> '+intervalText(c.intervalVal, c.intervalUnit)+'</div>' +
+            '<div><span class="lbl">Lần gần nhất:</span> '+fmt(c.lastDate)+'</div>' +
+            '<div><span class="lbl">Hạn tiếp theo:</span> <b class="mono">'+fmt(c.nextDue)+'</b></div>' +
+          '</div>' +
+          '<div class="card-actions">' +
+            '<button class="icon-btn" data-act="done" data-id="'+c.id+'">✓ Đã làm hôm nay</button>' +
+            '<button class="icon-btn" data-act="edit" data-id="'+c.id+'">Sửa</button>' +
+            '<button class="icon-btn danger" data-act="del" data-id="'+c.id+'">Xoá</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('') + '</div>';
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  function persist(){
+    window.storage.set(STORE_KEY, JSON.stringify(state.items), false).catch(function(){
+      toast('Không lưu được dữ liệu trên máy này', 'err');
+    });
+  }
+  function persistSettings(){
+    window.storage.set(SETTINGS_KEY, JSON.stringify(state.settings), false).catch(function(){});
+  }
+
+  async function loadAll(){
+    try{
+      var r = await window.storage.get(STORE_KEY, false);
+      if(r && r.value) state.items = JSON.parse(r.value);
+    }catch(e){
+      // migrate from old single-list version if present
+      try{
+        var old = await window.storage.get('equipment-list-v1', false);
+        if(old && old.value){
+          var oldItems = JSON.parse(old.value);
+          state.items = oldItems.map(function(it){ return Object.assign({category:'filter'}, it); });
+          persist();
+        }
+      }catch(e2){ /* no data yet */ }
+    }
+    try{
+      var r2 = await window.storage.get(SETTINGS_KEY, false);
+      if(r2 && r2.value) state.settings = Object.assign(state.settings, JSON.parse(r2.value));
+    }catch(e){ /* no settings yet */ }
+    document.getElementById('sheetUrlInput').value = state.settings.sheetUrl || '';
+    render();
+    checkBrowserNotify();
+  }
+
+  // ---- Tabs (desktop cards + mobile bottom nav) ----
+  function setActiveTab(tab){
+    state.activeTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-tab')===tab); });
+    document.querySelectorAll('.bn-btn[data-tab]').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-tab')===tab); });
+    document.getElementById('addBtn').textContent = CATEGORY_INFO[tab].addLabel;
+    render();
+  }
+  document.querySelectorAll('.tab-btn').forEach(function(btn){
+    btn.onclick = function(){ setActiveTab(btn.getAttribute('data-tab')); };
+  });
+  document.querySelectorAll('.bn-btn[data-tab]').forEach(function(btn){
+    btn.onclick = function(){ setActiveTab(btn.getAttribute('data-tab')); };
+  });
+  document.getElementById('addBtn').textContent = CATEGORY_INFO[state.activeTab].addLabel;
+  document.getElementById('fabBtn').onclick = function(){ openModal(null); };
+  document.getElementById('bnSettingsBtn').onclick = function(){
+    document.getElementById('settingsPanel').classList.toggle('show');
+    document.getElementById('settingsPanel').scrollIntoView({behavior:'smooth', block:'start'});
+  };
+
+  // ---- Modal ----
+  var overlay = document.getElementById('overlay');
+  function openModal(item){
+    var cat = item ? item.category : state.activeTab;
+    var info = CATEGORY_INFO[cat];
+    document.getElementById('modalTitle').textContent = item ? 'Sửa mục' : 'Thêm mục mới';
+    document.getElementById('modalSub').textContent = 'Đang thêm vào: ' + info.label;
+    document.getElementById('editId').value = item ? item.id : '';
+    document.getElementById('fCategory').value = cat;
+    document.getElementById('fTypeLabel').textContent = info.typeLabel;
+    document.getElementById('fDateLabel').textContent = info.dateLabel;
+    document.getElementById('fNameWrap').style.display = cat === 'filter' ? 'none' : '';
+    document.getElementById('fLocationWrap').style.display = cat === 'filter' ? 'none' : '';
+    document.getElementById('fName').value = item ? (item.name||'') : '';
+    document.getElementById('fLocation').value = item ? (item.location||'') : '';
+    document.getElementById('fPerformedBy').value = item ? (item.performedBy||'') : '';
+    document.getElementById('fType').value = item ? item.type : '';
+    document.getElementById('fLastDate').value = item ? item.lastDate : new Date().toISOString().slice(0,10);
+    document.getElementById('fIntervalVal').value = item ? item.intervalVal : 3;
+    document.getElementById('fIntervalUnit').value = item ? item.intervalUnit : 'month';
+    document.getElementById('fNotes').value = item ? (item.notes||'') : '';
+    overlay.classList.add('show');
+    (cat === 'filter' ? document.getElementById('fType') : document.getElementById('fName')).focus();
+  }
+  function closeModal(){ overlay.classList.remove('show'); }
+
+  document.getElementById('addBtn').onclick = function(){ openModal(null); };
+  document.getElementById('cancelBtn').onclick = closeModal;
+  overlay.onclick = function(e){ if(e.target === overlay) closeModal(); };
+
+  document.getElementById('saveBtn').onclick = function(){
+    var category = document.getElementById('fCategory').value;
+    var name = document.getElementById('fName').value.trim();
+    var type = document.getElementById('fType').value.trim();
+    var lastDate = document.getElementById('fLastDate').value;
+    var intervalVal = Number(document.getElementById('fIntervalVal').value);
+
+    if(category === 'filter'){
+      if(!type){ toast('Vui lòng nhập loại lọc', 'err'); return; }
+    } else if(!name){
+      toast('Vui lòng nhập tên thiết bị', 'err'); return;
+    }
+    if(!lastDate){ toast('Vui lòng chọn ngày gần nhất', 'err'); return; }
+    if(!intervalVal || intervalVal <= 0){ toast('Chu kỳ phải lớn hơn 0', 'err'); return; }
+
+    var id = document.getElementById('editId').value;
+    var data = {
+      id: id || uid(),
+      category: category,
+      name: category === 'filter' ? type : name,
+      location: category === 'filter' ? '' : document.getElementById('fLocation').value.trim(),
+      performedBy: document.getElementById('fPerformedBy').value.trim(),
+      type: type,
+      lastDate: lastDate,
+      intervalVal: intervalVal,
+      intervalUnit: document.getElementById('fIntervalUnit').value,
+      notes: document.getElementById('fNotes').value.trim()
+    };
+    if(id){
+      var idx = state.items.findIndex(function(i){ return i.id === id; });
+      if(idx > -1) state.items[idx] = data;
+    } else {
+      state.items.push(data);
+    }
+    persist();
+    render();
+    closeModal();
+    toast(id ? 'Đã cập nhật' : 'Đã thêm mục mới', 'ok2');
+  };
+
+  document.getElementById('listWrap').addEventListener('click', function(e){
+    var btn = e.target.closest('button[data-act]');
+    if(!btn) return;
+    var id = btn.getAttribute('data-id');
+    var item = state.items.find(function(i){ return i.id === id; });
+    if(!item) return;
+    var act = btn.getAttribute('data-act');
+    if(act === 'edit'){ openModal(item); }
+    else if(act === 'del'){
+      showConfirm('Xoá "'+item.name+'"? Hành động này không thể hoàn tác.', function(){
+        state.items = state.items.filter(function(i){ return i.id !== id; });
+        persist(); render();
+        toast('Đã xoá');
+      });
+    } else if(act === 'done'){
+      item.lastDate = new Date().toISOString().slice(0,10);
+      persist(); render();
+      toast('Đã cập nhật ngày cho "'+item.name+'"', 'ok2');
+    }
+  });
+
+  // ---- Status filters ----
+  document.querySelectorAll('.filter-btn').forEach(function(btn){
+    btn.onclick = function(){
+      document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      state.statusFilter = btn.getAttribute('data-filter');
+      render();
+    };
+  });
+
+  // ---- Settings / Google Sheet sync ----
+  var settingsPanel = document.getElementById('settingsPanel');
+  document.getElementById('settingsBtn').onclick = function(){
+    settingsPanel.classList.toggle('show');
+  };
+  document.getElementById('saveUrlBtn').onclick = function(){
+    state.settings.sheetUrl = document.getElementById('sheetUrlInput').value.trim();
+    persistSettings();
+    toast('Đã lưu liên kết Google Sheet', 'ok2');
+  };
+  document.getElementById('copyCodeBtn').onclick = function(){
+    var code = document.getElementById('appsScriptCode').textContent;
+    navigator.clipboard.writeText(code).then(function(){
+      toast('Đã sao chép code Apps Script', 'ok2');
+    }).catch(function(){ toast('Không thể sao chép, hãy chọn thủ công', 'err'); });
+  };
+
+  document.getElementById('syncNowBtn').onclick = async function(){
+    var url = state.settings.sheetUrl || document.getElementById('sheetUrlInput').value.trim();
+    if(!url){ toast('Chưa có liên kết Google Sheet. Hãy dán URL và bấm "Lưu liên kết".', 'err'); return; }
+    if(!state.items.length){ toast('Chưa có dữ liệu nào để đồng bộ', 'err'); return; }
+
+    var payload = {
+      items: state.items.map(function(it){
+        var c = computeItem(it);
+        return {
+          category: it.category,
+          name: it.name, location: it.location, performedBy: it.performedBy || '', type: it.type,
+          intervalText: intervalText(it.intervalVal, it.intervalUnit),
+          lastDate: fmt(it.lastDate), nextDue: fmt(c.nextDue),
+          statusText: statusLabel[c.status], notes: it.notes || ''
+        };
+      })
+    };
+    try{
+      await fetch(url, {
+        method: 'POST',
+        headers: {'Content-Type': 'text/plain;charset=utf-8'},
+        body: JSON.stringify(payload)
+      });
+      toast('Đã gửi dữ liệu đồng bộ lên Google Sheet (2 trang: BaoTri, ThayLoc)', 'ok2');
+    }catch(err){
+      toast('Đồng bộ thất bại. Kiểm tra lại liên kết Web App.', 'err');
+    }
+  };
+
+  // ---- Browser notifications ----
+  document.getElementById('notifyPermBtn').onclick = function(){
+    if(!('Notification' in window)){ toast('Trình duyệt này không hỗ trợ thông báo', 'err'); return; }
+    Notification.requestPermission().then(function(perm){
+      if(perm === 'granted'){ toast('Đã bật thông báo trình duyệt', 'ok2'); checkBrowserNotify(); }
+      else toast('Bạn đã từ chối quyền thông báo');
+    });
+  };
+  function checkBrowserNotify(){
+    if(!('Notification' in window) || Notification.permission !== 'granted') return;
+    var today = new Date().toISOString().slice(0,10);
+    window.storage.get('last-notify-date', false).then(function(r){
+      if(r && r.value === today) return; // already notified today
+      var due = state.items.map(computeItem).filter(function(c){ return c.status==='overdue' || c.status==='soon'; });
+      if(due.length){
+        new Notification('Bảo trì & thay lọc: ' + due.length + ' mục cần chú ý', {
+          body: 'Có mục sắp đến hạn hoặc quá hạn bảo trì/thay lọc. Mở ứng dụng để xem chi tiết.'
+        });
+      }
+      window.storage.set('last-notify-date', today, false).catch(function(){});
+    }).catch(function(){});
+  }
+
+  loadAll();
+
+  // ---- PWA: manifest + add-to-home-screen ----
+  (function(){
+    var manifest = {
+      name: "Bảo Trì & Thay Lọc Định Kỳ",
+      short_name: "Bảo Trì & Lọc",
+      start_url: ".",
+      display: "standalone",
+      background_color: "#EDF0F1",
+      theme_color: "#1B2430"
+    };
+    var blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
+    document.getElementById('manifestLink').setAttribute('href', URL.createObjectURL(blob));
+
+    var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    var banner = document.getElementById('installBanner');
+    var bannerText = document.getElementById('installBannerText');
+    document.getElementById('installBannerClose').onclick = function(){ banner.classList.remove('show'); };
+
+    if(isStandalone) return;
+
+    var deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', function(e){
+      e.preventDefault();
+      deferredPrompt = e;
+      bannerText.innerHTML = '<b>Cài ứng dụng này vào máy?</b> Dùng như app, mở nhanh từ màn hình chính. <span class="mono" style="text-decoration:underline; cursor:pointer;" id="installNowLink">Cài đặt ngay</span>';
+      banner.classList.add('show');
+      document.getElementById('installNowLink').onclick = function(){
+        banner.classList.remove('show');
+        deferredPrompt.prompt();
+      };
+    });
+
+    var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    if(isIOS){
+      bannerText.innerHTML = '<b>Dùng như app trên iPhone/iPad:</b> bấm nút Chia sẻ (⬆) trên Safari → chọn "Thêm vào MH chính".';
+      banner.classList.add('show');
+    }
+  })();
+})();
+</script>
+</body>
+</html>
