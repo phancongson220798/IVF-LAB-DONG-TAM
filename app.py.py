@@ -87,11 +87,19 @@ DEVICE_CONFIGS = {
         "Nhiệt độ (°C)": {"type": "number", "default": 35.0, "step": 0.1, "format": "%.1f"},
         "Flow (mL/min)": {"type": "number", "default": 30.0, "step": 1.0, "format": "%.0f"}
     },
+    "BT37 5": {
+            "Nhiệt độ (°C)": {"type": "number", "default": 35.0, "step": 0.1, "format": "%.1f"},
+            "Flow (mL/min)": {"type": "number", "default": 30.0, "step": 1.0, "format": "%.0f"}
+    },
+    "BT37 6": {
+            "Nhiệt độ (°C)": {"type": "number", "default": 35.0, "step": 0.1, "format": "%.1f"},
+            "Flow (mL/min)": {"type": "number", "default": 30.0, "step": 1.0, "format": "%.0f"}
+    },
     "Tủ ấm LAB": {
         "Cài đặt: Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"},
         "Thực tế: Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"}
     },
-    "Tủ ấm phòng TT": {
+    "Tủ ấm TT": {
         "Nhiệt độ (°C)": {"type": "number", "default": 37.0, "step": 0.1, "format": "%.1f"}
     },
     "Tủ ấm LS1": {
