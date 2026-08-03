@@ -5,7 +5,7 @@ import os
 import requests
 
 # 1. CẤU HÌNH GIAO DIỆN DI ĐỘNG
-st.set_page_config(page_title="Lab IVF CALIB", layout="centered", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="ĐO VÀ HIỆU CHUẨN THÔNG SỐ", layout="centered", initial_sidebar_state="collapsed")
 
 st.markdown("""
     <style>
@@ -14,7 +14,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("🔬 NHẬP LIỆU NỒNG ĐỘ KHÍ")
+st.title("🔬 ĐO VÀ HIỆU CHUẨN TỦ NUÔI")
 
 # --- CẤU HÌNH GOOGLE FORM (THAY ĐỔI THÔNG TIN CỦA BẠN TẠI ĐY) ---
 GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeWMkxWJa34E8kapIn5cikjlmKWHM2GUZg7YAHk4-ILZVI9Sw/formResponse"
@@ -48,9 +48,9 @@ tu_co2_va_o2_co_hc = ["Tủ A4", "Tủ A5"]  # Chỉ có tủ A4, A5 mới có h
 hang_muc_khac = ["Tủ BT37/ Geri", "Độ bụi", "VOCs"]
 tat_ca_hang_muc = tu_chi_co2 + tu_co2_va_o2_co_hc + hang_muc_khac
 
-st.subheader("📝 Form Nhập Thông Số")
+st.subheader("📝 Nhập Thông Số")
 ngay_do = st.date_input("🗓️ Ngày đo", datetime.now().date())
-hang_muc = st.selectbox("🎛️ Chọn tủ / Hạng mục đo", tat_ca_hang_muc)
+hang_muc = st.selectbox("🎛️ Chọn tủ / Thông số", tat_ca_hang_muc)
 
 st.markdown("---")
 
