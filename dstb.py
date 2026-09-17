@@ -6,7 +6,7 @@ st.set_page_config(layout="wide", page_title="Quản lý thiết bị phòng LAB
 
 # Đọc nội dung file HTML
 try:
-    with open(r"C:\Users\Admin\Desktop\index.html", "r", encoding="utf-8") as f:
+    with open(r"C:\Users\Admin\Desktop\index.html.html", "r", encoding="utf-8") as f:
         html_content = f.read()
     
     # Hiển thị giao diện HTML (tự động bật thanh cuộn nếu nội dung dài)
