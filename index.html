@@ -262,6 +262,14 @@ textarea.inp{min-height:62px;resize:vertical}
           <label for="f_model">Model</label>
           <input class="inp" id="f_model" placeholder="VD: XPR205">
         </div>
+        <div>
+          <label for="f_brand">Hãng sản xuất</label>
+          <input class="inp" id="f_brand" placeholder="VD: Mettler Toledo">
+        </div>
+        <div>
+          <label for="f_country">Nước sản xuất</label>
+          <input class="inp" id="f_country" placeholder="VD: Thụy Sĩ">
+        </div>
         <div class="full">
           <label for="f_usage">Trạng thái sử dụng *</label>
           <select class="inp" id="f_usage">
@@ -443,7 +451,7 @@ textarea.inp{min-height:62px;resize:vertical}
     var af = $("areaFilter").value;
     var s = $("sort").value;
     var list = devices.filter(function(d){
-      var hay = [d.name, d.area, d.sn, d.model, d.supplier, d.note, usageOf(d).text].join(" ").toLowerCase();
+      var hay = [d.name, d.area, d.sn, d.model, d.brand, d.country, d.supplier, d.note, usageOf(d).text].join(" ").toLowerCase();
       if(q && hay.indexOf(q) === -1) return false;
       if(f !== "all" && statusOf(d).key !== f) return false;
       if(uf !== "all" && (d.usage || "using") !== uf) return false;
@@ -544,6 +552,8 @@ textarea.inp{min-height:62px;resize:vertical}
     $("f_area").value = d ? (d.area || "") : "";
     $("f_sn").value = d ? (d.sn || "") : "";
     $("f_model").value = d ? (d.model || "") : "";
+    $("f_brand").value = d ? (d.brand || "") : "";
+    $("f_country").value = d ? (d.country || "") : "";
     $("f_supplier").value = d ? (d.supplier || "") : "";
     $("f_usage").value = d && d.usage ? d.usage : "using";
     $("f_install").value = d ? (d.install || "") : "";
@@ -570,6 +580,8 @@ textarea.inp{min-height:62px;resize:vertical}
       area: $("f_area").value,
       sn: $("f_sn").value.trim(),
       model: $("f_model").value.trim(),
+      brand: $("f_brand").value.trim(),
+      country: $("f_country").value.trim(),
       supplier: $("f_supplier").value.trim(),
       usage: $("f_usage").value,
       install: $("f_install").value,
@@ -618,6 +630,8 @@ textarea.inp{min-height:62px;resize:vertical}
       ["Khu vực đặt thiết bị", d.area],
       ["Mã S/N", d.sn],
       ["Model", d.model],
+      ["Hãng sản xuất", d.brand],
+      ["Nước sản xuất", d.country],
       ["Nhà cung cấp", d.supplier],
       ["Trạng thái sử dụng", usageOf(d).text],
       ["Ngày lắp đặt", fmt(d.install)],
