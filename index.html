@@ -299,6 +299,7 @@ textarea.inp{min-height:62px;resize:vertical}
       <input type="hidden" id="f_id">
       <div class="modal-foot">
         <button type="button" class="btn" id="btnCancel">Hủy</button>
+        <button type="button" class="btn" id="btnSaveNew">Thêm thiết bị mới</button>
         <button type="submit" class="btn primary">Lưu thiết bị</button>
       </div>
     </form>
@@ -562,10 +563,9 @@ textarea.inp{min-height:62px;resize:vertical}
   $("f_cal").addEventListener("change", autoNext);
   $("f_cycle").addEventListener("change", autoNext);
 
-  $("form").addEventListener("submit", function(e){
-    e.preventDefault();
-    var obj = {
-      id: editingId || uid(),
+  function buildObjFromForm(id){
+    return {
+      id: id,
       name: $("f_name").value.trim(),
       area: $("f_area").value,
       sn: $("f_sn").value.trim(),
@@ -579,8 +579,22 @@ textarea.inp{min-height:62px;resize:vertical}
       note: $("f_note").value.trim(),
       updatedAt: new Date().toISOString()
     };
+  }
+
+  $("form").addEventListener("submit", function(e){
+    e.preventDefault();
+    var obj = buildObjFromForm(editingId || uid());
     saveDevice(obj);
     closeModal();
+  });
+
+  $("btnSaveNew").addEventListener("click", function(){
+    if(!$("form").reportValidity()) return;
+    var obj = buildObjFromForm(uid());
+    saveDevice(obj);
+    editingId = null;
+    $("modalTitle").textContent = "Thêm thiết bị";
+    $("f_name").focus();
   });
 
   function doDelete(d){
