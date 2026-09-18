@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 :root{
   --bg:#f4f6f8;
@@ -151,6 +152,7 @@ textarea.inp{min-height:62px;resize:vertical}
       </div>
       <div class="actions">
         <button class="btn" id="btnTheme" title="Đổi giao diện sáng/tối">◐ Giao diện</button>
+        <button class="btn" id="btnExportExcel">📊 Xuất Excel</button>
         <button class="btn" id="btnPrintList">🖨 In danh sách</button>
         <button class="btn primary" id="btnAdd">+ Thêm thiết bị</button>
       </div>
@@ -613,6 +615,46 @@ textarea.inp{min-height:62px;resize:vertical}
     if(confirm('Xóa thiết bị "' + d.name + '" (S/N: ' + (d.sn || "—") + ')?\nThao tác này không thể hoàn tác.')) removeDevice(d.id);
   }
 
+  /* ---------- xuất excel ---------- */
+  var AREA_ORDER = AREAS.concat([""]);
+  function exportExcel(){
+    var list = devices.slice().sort(function(a, b){
+      var ai = AREA_ORDER.indexOf(a.area || "");
+      var bi = AREA_ORDER.indexOf(b.area || "");
+      if(ai !== bi) return ai - bi;
+      return (a.name || "").localeCompare(b.name || "", "vi");
+    });
+    var header = [
+      "TT", "Khu vực", "Tên thiết bị", "Mã S/N", "Model", "Hãng sản xuất", "Nước sản xuất",
+      "Nhà cung cấp", "Ngày lắp đặt", "Ngày hiệu chuẩn gần nhất", "Hiệu chuẩn kế tiếp",
+      "Trạng thái hiệu chuẩn", "Trạng thái sử dụng", "Ghi chú"
+    ];
+    var rows = list.map(function(d, i){
+      return [
+        i + 1,
+        d.area || "",
+        d.name || "",
+        d.sn || "",
+        d.model || "",
+        d.brand || "",
+        d.country || "",
+        d.supplier || "",
+        fmt(d.install),
+        fmt(d.cal),
+        fmt(d.nextCal),
+        statusOf(d).text,
+        usageOf(d).text,
+        d.note || ""
+      ];
+    });
+    var ws = XLSX.utils.aoa_to_sheet([header].concat(rows));
+    ws["!cols"] = header.map(function(h){ return { wch: Math.max(12, h.length + 2) }; });
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Danh sách thiết bị");
+    var fname = "Danh_sach_thiet_bi_LAB_" + today().split("/").join("-") + ".xlsx";
+    XLSX.writeFile(wb, fname);
+  }
+
   /* ---------- in ấn ---------- */
   function today(){
     var n = new Date();
@@ -666,6 +708,7 @@ textarea.inp{min-height:62px;resize:vertical}
   $("btnAdd").addEventListener("click", function(){ openModal(null); });
   $("btnCancel").addEventListener("click", closeModal);
   $("btnPrintList").addEventListener("click", printList);
+  $("btnExportExcel").addEventListener("click", exportExcel);
   $("overlay").addEventListener("click", function(e){ if(e.target === $("overlay")) closeModal(); });
   document.addEventListener("keydown", function(e){ if(e.key === "Escape") closeModal(); });
   ["q","filter","useFilter","areaFilter","sort"].forEach(function(id){ $(id).addEventListener("input", render); });
