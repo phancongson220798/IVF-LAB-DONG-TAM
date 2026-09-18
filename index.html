@@ -74,11 +74,18 @@ button,select,input,textarea{font-family:inherit;font-size:14px;color:var(--text
 select{padding:10px 12px;border:1px solid var(--border-strong);border-radius:9px;background:var(--surface)}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:960px;table-layout:fixed}
-th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);font-weight:600;padding:12px 12px;border-bottom:1px solid var(--border);background:var(--surface-2);white-space:nowrap;position:relative;overflow:hidden}
-td{padding:11px 12px;border-bottom:1px solid var(--border);vertical-align:middle;word-break:break-word}
-.col-resizer{position:absolute;top:0;right:-3px;width:6px;height:100%;cursor:col-resize;z-index:2;touch-action:none}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--text-dim);font-weight:600;padding:10px 8px;border-bottom:1px solid var(--border);background:var(--surface-2);white-space:normal;word-break:break-word;position:relative;vertical-align:bottom;line-height:1.3}
+td{padding:11px 8px;border-bottom:1px solid var(--border);vertical-align:middle;word-break:break-word}
+.col-resizer{position:absolute;top:0;right:-4px;width:8px;height:100%;cursor:col-resize;z-index:2;touch-action:none}
 .col-resizer:hover,.col-resizer.active{background:var(--accent)}
+.colpick-wrap{position:relative}
+.colpick-panel{display:none;position:absolute;right:0;top:calc(100% + 6px);background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);padding:10px;z-index:20;min-width:220px;max-height:320px;overflow-y:auto}
+.colpick-panel.open{display:block}
+.colpick-panel label{display:flex;align-items:center;gap:8px;padding:5px 4px;font-size:13px;cursor:pointer;border-radius:6px}
+.colpick-panel label:hover{background:var(--surface-2)}
+.colpick-panel label.disabled{opacity:.55;cursor:not-allowed}
+.colpick-panel input{margin:0}
 tbody tr:last-child td{border-bottom:none}
 tbody tr:hover{background:var(--surface-2)}
 .dev-name{font-weight:600}
@@ -122,14 +129,16 @@ textarea.inp{min-height:62px;resize:vertical}
 .sign{display:flex;justify-content:space-between;margin-top:46px;font-size:13px;text-align:center}
 .sign div{width:45%}
 @media print{
-  @page{size:A4;margin:14mm}
+  @page{size:A4;margin:12mm}
   body{background:#fff;color:#000;font-size:12px}
   .wrap{max-width:none;padding:0}
   .no-print{display:none!important}
   .card{box-shadow:none;border:none;overflow:visible}
-  table{min-width:0}
-  th,td{padding:6px 7px;border-bottom:1px solid #bbb;background:#fff!important;color:#000!important}
-  th{background:#eee!important;font-size:10px}
+  table{min-width:0;table-layout:auto!important;width:100%!important}
+  th,td{padding:5px 6px;border:1px solid #999;background:#fff!important;color:#000!important;width:auto!important;white-space:normal!important;word-break:break-word}
+  th{background:#eee!important;font-size:9.5px}
+  td{font-size:10.5px}
+  tbody tr:last-child td{border-bottom:1px solid #999}
   .badge{border:1px solid #666;background:#fff!important;color:#000!important}
   .led{-webkit-print-color-adjust:exact;print-color-adjust:exact;box-shadow:none}
   .use{color:#000!important}
@@ -137,8 +146,10 @@ textarea.inp{min-height:62px;resize:vertical}
   body[data-print="one"] .app-main{display:none!important}
   body[data-print="one"] #printSingle{display:block}
   body[data-print="list"] #printSingle{display:none}
+  body[data-print="list"] .app-main{page:list-landscape}
   .print-head{display:block!important}
 }
+@page list-landscape{size:A4 landscape;margin:10mm}
 .print-head{display:none;margin-bottom:10px}
 .print-head h2{margin:0 0 2px;font-size:16px}
 .print-head p{margin:0;font-size:11px;color:#444}
@@ -200,6 +211,10 @@ textarea.inp{min-height:62px;resize:vertical}
         <option value="name">Sắp xếp: tên thiết bị (A→Z)</option>
         <option value="install">Sắp xếp: ngày lắp đặt mới nhất</option>
       </select>
+      <div class="colpick-wrap">
+        <button class="btn" id="btnColPick" type="button">☰ Cột hiển thị</button>
+        <div class="colpick-panel" id="colpickPanel"></div>
+      </div>
     </div>
 
     <div class="print-head">
@@ -210,20 +225,7 @@ textarea.inp{min-height:62px;resize:vertical}
     <div class="card">
       <table>
         <thead>
-          <tr>
-            <th style="width:44px">TT<span class="col-resizer"></span></th>
-            <th style="width:170px">Tên thiết bị<span class="col-resizer"></span></th>
-            <th style="width:130px">Khu vực<span class="col-resizer"></span></th>
-            <th style="width:110px">Mã S/N<span class="col-resizer"></span></th>
-            <th style="width:100px">Model<span class="col-resizer"></span></th>
-            <th style="width:150px">Nhà cung cấp<span class="col-resizer"></span></th>
-            <th style="width:100px">Ngày lắp đặt<span class="col-resizer"></span></th>
-            <th style="width:110px">Ngày hiệu chuẩn<span class="col-resizer"></span></th>
-            <th style="width:110px">Hiệu chuẩn kế tiếp<span class="col-resizer"></span></th>
-            <th style="width:120px">Trạng thái sử dụng<span class="col-resizer"></span></th>
-            <th style="width:120px">Hiệu chuẩn<span class="col-resizer"></span></th>
-            <th class="no-print" style="width:90px"></th>
-          </tr>
+          <tr id="theadRow"></tr>
         </thead>
         <tbody id="tbody"></tbody>
       </table>
@@ -418,8 +420,8 @@ textarea.inp{min-height:62px;resize:vertical}
   function statusOf(dev){
     var n = daysLeft(dev.nextCal);
     if(n === null) return { key:"none", cls:"none", text:"Chưa có lịch" };
-    if(n < 0) return { key:"due", cls:"dang", text:"Quá hạn " + Math.abs(n) + " ngày" };
-    if(n <= 30) return { key:"warn", cls:"warn", text:"Còn " + n + " ngày" };
+    if(n < 0) return { key:"due", cls:"dang", text:"Quá hạn" };
+    if(n <= 30) return { key:"warn", cls:"warn", text:"Sắp đến hạn" };
     return { key:"ok", cls:"ok", text:"Còn hiệu lực" };
   }
   var USAGE = {
@@ -474,27 +476,128 @@ textarea.inp{min-height:62px;resize:vertical}
 
   var AREAS = ["Lab", "Phòng Tinh Trùng", "Phòng Trữ Phôi", "Phòng Thủ Thuật", "Phòng Xét Nghiệm TDĐ"];
 
-  function renderRow(tb, d, idx){
-    var st = statusOf(d);
-    var us = usageOf(d);
+  /* ---------- định nghĩa cột & chọn cột hiển thị ---------- */
+  var COLUMNS = [
+    { key: "tt", label: "TT", always: true, weight: 4 },
+    { key: "name", label: "Tên thiết bị", always: true, weight: 16 },
+    { key: "area", label: "Khu vực", weight: 10 },
+    { key: "sn", label: "Mã S/N", weight: 9 },
+    { key: "model", label: "Model", weight: 8 },
+    { key: "brand", label: "Hãng sản xuất", weight: 8 },
+    { key: "country", label: "Nước sản xuất", weight: 8 },
+    { key: "supplier", label: "Nhà cung cấp", weight: 11 },
+    { key: "install", label: "Ngày lắp đặt", weight: 8 },
+    { key: "cal", label: "Ngày hiệu chuẩn", weight: 8 },
+    { key: "nextCal", label: "Hiệu chuẩn kế tiếp", weight: 9 },
+    { key: "usage", label: "Trạng thái sử dụng", weight: 9 },
+    { key: "status", label: "Hiệu chuẩn", weight: 8 }
+  ];
+  var COL_VISIBLE_KEY = "lab_col_visible_v1";
+  var COL_WEIGHT_KEY = "lab_col_weights_v1";
+  var DEFAULT_HIDDEN = { brand: true, country: true };
+
+  function loadColVisible(){
+    try{
+      var raw = localStorage.getItem(COL_VISIBLE_KEY);
+      var saved = raw ? JSON.parse(raw) : {};
+      var out = {};
+      COLUMNS.forEach(function(c){
+        if(c.always) return;
+        out[c.key] = Object.prototype.hasOwnProperty.call(saved, c.key) ? !!saved[c.key] : !DEFAULT_HIDDEN[c.key];
+      });
+      return out;
+    }catch(e){ return {}; }
+  }
+  var colVisible = loadColVisible();
+  function saveColVisible(){
+    try{ localStorage.setItem(COL_VISIBLE_KEY, JSON.stringify(colVisible)); }catch(e){}
+  }
+  function getVisibleColumns(){
+    return COLUMNS.filter(function(c){ return c.always || colVisible[c.key]; });
+  }
+
+  function loadColWeights(){
+    try{
+      var raw = localStorage.getItem(COL_WEIGHT_KEY);
+      return raw ? JSON.parse(raw) : {};
+    }catch(e){ return {}; }
+  }
+  var colWeights = loadColWeights();
+  function saveColWeights(){
+    try{ localStorage.setItem(COL_WEIGHT_KEY, JSON.stringify(colWeights)); }catch(e){}
+  }
+  function weightOf(key){
+    var def = COLUMNS.filter(function(c){ return c.key === key; })[0];
+    return colWeights[key] || (def ? def.weight : 8);
+  }
+  function computeColWidths(cols){
+    var sum = cols.reduce(function(s, c){ return s + weightOf(c.key); }, 0);
+    return cols.map(function(c){ return { key: c.key, pct: (weightOf(c.key) / sum) * 100 }; });
+  }
+
+  function renderColpickPanel(){
+    var panel = $("colpickPanel");
+    panel.innerHTML = COLUMNS.map(function(c){
+      if(c.always){
+        return '<label class="disabled"><input type="checkbox" checked disabled>' + esc(c.label) + '</label>';
+      }
+      return '<label><input type="checkbox" data-colkey="' + c.key + '" ' + (colVisible[c.key] ? "checked" : "") + '>' + esc(c.label) + '</label>';
+    }).join("");
+    panel.querySelectorAll("input[data-colkey]").forEach(function(cb){
+      cb.addEventListener("change", function(){
+        colVisible[cb.getAttribute("data-colkey")] = cb.checked;
+        saveColVisible();
+        renderHead();
+        render();
+      });
+    });
+  }
+
+  function renderHead(){
+    var cols = getVisibleColumns();
+    var widths = computeColWidths(cols);
+    var html = cols.map(function(c, i){
+      var w = widths[i].pct.toFixed(2);
+      return '<th data-key="' + c.key + '" style="width:' + w + '%">' + esc(c.label) +
+        (i < cols.length - 1 ? '<span class="col-resizer" data-key="' + c.key + '"></span>' : '') + '</th>';
+    }).join("") + '<th class="no-print" style="width:78px"></th>';
+    $("theadRow").innerHTML = html;
+    initColumnResize();
+  }
+
+  function cellHTML(col, d){
+    switch(col.key){
+      case "tt": return '<td class="mono" data-tt></td>';
+      case "name": return '<td class="dev-name">' + esc(d.name) + (d.note ? '<div class="sub" style="font-weight:400;font-size:12px">' + esc(d.note) + '</div>' : '') + '</td>';
+      case "area": return '<td>' + esc(d.area || "—") + '</td>';
+      case "sn": return '<td class="mono">' + esc(d.sn || "—") + '</td>';
+      case "model": return '<td>' + esc(d.model || "—") + '</td>';
+      case "brand": return '<td>' + esc(d.brand || "—") + '</td>';
+      case "country": return '<td>' + esc(d.country || "—") + '</td>';
+      case "supplier": return '<td>' + esc(d.supplier || "—") + '</td>';
+      case "install": return '<td class="mono">' + fmt(d.install) + '</td>';
+      case "cal": return '<td class="mono">' + fmt(d.cal) + '</td>';
+      case "nextCal": return '<td class="mono">' + fmt(d.nextCal) + '</td>';
+      case "usage":
+        var us = usageOf(d);
+        return '<td><span class="use"><span class="led ' + us.led + '"></span>' + us.text + '</span></td>';
+      case "status":
+        var st = statusOf(d);
+        return '<td><span class="badge ' + st.cls + '">' + st.text + '</span></td>';
+      default: return '<td>—</td>';
+    }
+  }
+
+  function renderRow(tb, d, idx, cols){
     var tr = document.createElement("tr");
-    tr.innerHTML =
-      '<td class="mono">' + idx + '</td>' +
-      '<td class="dev-name">' + esc(d.name) + (d.note ? '<div class="sub" style="font-weight:400;font-size:12px">' + esc(d.note) + '</div>' : '') + '</td>' +
-      '<td>' + esc(d.area || "—") + '</td>' +
-      '<td class="mono">' + esc(d.sn || "—") + '</td>' +
-      '<td>' + esc(d.model || "—") + '</td>' +
-      '<td>' + esc(d.supplier || "—") + '</td>' +
-      '<td class="mono">' + fmt(d.install) + '</td>' +
-      '<td class="mono">' + fmt(d.cal) + '</td>' +
-      '<td class="mono">' + fmt(d.nextCal) + '</td>' +
-      '<td><span class="use"><span class="led ' + us.led + '"></span>' + us.text + '</span></td>' +
-      '<td><span class="badge ' + st.cls + '">' + st.text + '</span></td>' +
+    tr.innerHTML = cols.map(function(c){ return cellHTML(c, d); }).join("") +
       '<td class="no-print"><div class="row-actions">' +
         '<button class="btn ghost" data-act="print" title="In phiếu thiết bị">🖨</button>' +
         '<button class="btn ghost" data-act="edit" title="Sửa">✎</button>' +
         '<button class="btn ghost danger" data-act="del" title="Xóa">🗑</button>' +
       '</div></td>';
+    var ttCell = tr.querySelector("[data-tt]");
+    if(ttCell) ttCell.textContent = idx;
     tr.querySelectorAll("button").forEach(function(b){
       b.addEventListener("click", function(){
         var act = b.getAttribute("data-act");
@@ -506,9 +609,9 @@ textarea.inp{min-height:62px;resize:vertical}
     tb.appendChild(tr);
   }
 
-  function renderGroupHeader(tb, label, count){
+  function renderGroupHeader(tb, label, count, colCount){
     var tr = document.createElement("tr");
-    tr.innerHTML = '<td colspan="12" style="background:var(--surface-2);font-weight:700;padding:10px 12px;border-bottom:1px solid var(--border)">' +
+    tr.innerHTML = '<td colspan="' + (colCount + 1) + '" style="background:var(--surface-2);font-weight:700;padding:10px 12px;border-bottom:1px solid var(--border)">' +
       esc(label) + ' <span style="font-weight:400;color:var(--text-dim);font-size:12px">(' + count + ')</span></td>';
     tb.appendChild(tr);
   }
@@ -519,17 +622,18 @@ textarea.inp{min-height:62px;resize:vertical}
     tb.innerHTML = "";
     var af = $("areaFilter").value;
     var count = 0;
+    var cols = getVisibleColumns();
 
     if(af === "all"){
       var groups = AREAS.concat([""]);
       groups.forEach(function(area){
         var groupList = list.filter(function(d){ return (d.area || "") === area; });
         if(!groupList.length) return;
-        renderGroupHeader(tb, area || "Chưa phân loại khu vực", groupList.length);
-        groupList.forEach(function(d){ count++; renderRow(tb, d, count); });
+        renderGroupHeader(tb, area || "Chưa phân loại khu vực", groupList.length, cols.length);
+        groupList.forEach(function(d){ count++; renderRow(tb, d, count, cols); });
       });
     }else{
-      list.forEach(function(d){ count++; renderRow(tb, d, count); });
+      list.forEach(function(d){ count++; renderRow(tb, d, count, cols); });
     }
     $("empty").style.display = count ? "none" : "block";
     var ok = 0, warn = 0, due = 0, using = 0, idle = 0, broken = 0;
@@ -725,71 +829,86 @@ textarea.inp{min-height:62px;resize:vertical}
     if(t) document.documentElement.setAttribute("data-theme", t);
   }catch(e){}
 
-  /* ---------- kéo co giãn cột ---------- */
-  var COL_WIDTH_KEY = "lab_col_widths_v1";
-  function loadColWidths(){
-    try{
-      var raw = localStorage.getItem(COL_WIDTH_KEY);
-      return raw ? JSON.parse(raw) : {};
-    }catch(e){ return {}; }
-  }
-  function saveColWidths(ths){
-    try{
-      var map = {};
-      ths.forEach(function(th, i){ map[i] = th.style.width || th.offsetWidth + "px"; });
-      localStorage.setItem(COL_WIDTH_KEY, JSON.stringify(map));
-    }catch(e){}
-  }
+  /* ---------- kéo co giãn cột (theo %, không tràn khung) ---------- */
   function initColumnResize(){
-    var ths = document.querySelectorAll(".card table thead th");
-    var saved = loadColWidths();
-    ths.forEach(function(th, i){
-      if(saved[i]) th.style.width = saved[i];
-      var handle = th.querySelector(".col-resizer");
-      if(!handle) return;
+    var table = document.querySelector(".card table");
+    if(!table) return;
+    var handles = table.querySelectorAll("thead .col-resizer");
+    handles.forEach(function(handle){
       handle.addEventListener("mousedown", function(e){
         e.preventDefault();
-        var startX = e.pageX;
-        var startWidth = th.offsetWidth;
-        handle.classList.add("active");
-        document.body.style.cursor = "col-resize";
-        document.body.style.userSelect = "none";
-        function onMove(ev){
-          var w = Math.max(44, startWidth + (ev.pageX - startX));
-          th.style.width = w + "px";
-        }
-        function onUp(){
-          handle.classList.remove("active");
-          document.body.style.cursor = "";
-          document.body.style.userSelect = "";
-          document.removeEventListener("mousemove", onMove);
-          document.removeEventListener("mouseup", onUp);
-          saveColWidths(ths);
-        }
-        document.addEventListener("mousemove", onMove);
-        document.addEventListener("mouseup", onUp);
+        startResize(e.pageX, handle);
       });
       handle.addEventListener("touchstart", function(e){
-        var touch = e.touches[0];
-        var startX = touch.pageX;
-        var startWidth = th.offsetWidth;
-        function onMove(ev){
-          var t = ev.touches[0];
-          var w = Math.max(44, startWidth + (t.pageX - startX));
-          th.style.width = w + "px";
-        }
-        function onEnd(){
-          document.removeEventListener("touchmove", onMove);
-          document.removeEventListener("touchend", onEnd);
-          saveColWidths(ths);
-        }
-        document.addEventListener("touchmove", onMove);
-        document.addEventListener("touchend", onEnd);
+        startResize(e.touches[0].pageX, handle);
       }, { passive: true });
     });
+
+    function startResize(startX, handle){
+      var th = handle.closest("th");
+      var next = th.nextElementSibling;
+      if(!next) return;
+      var key = handle.getAttribute("data-key");
+      var nextKey = next.getAttribute("data-key");
+      if(!nextKey) return;
+      var tableWidth = table.getBoundingClientRect().width;
+      var startPct = weightPctPair(key, nextKey);
+      handle.classList.add("active");
+      document.body.style.cursor = "col-resize";
+      document.body.style.userSelect = "none";
+
+      function apply(clientX){
+        var dxPct = ((clientX - startX) / tableWidth) * 100;
+        var min = 4;
+        var a = Math.min(Math.max(startPct.a + dxPct, min), startPct.a + startPct.b - min);
+        var b = startPct.a + startPct.b - a;
+        th.style.width = a.toFixed(2) + "%";
+        next.style.width = b.toFixed(2) + "%";
+        setWeightFromPct(key, a);
+        setWeightFromPct(nextKey, b);
+      }
+      function onMove(ev){ apply(ev.pageX); }
+      function onTouchMove(ev){ apply(ev.touches[0].pageX); }
+      function onUp(){
+        handle.classList.remove("active");
+        document.body.style.cursor = "";
+        document.body.style.userSelect = "";
+        document.removeEventListener("mousemove", onMove);
+        document.removeEventListener("mouseup", onUp);
+        document.removeEventListener("touchmove", onTouchMove);
+        document.removeEventListener("touchend", onUp);
+        saveColWeights();
+      }
+      document.addEventListener("mousemove", onMove);
+      document.addEventListener("mouseup", onUp);
+      document.addEventListener("touchmove", onTouchMove, { passive: true });
+      document.addEventListener("touchend", onUp);
+    }
+
+    function weightPctPair(keyA, keyB){
+      var cols = getVisibleColumns();
+      var widths = computeColWidths(cols);
+      var a = widths.filter(function(w){ return w.key === keyA; })[0];
+      var b = widths.filter(function(w){ return w.key === keyB; })[0];
+      return { a: a ? a.pct : 10, b: b ? b.pct : 10 };
+    }
+    function setWeightFromPct(key, pct){
+      var cols = getVisibleColumns();
+      var sumOthers = cols.reduce(function(s, c){ return c.key === key ? s : s + weightOf(c.key); }, 0);
+      var newWeight = sumOthers > 0 ? (pct / (100 - pct)) * sumOthers : pct;
+      colWeights[key] = Math.max(2, newWeight);
+    }
   }
 
-  initColumnResize();
+  $("btnColPick").addEventListener("click", function(){
+    $("colpickPanel").classList.toggle("open");
+  });
+  document.addEventListener("click", function(e){
+    var wrap = document.querySelector(".colpick-wrap");
+    if(wrap && !wrap.contains(e.target)) $("colpickPanel").classList.remove("open");
+  });
+  renderColpickPanel();
+  renderHead();
   initStore();
 })();
 </script>
