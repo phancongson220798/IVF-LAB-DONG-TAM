@@ -118,7 +118,6 @@ textarea.inp{min-height:62px;resize:vertical}
 .sheet td.k{width:38%;font-weight:600;background:#f2f2f2}
 .sign{display:flex;justify-content:space-between;margin-top:46px;font-size:13px;text-align:center}
 .sign div{width:45%}
-.sign .line{margin-top:62px;border-top:1px dotted #555;padding-top:4px;font-size:11px;color:#444}
 @media print{
   @page{size:A4;margin:14mm}
   body{background:#fff;color:#000;font-size:12px}
@@ -172,6 +171,14 @@ textarea.inp{min-height:62px;resize:vertical}
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
         <input id="q" type="search" placeholder="Tìm theo tên, S/N, model, nhà cung cấp...">
       </div>
+      <select id="areaFilter">
+        <option value="all">Tất cả khu vực</option>
+        <option value="Lab">Lab</option>
+        <option value="Phòng Tinh Trùng">Phòng Tinh Trùng</option>
+        <option value="Phòng Trữ Phôi">Phòng Trữ Phôi</option>
+        <option value="Phòng Thủ Thuật">Phòng Thủ Thuật</option>
+        <option value="Phòng Xét Nghiệm TDĐ">Phòng Xét Nghiệm TDĐ</option>
+      </select>
       <select id="useFilter">
         <option value="all">Tất cả tình trạng sử dụng</option>
         <option value="using">🟢 Đang sử dụng</option>
@@ -202,6 +209,7 @@ textarea.inp{min-height:62px;resize:vertical}
           <tr>
             <th style="width:34px">TT</th>
             <th>Tên thiết bị</th>
+            <th>Khu vực</th>
             <th>Mã S/N</th>
             <th>Model</th>
             <th>Nhà cung cấp</th>
@@ -234,6 +242,17 @@ textarea.inp{min-height:62px;resize:vertical}
         <div class="full">
           <label for="f_name">Tên thiết bị *</label>
           <input class="inp" id="f_name" required placeholder="VD: Cân phân tích điện tử">
+        </div>
+        <div class="full">
+          <label for="f_area">Khu vực đặt thiết bị *</label>
+          <select class="inp" id="f_area" required>
+            <option value="">— Chọn khu vực —</option>
+            <option value="Lab">Lab</option>
+            <option value="Phòng Tinh Trùng">Phòng Tinh Trùng</option>
+            <option value="Phòng Trữ Phôi">Phòng Trữ Phôi</option>
+            <option value="Phòng Thủ Thuật">Phòng Thủ Thuật</option>
+            <option value="Phòng Xét Nghiệm TDĐ">Phòng Xét Nghiệm TDĐ</option>
+          </select>
         </div>
         <div>
           <label for="f_sn">Mã S/N *</label>
@@ -420,15 +439,18 @@ textarea.inp{min-height:62px;resize:vertical}
     var q = $("q").value.trim().toLowerCase();
     var f = $("filter").value;
     var uf = $("useFilter").value;
+    var af = $("areaFilter").value;
     var s = $("sort").value;
     var list = devices.filter(function(d){
-      var hay = [d.name, d.sn, d.model, d.supplier, d.note, usageOf(d).text].join(" ").toLowerCase();
+      var hay = [d.name, d.area, d.sn, d.model, d.supplier, d.note, usageOf(d).text].join(" ").toLowerCase();
       if(q && hay.indexOf(q) === -1) return false;
       if(f !== "all" && statusOf(d).key !== f) return false;
       if(uf !== "all" && (d.usage || "using") !== uf) return false;
+      if(af !== "all" && (d.area || "") !== af) return false;
       return true;
     });
     list.sort(function(a, b){
+      if(af === "all") return (a.name || "").localeCompare(b.name || "", "vi");
       if(s === "name") return (a.name || "").localeCompare(b.name || "", "vi");
       if(s === "install") return (b.install || "").localeCompare(a.install || "");
       var av = a.nextCal || "9999-12-31", bv = b.nextCal || "9999-12-31";
@@ -437,41 +459,66 @@ textarea.inp{min-height:62px;resize:vertical}
     return list;
   }
 
+  var AREAS = ["Lab", "Phòng Tinh Trùng", "Phòng Trữ Phôi", "Phòng Thủ Thuật", "Phòng Xét Nghiệm TDĐ"];
+
+  function renderRow(tb, d, idx){
+    var st = statusOf(d);
+    var us = usageOf(d);
+    var tr = document.createElement("tr");
+    tr.innerHTML =
+      '<td class="mono">' + idx + '</td>' +
+      '<td class="dev-name">' + esc(d.name) + (d.note ? '<div class="sub" style="font-weight:400;font-size:12px">' + esc(d.note) + '</div>' : '') + '</td>' +
+      '<td>' + esc(d.area || "—") + '</td>' +
+      '<td class="mono">' + esc(d.sn || "—") + '</td>' +
+      '<td>' + esc(d.model || "—") + '</td>' +
+      '<td>' + esc(d.supplier || "—") + '</td>' +
+      '<td class="mono">' + fmt(d.install) + '</td>' +
+      '<td class="mono">' + fmt(d.cal) + '</td>' +
+      '<td class="mono">' + fmt(d.nextCal) + '</td>' +
+      '<td><span class="use"><span class="led ' + us.led + '"></span>' + us.text + '</span></td>' +
+      '<td><span class="badge ' + st.cls + '">' + st.text + '</span></td>' +
+      '<td class="no-print"><div class="row-actions">' +
+        '<button class="btn ghost" data-act="print" title="In phiếu thiết bị">🖨</button>' +
+        '<button class="btn ghost" data-act="edit" title="Sửa">✎</button>' +
+        '<button class="btn ghost danger" data-act="del" title="Xóa">🗑</button>' +
+      '</div></td>';
+    tr.querySelectorAll("button").forEach(function(b){
+      b.addEventListener("click", function(){
+        var act = b.getAttribute("data-act");
+        if(act === "edit") openModal(d);
+        else if(act === "del") doDelete(d);
+        else printOne(d);
+      });
+    });
+    tb.appendChild(tr);
+  }
+
+  function renderGroupHeader(tb, label, count){
+    var tr = document.createElement("tr");
+    tr.innerHTML = '<td colspan="12" style="background:var(--surface-2);font-weight:700;padding:10px 12px;border-bottom:1px solid var(--border)">' +
+      esc(label) + ' <span style="font-weight:400;color:var(--text-dim);font-size:12px">(' + count + ')</span></td>';
+    tb.appendChild(tr);
+  }
+
   function render(){
     var list = visible();
     var tb = $("tbody");
     tb.innerHTML = "";
-    list.forEach(function(d, i){
-      var st = statusOf(d);
-      var us = usageOf(d);
-      var tr = document.createElement("tr");
-      tr.innerHTML =
-        '<td class="mono">' + (i + 1) + '</td>' +
-        '<td class="dev-name">' + esc(d.name) + (d.note ? '<div class="sub" style="font-weight:400;font-size:12px">' + esc(d.note) + '</div>' : '') + '</td>' +
-        '<td class="mono">' + esc(d.sn || "—") + '</td>' +
-        '<td>' + esc(d.model || "—") + '</td>' +
-        '<td>' + esc(d.supplier || "—") + '</td>' +
-        '<td class="mono">' + fmt(d.install) + '</td>' +
-        '<td class="mono">' + fmt(d.cal) + '</td>' +
-        '<td class="mono">' + fmt(d.nextCal) + '</td>' +
-        '<td><span class="use"><span class="led ' + us.led + '"></span>' + us.text + '</span></td>' +
-        '<td><span class="badge ' + st.cls + '">' + st.text + '</span></td>' +
-        '<td class="no-print"><div class="row-actions">' +
-          '<button class="btn ghost" data-act="print" title="In phiếu thiết bị">🖨</button>' +
-          '<button class="btn ghost" data-act="edit" title="Sửa">✎</button>' +
-          '<button class="btn ghost danger" data-act="del" title="Xóa">🗑</button>' +
-        '</div></td>';
-      tr.querySelectorAll("button").forEach(function(b){
-        b.addEventListener("click", function(){
-          var act = b.getAttribute("data-act");
-          if(act === "edit") openModal(d);
-          else if(act === "del") doDelete(d);
-          else printOne(d);
-        });
+    var af = $("areaFilter").value;
+    var count = 0;
+
+    if(af === "all"){
+      var groups = AREAS.concat([""]);
+      groups.forEach(function(area){
+        var groupList = list.filter(function(d){ return (d.area || "") === area; });
+        if(!groupList.length) return;
+        renderGroupHeader(tb, area || "Chưa phân loại khu vực", groupList.length);
+        groupList.forEach(function(d){ count++; renderRow(tb, d, count); });
       });
-      tb.appendChild(tr);
-    });
-    $("empty").style.display = list.length ? "none" : "block";
+    }else{
+      list.forEach(function(d){ count++; renderRow(tb, d, count); });
+    }
+    $("empty").style.display = count ? "none" : "block";
     var ok = 0, warn = 0, due = 0, using = 0, idle = 0, broken = 0;
     devices.forEach(function(d){
       var k = statusOf(d).key;
@@ -493,6 +540,7 @@ textarea.inp{min-height:62px;resize:vertical}
     editingId = d ? d.id : null;
     $("modalTitle").textContent = d ? "Sửa thông tin thiết bị" : "Thêm thiết bị";
     $("f_name").value = d ? (d.name || "") : "";
+    $("f_area").value = d ? (d.area || "") : "";
     $("f_sn").value = d ? (d.sn || "") : "";
     $("f_model").value = d ? (d.model || "") : "";
     $("f_supplier").value = d ? (d.supplier || "") : "";
@@ -519,6 +567,7 @@ textarea.inp{min-height:62px;resize:vertical}
     var obj = {
       id: editingId || uid(),
       name: $("f_name").value.trim(),
+      area: $("f_area").value,
       sn: $("f_sn").value.trim(),
       model: $("f_model").value.trim(),
       supplier: $("f_supplier").value.trim(),
@@ -552,6 +601,7 @@ textarea.inp{min-height:62px;resize:vertical}
     var st = statusOf(d);
     var rows = [
       ["Tên thiết bị", d.name],
+      ["Khu vực đặt thiết bị", d.area],
       ["Mã S/N", d.sn],
       ["Model", d.model],
       ["Nhà cung cấp", d.supplier],
@@ -574,8 +624,8 @@ textarea.inp{min-height:62px;resize:vertical}
           }).join("") +
         '</tbody></table>' +
         '<div class="sign">' +
-          '<div>Người lập phiếu<div class="line">(Ký, ghi rõ họ tên)</div></div>' +
-          '<div>Phụ trách phòng LAB<div class="line">(Ký, ghi rõ họ tên)</div></div>' +
+          '<div>Người lập phiếu</div>' +
+          '<div>Phụ trách phòng LAB</div>' +
         '</div>' +
       '</div>';
     $("printSingle").innerHTML = html;
@@ -590,7 +640,7 @@ textarea.inp{min-height:62px;resize:vertical}
   $("btnPrintList").addEventListener("click", printList);
   $("overlay").addEventListener("click", function(e){ if(e.target === $("overlay")) closeModal(); });
   document.addEventListener("keydown", function(e){ if(e.key === "Escape") closeModal(); });
-  ["q","filter","useFilter","sort"].forEach(function(id){ $(id).addEventListener("input", render); });
+  ["q","filter","useFilter","areaFilter","sort"].forEach(function(id){ $(id).addEventListener("input", render); });
   $("btnTheme").addEventListener("click", function(){
     var cur = document.documentElement.getAttribute("data-theme");
     var next = cur === "dark" ? "light" : (cur === "light" ? "dark" : "light");
