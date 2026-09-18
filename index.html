@@ -74,9 +74,11 @@ button,select,input,textarea{font-family:inherit;font-size:14px;color:var(--text
 select{padding:10px 12px;border:1px solid var(--border-strong);border-radius:9px;background:var(--surface)}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:960px}
-th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);font-weight:600;padding:12px 12px;border-bottom:1px solid var(--border);background:var(--surface-2);white-space:nowrap}
-td{padding:11px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+table{width:100%;border-collapse:collapse;min-width:960px;table-layout:fixed}
+th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);font-weight:600;padding:12px 12px;border-bottom:1px solid var(--border);background:var(--surface-2);white-space:nowrap;position:relative;overflow:hidden}
+td{padding:11px 12px;border-bottom:1px solid var(--border);vertical-align:middle;word-break:break-word}
+.col-resizer{position:absolute;top:0;right:-3px;width:6px;height:100%;cursor:col-resize;z-index:2;touch-action:none}
+.col-resizer:hover,.col-resizer.active{background:var(--accent)}
 tbody tr:last-child td{border-bottom:none}
 tbody tr:hover{background:var(--surface-2)}
 .dev-name{font-weight:600}
@@ -209,18 +211,18 @@ textarea.inp{min-height:62px;resize:vertical}
       <table>
         <thead>
           <tr>
-            <th style="width:34px">TT</th>
-            <th>Tên thiết bị</th>
-            <th>Khu vực</th>
-            <th>Mã S/N</th>
-            <th>Model</th>
-            <th>Nhà cung cấp</th>
-            <th>Ngày lắp đặt</th>
-            <th>Ngày hiệu chuẩn</th>
-            <th>Hiệu chuẩn kế tiếp</th>
-            <th>Trạng thái sử dụng</th>
-            <th>Hiệu chuẩn</th>
-            <th class="no-print"></th>
+            <th style="width:44px">TT<span class="col-resizer"></span></th>
+            <th style="width:170px">Tên thiết bị<span class="col-resizer"></span></th>
+            <th style="width:130px">Khu vực<span class="col-resizer"></span></th>
+            <th style="width:110px">Mã S/N<span class="col-resizer"></span></th>
+            <th style="width:100px">Model<span class="col-resizer"></span></th>
+            <th style="width:150px">Nhà cung cấp<span class="col-resizer"></span></th>
+            <th style="width:100px">Ngày lắp đặt<span class="col-resizer"></span></th>
+            <th style="width:110px">Ngày hiệu chuẩn<span class="col-resizer"></span></th>
+            <th style="width:110px">Hiệu chuẩn kế tiếp<span class="col-resizer"></span></th>
+            <th style="width:120px">Trạng thái sử dụng<span class="col-resizer"></span></th>
+            <th style="width:120px">Hiệu chuẩn<span class="col-resizer"></span></th>
+            <th class="no-print" style="width:90px"></th>
           </tr>
         </thead>
         <tbody id="tbody"></tbody>
@@ -723,6 +725,71 @@ textarea.inp{min-height:62px;resize:vertical}
     if(t) document.documentElement.setAttribute("data-theme", t);
   }catch(e){}
 
+  /* ---------- kéo co giãn cột ---------- */
+  var COL_WIDTH_KEY = "lab_col_widths_v1";
+  function loadColWidths(){
+    try{
+      var raw = localStorage.getItem(COL_WIDTH_KEY);
+      return raw ? JSON.parse(raw) : {};
+    }catch(e){ return {}; }
+  }
+  function saveColWidths(ths){
+    try{
+      var map = {};
+      ths.forEach(function(th, i){ map[i] = th.style.width || th.offsetWidth + "px"; });
+      localStorage.setItem(COL_WIDTH_KEY, JSON.stringify(map));
+    }catch(e){}
+  }
+  function initColumnResize(){
+    var ths = document.querySelectorAll(".card table thead th");
+    var saved = loadColWidths();
+    ths.forEach(function(th, i){
+      if(saved[i]) th.style.width = saved[i];
+      var handle = th.querySelector(".col-resizer");
+      if(!handle) return;
+      handle.addEventListener("mousedown", function(e){
+        e.preventDefault();
+        var startX = e.pageX;
+        var startWidth = th.offsetWidth;
+        handle.classList.add("active");
+        document.body.style.cursor = "col-resize";
+        document.body.style.userSelect = "none";
+        function onMove(ev){
+          var w = Math.max(44, startWidth + (ev.pageX - startX));
+          th.style.width = w + "px";
+        }
+        function onUp(){
+          handle.classList.remove("active");
+          document.body.style.cursor = "";
+          document.body.style.userSelect = "";
+          document.removeEventListener("mousemove", onMove);
+          document.removeEventListener("mouseup", onUp);
+          saveColWidths(ths);
+        }
+        document.addEventListener("mousemove", onMove);
+        document.addEventListener("mouseup", onUp);
+      });
+      handle.addEventListener("touchstart", function(e){
+        var touch = e.touches[0];
+        var startX = touch.pageX;
+        var startWidth = th.offsetWidth;
+        function onMove(ev){
+          var t = ev.touches[0];
+          var w = Math.max(44, startWidth + (t.pageX - startX));
+          th.style.width = w + "px";
+        }
+        function onEnd(){
+          document.removeEventListener("touchmove", onMove);
+          document.removeEventListener("touchend", onEnd);
+          saveColWidths(ths);
+        }
+        document.addEventListener("touchmove", onMove);
+        document.addEventListener("touchend", onEnd);
+      }, { passive: true });
+    });
+  }
+
+  initColumnResize();
   initStore();
 })();
 </script>
