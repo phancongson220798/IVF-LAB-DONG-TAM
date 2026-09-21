@@ -569,12 +569,12 @@ textarea.inp{min-height:62px;resize:vertical}
     switch(col.key){
       case "tt": return '<td class="mono" data-tt></td>';
       case "name": return '<td class="dev-name">' + esc(d.name) + (d.note ? '<div class="sub" style="font-weight:400;font-size:12px">' + esc(d.note) + '</div>' : '') + '</td>';
-      case "area": return '<td>' + esc(d.area || "—") + '</td>';
+      case "area": return '<td class="mono">' + esc(d.area || "—") + '</td>';
       case "sn": return '<td class="mono">' + esc(d.sn || "—") + '</td>';
-      case "model": return '<td>' + esc(d.model || "—") + '</td>';
-      case "brand": return '<td>' + esc(d.brand || "—") + '</td>';
-      case "country": return '<td>' + esc(d.country || "—") + '</td>';
-      case "supplier": return '<td>' + esc(d.supplier || "—") + '</td>';
+      case "model": return '<td class="mono">' + esc(d.model || "—") + '</td>';
+      case "brand": return '<td class="mono">' + esc(d.brand || "—") + '</td>';
+      case "country": return '<td class="mono">' + esc(d.country || "—") + '</td>';
+      case "supplier": return '<td class="mono">' + esc(d.supplier || "—") + '</td>';
       case "install": return '<td class="mono">' + fmt(d.install) + '</td>';
       case "cal": return '<td class="mono">' + fmt(d.cal) + '</td>';
       case "nextCal": return '<td class="mono">' + fmt(d.nextCal) + '</td>';
