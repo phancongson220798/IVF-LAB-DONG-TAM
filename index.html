@@ -806,9 +806,18 @@ textarea.inp{min-height:62px;resize:vertical}
       '</div>';
     $("printSingle").innerHTML = html;
     document.body.setAttribute("data-print", "one");
+    printTitleBackup = document.title;
+    document.title = (d.name || "Thiet bi") + " - " + (d.sn || "");
     window.print();
   }
-  window.addEventListener("afterprint", function(){ document.body.removeAttribute("data-print"); });
+  var printTitleBackup = null;
+  window.addEventListener("afterprint", function(){
+    document.body.removeAttribute("data-print");
+    if(printTitleBackup !== null){
+      document.title = printTitleBackup;
+      printTitleBackup = null;
+    }
+  });
 
   /* ---------- sự kiện ---------- */
   $("btnAdd").addEventListener("click", function(){ openModal(null); });
