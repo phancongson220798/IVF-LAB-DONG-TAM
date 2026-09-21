@@ -121,7 +121,7 @@ textarea.inp{min-height:62px;resize:vertical}
 /* print sheet */
 #printSingle{display:none}
 .sheet{color:#000;background:#fff;padding:0}
-.sheet h2{font-size:19px;margin:0 0 2px}
+.sheet h2{font-size:19px;margin:6px 0;text-align:center;font-weight:800;letter-spacing:.03em}
 .sheet .org{font-size:12px;letter-spacing:.08em;text-transform:uppercase}
 .sheet table{width:100%;min-width:0;border-collapse:collapse;margin-top:14px}
 .sheet td{border:1px solid #999;padding:8px 10px;font-size:13px}
@@ -150,9 +150,12 @@ textarea.inp{min-height:62px;resize:vertical}
   .print-head{display:block!important}
 }
 @page list-landscape{size:A4 landscape;margin:10mm}
-.print-head{display:none;margin-bottom:10px}
-.print-head h2{margin:0 0 2px;font-size:16px}
-.print-head p{margin:0;font-size:11px;color:#444}
+.ph-rule{border-top:2px solid #000;margin:3px 0}
+.print-head{display:none;margin-bottom:14px}
+.print-head h2{margin:6px 0;font-size:18px;text-align:center;letter-spacing:.04em;font-weight:800}
+.print-head .ph-stats{display:flex;justify-content:space-around;flex-wrap:wrap;gap:6px;font-size:12px;font-weight:700;padding:6px 0;margin-top:8px;border-top:1px solid #000;border-bottom:1px solid #000}
+.print-head .ph-stats span{padding:0 8px}
+.print-head #printDate{margin:4px 0 0;font-size:10.5px;color:#444;text-align:right;font-weight:400}
 </style>
 </head>
 <body>
@@ -218,7 +221,10 @@ textarea.inp{min-height:62px;resize:vertical}
     </div>
 
     <div class="print-head">
+      <div class="ph-rule"></div>
       <h2>DANH SÁCH THIẾT BỊ PHÒNG LAB</h2>
+      <div class="ph-rule"></div>
+      <div class="ph-stats" id="phStats"></div>
       <p id="printDate"></p>
     </div>
 
@@ -767,7 +773,19 @@ textarea.inp{min-height:62px;resize:vertical}
     return String(n.getDate()).padStart(2,"0") + "/" + String(n.getMonth()+1).padStart(2,"0") + "/" + n.getFullYear();
   }
   function printList(){
-    $("printDate").textContent = "Ngày in: " + today() + " — Tổng số: " + visible().length + " thiết bị";
+    var list = visible();
+    var ok = 0, warn = 0, due = 0, none = 0;
+    list.forEach(function(d){
+      var k = statusOf(d).key;
+      if(k === "ok") ok++; else if(k === "warn") warn++; else if(k === "due") due++; else none++;
+    });
+    $("phStats").innerHTML =
+      "<span>Tổng số thiết bị: " + list.length + "</span>" +
+      "<span>Còn hiệu lực: " + ok + "</span>" +
+      "<span>Sắp đến hạn: " + warn + "</span>" +
+      "<span>Quá hạn: " + due + "</span>" +
+      (none ? "<span>Chưa có lịch: " + none + "</span>" : "");
+    $("printDate").textContent = "Ngày in: " + today();
     document.body.setAttribute("data-print", "list");
     window.print();
   }
@@ -792,8 +810,10 @@ textarea.inp{min-height:62px;resize:vertical}
     var html =
       '<div class="sheet">' +
         '<div class="org">Labo Hỗ trợ Sinh sản</div>' +
+        '<div class="ph-rule"></div>' +
         '<h2>PHIẾU THÔNG TIN THIẾT BỊ</h2>' +
-        '<div style="font-size:12px">Ngày in: ' + today() + '</div>' +
+        '<div class="ph-rule"></div>' +
+        '<div style="font-size:12px;text-align:right;margin-top:4px">Ngày in: ' + today() + '</div>' +
         '<table><tbody>' +
           rows.map(function(r){
             return '<tr><td class="k">' + esc(r[0]) + '</td><td>' + esc(r[1] || "—") + '</td></tr>';
