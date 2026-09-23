@@ -107,6 +107,9 @@ tbody tr:hover{background:var(--surface-2)}
 .overlay{position:fixed;inset:0;background:rgba(10,18,26,.5);display:none;align-items:flex-start;justify-content:center;padding:24px 14px;overflow-y:auto;z-index:50}
 .overlay.open{display:flex}
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;width:100%;max-width:680px;box-shadow:0 24px 60px rgba(0,0,0,.28);margin:auto}
+.view-table{width:100%;border-collapse:collapse;margin-top:10px}
+.view-table td{padding:9px 10px;border-bottom:1px solid var(--border);font-size:13.5px;vertical-align:top}
+.view-table td:first-child{width:42%;color:var(--text-dim);font-weight:600}
 .modal h2{margin:0;font-size:17px;padding:18px 20px;border-bottom:1px solid var(--border)}
 .modal form{padding:18px 20px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -249,6 +252,19 @@ textarea.inp{min-height:62px;resize:vertical}
   <div id="printSingle"></div>
 </div>
 
+<div class="overlay" id="viewOverlay">
+  <div class="modal" role="dialog" aria-modal="true" style="max-width:560px">
+    <h2 id="viewTitle">Thông tin thiết bị</h2>
+    <div style="padding:18px 20px">
+      <table class="view-table" id="viewTable"><tbody></tbody></table>
+    </div>
+    <div class="modal-foot">
+      <button type="button" class="btn" id="btnViewClose">Đóng</button>
+      <button type="button" class="btn primary" id="btnViewPrint">🖨 In phiếu thiết bị</button>
+    </div>
+  </div>
+</div>
+
 <div class="overlay" id="overlay">
   <div class="modal" role="dialog" aria-modal="true">
     <h2 id="modalTitle">Thêm thiết bị</h2>
@@ -358,6 +374,33 @@ textarea.inp{min-height:62px;resize:vertical}
     try{ localStorage.setItem(LS_KEY, JSON.stringify(devices)); }catch(e){}
   }
 
+  function openViewOnly(d){
+    var st = statusOf(d);
+    var rows = [
+      ["Tên thiết bị", d.name],
+      ["Khu vực đặt thiết bị", d.area],
+      ["Mã S/N", d.sn],
+      ["Model", d.model],
+      ["Hãng sản xuất", d.brand],
+      ["Nước sản xuất", d.country],
+      ["Nhà cung cấp", d.supplier],
+      ["Trạng thái sử dụng", usageOf(d).text],
+      ["Ngày lắp đặt", fmt(d.install)],
+      ["Ngày hiệu chuẩn", fmt(d.cal)],
+      ["Ngày hiệu chuẩn tiếp theo", fmt(d.nextCal)],
+      ["Chu kỳ hiệu chuẩn", d.cycle ? d.cycle + " tháng" : "—"],
+      ["Tình trạng hiệu chuẩn", st.text],
+      ["Ghi chú / vị trí", d.note]
+    ];
+    $("viewTitle").textContent = d.name || "Thông tin thiết bị";
+    $("viewTable").querySelector("tbody").innerHTML = rows.map(function(r){
+      return "<tr><td>" + esc(r[0]) + "</td><td>" + esc(r[1] || "—") + "</td></tr>";
+    }).join("");
+    $("btnViewPrint").onclick = function(){ printOne(d); };
+    $("viewOverlay").classList.add("open");
+  }
+  $("btnViewClose").addEventListener("click", function(){ $("viewOverlay").classList.remove("open"); });
+
   var deviceLinkOpened = false;
   function checkDeviceLink(){
     if(deviceLinkOpened) return;
@@ -366,7 +409,7 @@ textarea.inp{min-height:62px;resize:vertical}
     var d = devices.filter(function(x){ return x.id === id; })[0];
     if(d){
       deviceLinkOpened = true;
-      openModal(d);
+      openViewOnly(d);
     }
   }
 
