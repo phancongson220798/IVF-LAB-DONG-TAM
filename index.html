@@ -128,6 +128,9 @@ textarea.inp{min-height:62px;resize:vertical}
 .sheet td.k{width:38%;font-weight:600;background:#f2f2f2}
 .sign{display:flex;justify-content:space-between;margin-top:46px;font-size:13px;text-align:center}
 .sign div{width:45%}
+.qr-block{display:flex;align-items:center;gap:14px;margin-top:18px;padding-top:12px;border-top:1px dashed #999}
+.qr-block img{flex-shrink:0}
+.qr-block .qr-text{font-size:11px;color:#333;line-height:1.5;word-break:break-all}
 @media print{
   @page{size:A4;margin:12mm}
   body{background:#fff;color:#000;font-size:12px}
@@ -355,9 +358,22 @@ textarea.inp{min-height:62px;resize:vertical}
     try{ localStorage.setItem(LS_KEY, JSON.stringify(devices)); }catch(e){}
   }
 
+  var deviceLinkOpened = false;
+  function checkDeviceLink(){
+    if(deviceLinkOpened) return;
+    var id = new URLSearchParams(location.search).get("device");
+    if(!id) return;
+    var d = devices.filter(function(x){ return x.id === id; })[0];
+    if(d){
+      deviceLinkOpened = true;
+      openModal(d);
+    }
+  }
+
   function initStore(){
     devices = lsLoad();
     render();
+    checkDeviceLink();
     try{
       if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
       db = firebase.firestore();
@@ -372,17 +388,20 @@ textarea.inp{min-height:62px;resize:vertical}
         devices = list;
         $("storeNote").textContent = "Dữ liệu được lưu trên Firebase và đồng bộ tự động trên mọi thiết bị.";
         render();
+        checkDeviceLink();
       }, function(){
         db = null;
         devices = lsLoad();
         $("storeNote").textContent = "Không kết nối được Firebase — dữ liệu đang lưu trên trình duyệt này.";
         render();
+        checkDeviceLink();
       });
     }catch(e){
       db = null;
       devices = lsLoad();
       $("storeNote").textContent = "Không kết nối được Firebase — dữ liệu đang lưu trên trình duyệt này.";
       render();
+      checkDeviceLink();
     }
   }
 
@@ -791,6 +810,8 @@ textarea.inp{min-height:62px;resize:vertical}
   }
   function printOne(d){
     var st = statusOf(d);
+    var viewUrl = location.origin + location.pathname + "?device=" + encodeURIComponent(d.id);
+    var qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=110x110&margin=0&data=" + encodeURIComponent(viewUrl);
     var rows = [
       ["Tên thiết bị", d.name],
       ["Khu vực đặt thiết bị", d.area],
@@ -819,6 +840,10 @@ textarea.inp{min-height:62px;resize:vertical}
             return '<tr><td class="k">' + esc(r[0]) + '</td><td>' + esc(r[1] || "—") + '</td></tr>';
           }).join("") +
         '</tbody></table>' +
+        '<div class="qr-block">' +
+          '<img src="' + qrUrl + '" alt="QR xem online" width="82" height="82">' +
+          '<div class="qr-text"><b>Xem thông tin online</b><br>Quét mã QR hoặc truy cập:<br>' + esc(viewUrl) + '</div>' +
+        '</div>' +
         '<div class="sign">' +
           '<div>Người lập phiếu</div>' +
           '<div>Phụ trách phòng LAB</div>' +
