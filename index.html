@@ -110,6 +110,11 @@ tbody tr:hover{background:var(--surface-2)}
 .view-table{width:100%;border-collapse:collapse;margin-top:10px}
 .view-table td{padding:9px 10px;border-bottom:1px solid var(--border);font-size:13.5px;vertical-align:top}
 .view-table td:first-child{width:42%;color:var(--text-dim);font-weight:600}
+body.link-view .app-main{display:none}
+body.link-view #viewOverlay{position:static;display:flex;background:transparent;padding:24px 14px;min-height:100vh}
+body.link-view #viewOverlay .modal{box-shadow:0 10px 40px rgba(0,0,0,.12)}
+body.link-view #btnViewClose{display:none}
+.view-link-note{font-size:11.5px;color:var(--text-dim);text-align:center;margin-top:10px}
 .modal h2{margin:0;font-size:17px;padding:18px 20px;border-bottom:1px solid var(--border)}
 .modal form{padding:18px 20px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -409,6 +414,7 @@ textarea.inp{min-height:62px;resize:vertical}
     var d = devices.filter(function(x){ return x.id === id; })[0];
     if(d){
       deviceLinkOpened = true;
+      document.body.classList.add("link-view");
       openViewOnly(d);
     }
   }
