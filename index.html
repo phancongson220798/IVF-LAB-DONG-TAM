@@ -890,7 +890,7 @@ textarea.inp{min-height:62px;resize:vertical}
           }).join("") +
         '</tbody></table>' +
         '<div class="qr-block">' +
-          '<img src="' + qrUrl + '" alt="QR xem online" width="82" height="82">' +
+          '<img id="qrImg" src="' + qrUrl + '" alt="QR xem online" width="82" height="82" crossorigin="anonymous">' +
           '<div class="qr-text"><b>Xem thông tin online</b><br>Quét mã QR hoặc truy cập:<br>' + esc(viewUrl) + '</div>' +
         '</div>' +
         '<div class="sign">' +
@@ -902,7 +902,20 @@ textarea.inp{min-height:62px;resize:vertical}
     document.body.setAttribute("data-print", "one");
     printTitleBackup = document.title;
     document.title = (d.name || "Thiet bi") + " - " + (d.sn || "");
-    window.print();
+    var qrImg = $("qrImg");
+    var printed = false;
+    function doPrint(){
+      if(printed) return;
+      printed = true;
+      window.print();
+    }
+    if(qrImg && !qrImg.complete){
+      qrImg.addEventListener("load", doPrint);
+      qrImg.addEventListener("error", doPrint);
+      setTimeout(doPrint, 2000);
+    }else{
+      doPrint();
+    }
   }
   var printTitleBackup = null;
   window.addEventListener("afterprint", function(){
