@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Quản lý thiết bị phòng LAB</title>
+<meta name="theme-color" content="#0f6d63">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Thiết bị LAB">
+<link id="manifestLink" rel="manifest" href="">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -167,10 +172,99 @@ textarea.inp{min-height:62px;resize:vertical}
 .print-head .ph-stats{display:flex;justify-content:space-around;flex-wrap:wrap;gap:6px;font-size:12px;font-weight:700;padding:6px 0;margin-top:8px;border-top:1px solid #000;border-bottom:1px solid #000}
 .print-head .ph-stats span{padding:0 8px}
 .print-head #printDate{margin:4px 0 0;font-size:10.5px;color:#444;text-align:right;font-weight:400}
+
+/* ===== Gộp: điều hướng + module Bảo trì / Thay lọc ===== */
+:root{--neutral:var(--text-dim);--ink:var(--text);--overdue:var(--danger);--soon:var(--warn);--accent2:var(--accent);--line:var(--border);--panel:var(--surface)}
+.mainnav{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:stretch}
+.nav-btn{flex:1;min-width:180px;display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 16px;cursor:pointer;font-weight:600;font-size:15px}
+.nav-btn:hover{border-color:var(--accent)}
+.nav-btn.active{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.nav-btn .c{font-family:var(--mono);font-size:18px}
+.mainnav #btnTheme{flex:none}
+#maintApp{display:none}
+body.v-maint #maintApp{display:block}
+body.v-maint .app-main{display:none}
+body.link-view .mainnav,body.link-view #maintApp,body.link-view #installBanner{display:none!important}
+.stats-groups{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.stats-group{flex:1;min-width:280px}
+.stats-group-label{font-size:12px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin:0 0 6px 2px}
+.stats-row{display:flex;gap:10px}
+.stat-chip{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;box-shadow:var(--shadow)}
+.stat-chip .n{font-size:24px;font-weight:700;line-height:1.1}
+.stat-chip .l{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em;margin-top:3px}
+.stat-chip.overdue .n{color:var(--danger)}.stat-chip.soon .n{color:var(--warn)}.stat-chip.ok .n{color:var(--ok)}
+.toolbar-group{display:flex;gap:8px;flex-wrap:wrap}
+.view-toggle{padding-right:12px;border-right:1px solid var(--border)}
+.filter-btn{border:1px solid var(--border-strong);background:var(--surface);color:var(--text-dim);font-weight:500;padding:8px 14px;border-radius:20px;cursor:pointer}
+.filter-btn:hover{border-color:var(--accent)}
+.filter-btn.active{background:var(--text);color:var(--bg);border-color:var(--text)}
+.spacer{flex:1}
+.notify-bar{display:none;background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn);border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:13px;line-height:1.6}
+.notify-bar.show{display:block}
+.settings-panel{display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:18px}
+.settings-panel.show{display:block}
+.settings-panel h3{font-size:16px;margin:0 0 4px}
+.settings-panel .hint{font-size:12.5px;margin:0 0 12px;line-height:1.6}
+.steps{font-size:13px;line-height:1.85;padding-left:18px;margin:10px 0}
+.settings-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.settings-row input{flex:1;min-width:220px}
+#listWrap .grid{grid-template-columns:repeat(auto-fill,minmax(310px,1fr))}
+#listWrap .card{display:flex;gap:14px;padding:16px;border-left:4px solid var(--border)}
+#listWrap .card.overdue{border-left-color:var(--danger)}#listWrap .card.soon{border-left-color:var(--warn)}#listWrap .card.ok{border-left-color:var(--ok)}
+.gauge{width:60px;height:60px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;position:relative}
+.gauge::before{content:'';position:absolute;inset:0;border-radius:50%;background:conic-gradient(var(--gcolor) calc(var(--pct)*1%),var(--border) 0)}
+.gauge::after{content:'';position:absolute;inset:7px;border-radius:50%;background:var(--surface)}
+.gauge span{position:relative;z-index:1;font-family:var(--mono);font-weight:600;font-size:12.5px;text-align:center;line-height:1.05}
+.gauge span small{display:block;font-size:8px;font-weight:400;color:var(--text-dim);text-transform:uppercase}
+.card-body{flex:1;min-width:0}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.card-name{font-weight:700;font-size:15.5px;margin:0 0 2px}
+.card-loc{font-size:12px;color:var(--text-dim);margin:0 0 8px}
+.badge.overdue{background:var(--danger-soft);color:var(--danger)}.badge.soon{background:var(--warn-soft);color:var(--warn)}
+.card-meta{font-size:12.5px;line-height:1.7}
+.card-meta .lbl{color:var(--text-dim);display:inline-block;min-width:98px}
+.card-actions{display:flex;gap:6px;margin-top:10px}
+.icon-btn{border:1px solid var(--border-strong);background:var(--surface);color:var(--text-dim);border-radius:6px;padding:5px 9px;font-size:12px;cursor:pointer}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent)}.icon-btn.danger:hover{border-color:var(--danger);color:var(--danger)}
+.history-list{display:flex;flex-direction:column;gap:10px}
+.history-row{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;gap:14px;box-shadow:var(--shadow)}
+.history-date{font-size:12.5px;color:var(--text-dim);min-width:76px;flex:none}
+.history-body{flex:1;min-width:0}.history-title{font-weight:600}.history-sub{font-size:12px;color:var(--text-dim);margin-top:2px}
+#listWrap .empty,.display{color:var(--text)}
+.display{font-weight:700;font-size:17px;margin-bottom:6px}
+.overlay.show{display:flex}
+#mOverlay .modal,#confirmOverlay .modal{padding:20px 22px;max-width:480px}
+#confirmOverlay .modal{max-width:360px}
+#mOverlay .modal h2,#confirmOverlay .modal h2{padding:0;border:none;margin:0 0 4px}
+.modal-sub{font-size:12.5px;color:var(--text-dim);margin:0 0 16px}
+.mf{margin-bottom:13px}
+.mf input,.mf select,.mf textarea,.settings-row input{padding:9px 11px;border:1px solid var(--border-strong);border-radius:8px;background:var(--surface)}
+.mf input,.mf select,.mf textarea{width:100%}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:1fr 100px;gap:10px}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+.toast-wrap{position:fixed;bottom:20px;right:20px;z-index:80;display:flex;flex-direction:column;gap:8px}
+.toast{background:var(--text);color:var(--bg);padding:11px 16px;border-radius:8px;font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.toast.err{background:var(--danger);color:#fff}.toast.ok2{background:var(--ok);color:#fff}
+.install-banner{display:none;background:var(--warn-soft);color:var(--warn);border-radius:12px;padding:11px 14px;margin-bottom:16px;font-size:12.5px;line-height:1.6;align-items:center;justify-content:space-between;gap:10px}
+.install-banner.show{display:flex}
+.install-banner button{border:none;background:transparent;color:inherit;font-weight:700;font-size:15px;cursor:pointer}
+@media(max-width:520px){.row2,.row3{grid-template-columns:1fr}.stats-row{flex-wrap:wrap}}
+@media print{.mainnav,#maintApp,#installBanner,.toast-wrap{display:none!important}}
 </style>
 </head>
 <body>
 <div class="wrap">
+  <nav class="mainnav no-print" id="mainNav">
+    <button class="nav-btn active" data-view="devices"><span>📋 Danh sách thiết bị</span><span class="c" id="navCountDev">0</span></button>
+    <button class="nav-btn" data-view="filter"><span>🧯 Thay lọc định kỳ</span><span class="c" id="countFilter">0</span></button>
+    <button class="btn" id="btnTheme" title="Đổi giao diện sáng/tối">◐</button>
+  </nav>
+  <div class="install-banner no-print" id="installBanner">
+    <span id="installBannerText"></span>
+    <button id="installBannerClose">✕</button>
+  </div>
+
   <div class="app-main">
     <header class="top no-print">
       <div>
@@ -178,7 +272,6 @@ textarea.inp{min-height:62px;resize:vertical}
         <div class="sub">Theo dõi lý lịch thiết bị, lịch hiệu chuẩn và in phiếu thông tin</div>
       </div>
       <div class="actions">
-        <button class="btn" id="btnTheme" title="Đổi giao diện sáng/tối">◐ Giao diện</button>
         <button class="btn" id="btnExportExcel">📊 Xuất Excel</button>
         <button class="btn" id="btnPrintList">🖨 In danh sách</button>
         <button class="btn primary" id="btnAdd">+ Thêm thiết bị</button>
@@ -252,6 +345,36 @@ textarea.inp{min-height:62px;resize:vertical}
       </div>
     </div>
     <div class="status-note no-print" id="storeNote"></div>
+  </div>
+
+  <div id="maintApp">
+    <header class="top no-print">
+      <div>
+        <h1>Thay lọc định kỳ</h1>
+        <div class="sub">Theo dõi lịch thay lọc và nhắc khi sắp đến hạn</div>
+      </div>
+    </header>
+    <div class="stats-groups" id="statsRow"></div>
+  <div class="notify-bar" id="notifyBar"></div>
+
+  <div class="toolbar">
+    <div class="toolbar-group view-toggle" id="viewToggle">
+      <button class="filter-btn active" data-view="list">📋 Danh sách</button>
+      <button class="filter-btn" data-view="history">🕒 Lịch sử</button>
+    </div>
+    <div class="toolbar-group" id="statusFilters">
+      <button class="filter-btn active" data-filter="all">Tất cả</button>
+      <button class="filter-btn" data-filter="overdue">Quá hạn</button>
+      <button class="filter-btn" data-filter="soon">Sắp đến hạn</button>
+      <button class="filter-btn" data-filter="ok">Còn hạn</button>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn" id="exportFilterBtn">📊 Xuất Excel</button>
+    <button class="btn primary" id="addBtn">+ Thêm mục</button>
+  </div>
+
+  <div id="listWrap"></div>
+  <div class="status-note no-print" id="filterStoreNote"></div>
   </div>
 
   <div id="printSingle"></div>
@@ -349,6 +472,69 @@ textarea.inp{min-height:62px;resize:vertical}
     </form>
   </div>
 </div>
+
+<div class="overlay" id="mOverlay">
+  <div class="modal">
+    <h2 id="mModalTitle">Thêm mục</h2>
+    <p class="modal-sub" id="modalSub">Đang thêm vào: Bảo trì thiết bị</p>
+    <input type="hidden" id="editId">
+    <input type="hidden" id="fCategory">
+    <div class="mf" id="fNameWrap">
+      <label>Tên thiết bị</label>
+      <input class="inp" type="text" id="fName">
+    </div>
+    <div class="mf" id="fLocationWrap">
+      <label>Vị trí</label>
+      <input class="inp" type="text" id="fLocation">
+    </div>
+    <div class="mf">
+      <label id="fTypeLabel">Hạng mục bảo trì</label>
+      <input class="inp" type="text" id="fType">
+    </div>
+    <div class="mf" id="fPerformedByWrap">
+      <label>Người thực hiện</label>
+      <input class="inp" type="text" id="fPerformedBy">
+    </div>
+    <div class="row2">
+      <div class="mf">
+        <label id="fDateLabel">Ngày bảo trì gần nhất</label>
+        <input type="date" id="fLastDate">
+      </div>
+      <div class="mf">
+        <label>Chu kỳ</label>
+        <div class="row3">
+          <input type="number" min="1" id="fIntervalVal">
+          <select id="fIntervalUnit">
+            <option value="day">Ngày</option>
+            <option value="week">Tuần</option>
+            <option value="month" selected>Tháng</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="mf">
+      <label>Ghi chú (tuỳ chọn)</label>
+      <textarea id="fNotes" rows="2"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" id="cancelBtn">Huỷ</button>
+      <button class="btn primary" id="saveBtn">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="confirmOverlay">
+  <div class="modal" style="max-width:360px;">
+    <h2 style="margin-bottom:10px;">Xoá mục này?</h2>
+    <p id="confirmMsg" style="font-size:13.5px; color:var(--neutral); margin:0 0 18px; line-height:1.6;"></p>
+    <div class="modal-actions">
+      <button class="btn" id="confirmCancelBtn">Huỷ</button>
+      <button class="btn" style="background:var(--overdue); color:#fff;" id="confirmOkBtn">Xoá</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
 
 <script>
 (function(){
@@ -718,6 +904,7 @@ textarea.inp{min-height:62px;resize:vertical}
       if(u === "idle") idle++; else if(u === "broken") broken++; else using++;
     });
     $("sTotal").textContent = devices.length;
+    $("navCountDev").textContent = devices.length;
     $("sOk").textContent = ok;
     $("sWarn").textContent = warn;
     $("sDue").textContent = due;
@@ -1026,6 +1213,518 @@ textarea.inp{min-height:62px;resize:vertical}
   renderColpickPanel();
   renderHead();
   initStore();
+})();
+</script>
+
+<script>
+(function(){
+  var STORE_KEY = 'equipment-list-v2';
+  var SETTINGS_KEY = 'app-settings-v1';
+  var HISTORY_KEY = 'equipment-history-log-v1';
+  var state = { items: [], history: [], settings: { maintForm:null, filterForm:null, notifyDays: 7 }, activeTab:'filter', statusFilter:'all', viewMode:'list' };
+
+
+  var CATEGORY_INFO = {
+    filter:      { label:'Thay lọc định kỳ', typeLabel:'Loại lọc', dateLabel:'Ngày thay lọc gần nhất', addLabel:'+ Thêm lịch thay lọc' }
+  };
+
+  function uid(){ return 'e' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+  function toast(msg, type){
+    var wrap = document.getElementById('toastWrap');
+    var el = document.createElement('div');
+    el.className = 'toast' + (type ? ' ' + type : '');
+    el.textContent = msg;
+    wrap.appendChild(el);
+    setTimeout(function(){ el.remove(); }, 3800);
+  }
+
+  var confirmOverlay = document.getElementById('confirmOverlay');
+  var pendingConfirmCb = null;
+  function showConfirm(msg, cb){
+    document.getElementById('confirmMsg').textContent = msg;
+    pendingConfirmCb = cb;
+    confirmOverlay.classList.add('show');
+    document.body.classList.add('modal-open');
+  }
+  document.getElementById('confirmCancelBtn').onclick = function(){
+    confirmOverlay.classList.remove('show'); document.body.classList.remove('modal-open'); pendingConfirmCb = null;
+  };
+  document.getElementById('confirmOkBtn').onclick = function(){
+    confirmOverlay.classList.remove('show');
+    document.body.classList.remove('modal-open');
+    if(pendingConfirmCb) pendingConfirmCb();
+    pendingConfirmCb = null;
+  };
+  confirmOverlay.onclick = function(e){
+    if(e.target === confirmOverlay){ confirmOverlay.classList.remove('show'); document.body.classList.remove('modal-open'); pendingConfirmCb = null; }
+  };
+
+  function intervalDays(val, unit){
+    val = Number(val) || 0;
+    if(unit === 'day') return val;
+    if(unit === 'week') return val * 7;
+    return val * 30; // month approx
+  }
+  function intervalText(val, unit){
+    var u = unit === 'day' ? 'ngày' : (unit === 'week' ? 'tuần' : 'tháng');
+    return val + ' ' + u;
+  }
+  function addDays(dateStr, days){
+    var d = new Date(dateStr + 'T00:00:00');
+    d.setDate(d.getDate() + days);
+    return d;
+  }
+  function fmt(d){
+    if(typeof d === 'string') d = new Date(d + 'T00:00:00');
+    var dd = String(d.getDate()).padStart(2,'0');
+    var mm = String(d.getMonth()+1).padStart(2,'0');
+    var yy = d.getFullYear();
+    return dd + '/' + mm + '/' + yy;
+  }
+  function daysBetween(a, b){
+    return Math.round((a - b) / (1000*60*60*24));
+  }
+
+  function computeItem(item){
+    var totalDays = intervalDays(item.intervalVal, item.intervalUnit);
+    var nextDue = addDays(item.lastDate, totalDays);
+    var today = new Date(); today.setHours(0,0,0,0);
+    var daysLeft = daysBetween(nextDue, today);
+    var elapsedSince = daysBetween(today, new Date(item.lastDate + 'T00:00:00'));
+    var pct = totalDays > 0 ? Math.min(100, Math.max(0, Math.round((elapsedSince/totalDays)*100))) : 0;
+    var status = 'ok';
+    if(daysLeft < 0) status = 'overdue';
+    else if(daysLeft <= state.settings.notifyDays) status = 'soon';
+    return { nextDue: nextDue, daysLeft: daysLeft, pct: pct, status: status, totalDays: totalDays };
+  }
+
+  var statusLabel = { overdue:'Quá hạn', soon:'Sắp đến hạn', ok:'Còn hạn' };
+  var statusColor = { overdue:'var(--overdue)', soon:'var(--soon)', ok:'var(--ok)' };
+
+  function render(){
+    var allComputed = state.items.map(function(it){
+      var c = computeItem(it);
+      return Object.assign({}, it, c);
+    });
+
+    var stats = { overdue:0, soon:0, ok:0 };
+    var tabItems = allComputed.filter(function(c){ return c.category === state.activeTab; });
+    tabItems.forEach(function(c){ stats[c.status]++; });
+
+    document.getElementById('countFilter').textContent = allComputed.filter(function(c){ return c.category==='filter'; }).length;
+
+    function statsFor(cat){
+      var s = { overdue:0, soon:0, ok:0 };
+      allComputed.filter(function(c){ return c.category === cat; }).forEach(function(c){ s[c.status]++; });
+      return s;
+    }
+    function statsChips(s){
+      return '<div class="stat-chip overdue"><div class="n">'+s.overdue+'</div><div class="l">Quá hạn</div></div>' +
+             '<div class="stat-chip soon"><div class="n">'+s.soon+'</div><div class="l">Sắp đến hạn</div></div>' +
+             '<div class="stat-chip ok"><div class="n">'+s.ok+'</div><div class="l">Còn hạn</div></div>';
+    }
+    var sFilter = statsFor('filter');
+    document.getElementById('statsRow').innerHTML =
+      '<div class="stats-group"><div class="stats-group-label">Thay lọc định kỳ</div><div class="stats-row">'+statsChips(sFilter)+'</div></div>';
+
+    var bar = document.getElementById('notifyBar');
+    var due = tabItems.filter(function(c){ return c.status==='overdue' || c.status==='soon'; });
+    if(due.length){
+      due.sort(function(a,b){ return a.daysLeft - b.daysLeft; });
+      var names = due.slice(0,4).map(function(c){
+        return c.name + ' (' + (c.daysLeft < 0 ? 'quá ' + Math.abs(c.daysLeft) + ' ngày' : 'còn ' + c.daysLeft + ' ngày') + ')';
+      }).join(', ');
+      bar.classList.add('show');
+      bar.innerHTML = '<b>⚠ Cần chú ý:</b> ' + names + (due.length > 4 ? ' và ' + (due.length-4) + ' mục khác…' : '') + '.';
+    } else {
+      bar.classList.remove('show');
+    }
+
+    var wrap = document.getElementById('listWrap');
+
+    if(state.viewMode === 'history'){
+      renderHistory(wrap);
+      return;
+    }
+
+    var filtered = state.statusFilter === 'all' ? tabItems : tabItems.filter(function(c){ return c.status === state.statusFilter; });
+    filtered.sort(function(a,b){ return a.daysLeft - b.daysLeft; });
+
+    if(!filtered.length){
+      var infoLbl = CATEGORY_INFO[state.activeTab].label.toLowerCase();
+      wrap.innerHTML = '<div class="empty"><div class="display">'+(tabItems.length ? 'Không có mục nào ở bộ lọc này' : 'Chưa có mục nào trong "'+CATEGORY_INFO[state.activeTab].label+'"')+'</div><div>'+(tabItems.length ? 'Thử chọn bộ lọc khác.' : 'Bấm "'+CATEGORY_INFO[state.activeTab].addLabel+'" để bắt đầu theo dõi '+infoLbl+'.')+'</div></div>';
+      return;
+    }
+
+    wrap.innerHTML = '<div class="grid">' + filtered.map(function(c){
+      var daysLabel = c.daysLeft < 0
+        ? ('<span>'+Math.abs(c.daysLeft)+'<small>ngày quá</small></span>')
+        : ('<span>'+c.daysLeft+'<small>ngày nữa</small></span>');
+      return '' +
+      '<div class="card '+c.status+'">' +
+        '<div class="gauge" style="--pct:'+c.pct+'; --gcolor:'+statusColor[c.status]+';">' + daysLabel + '</div>' +
+        '<div class="card-body">' +
+          '<div class="card-top">' +
+            '<div><p class="card-name">'+escapeHtml(c.name)+'</p><p class="card-loc">'+escapeHtml(c.category==='filter' ? CATEGORY_INFO.filter.label : (c.location||'—'))+'</p></div>' +
+            '<span class="badge '+c.status+'">'+statusLabel[c.status]+'</span>' +
+          '</div>' +
+          '<div class="card-meta">' +
+            '<div><span class="lbl">'+CATEGORY_INFO[c.category].typeLabel+':</span> <b>'+escapeHtml(c.type||c.name||'—')+'</b></div>' +
+            (c.category==='filter' ? '' : '<div><span class="lbl">Vị trí:</span> '+escapeHtml(c.location||'—')+'</div>') +
+            '<div><span class="lbl">Người thực hiện:</span> '+escapeHtml(c.performedBy||'—')+'</div>' +
+            '<div><span class="lbl">Chu kỳ:</span> '+intervalText(c.intervalVal, c.intervalUnit)+'</div>' +
+            '<div><span class="lbl">Lần gần nhất:</span> '+fmt(c.lastDate)+'</div>' +
+            '<div><span class="lbl">Hạn tiếp theo:</span> <b class="mono">'+fmt(c.nextDue)+'</b></div>' +
+          '</div>' +
+          '<div class="card-actions">' +
+            '<button class="icon-btn" data-act="done" data-id="'+c.id+'">✓ Đã làm hôm nay</button>' +
+            '<button class="icon-btn" data-act="edit" data-id="'+c.id+'">Sửa</button>' +
+            '<button class="icon-btn danger" data-act="del" data-id="'+c.id+'">Xoá</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('') + '</div>';
+  }
+
+  function renderHistory(wrap){
+    var rows = state.history.filter(function(h){ return h.category === state.activeTab; });
+    rows.sort(function(a,b){
+      var d = (b.date||'').localeCompare(a.date||'');
+      return d !== 0 ? d : (b.recordedAt||'').localeCompare(a.recordedAt||'');
+    });
+    if(!rows.length){
+      wrap.innerHTML = '<div class="empty"><div class="display">Chưa có lịch sử '+CATEGORY_INFO[state.activeTab].label.toLowerCase()+'</div><div>Lịch sử sẽ tự ghi lại mỗi khi bạn thêm mục mới hoặc bấm "✓ Đã làm hôm nay".</div></div>';
+      return;
+    }
+    wrap.innerHTML = '<div class="history-list">' + rows.map(function(h){
+      var title = h.category === 'filter' ? h.type : h.name;
+      var subParts = [];
+      if(h.category !== 'filter' && h.location) subParts.push(h.location);
+      if(h.performedBy) subParts.push(h.performedBy);
+      if(h.notes) subParts.push(h.notes);
+      return '' +
+      '<div class="history-row">' +
+        '<div class="history-date mono">'+fmt(h.date)+'</div>' +
+        '<div class="history-body">' +
+          '<div class="history-title">'+escapeHtml(title||'—')+'</div>' +
+          '<div class="history-sub">'+escapeHtml(subParts.join(' · ') || '—')+'</div>' +
+        '</div>' +
+        '<button class="icon-btn danger" data-hist-del="'+h.id+'">Xoá</button>' +
+      '</div>';
+    }).join('') + '</div>';
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  function persist(){
+    try{
+      localStorage.setItem(STORE_KEY, JSON.stringify(state.items));
+    }catch(e){
+      toast('Không lưu được dữ liệu trên máy này', 'err');
+    }
+  }
+  function persistHistory(){
+    try{ localStorage.setItem(HISTORY_KEY, JSON.stringify(state.history)); }catch(e){}
+  }
+  function pushHistory(item){
+    state.history.unshift({
+      id: uid(),
+      category: item.category,
+      itemId: item.id,
+      name: item.name,
+      type: item.type || '',
+      location: item.location || '',
+      performedBy: item.performedBy || '',
+      date: item.lastDate,
+      notes: item.notes || '',
+      recordedAt: new Date().toISOString()
+    });
+    persistHistory();
+    cloudSet('filter_history', state.history[0]);
+  }
+  function persistSettings(){
+    try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.settings)); }catch(e){}
+  }
+
+  // ---- Lưu trữ: Firebase (collection "filters", "filter_history"), dự phòng localStorage ----
+  var fdb = null;
+  try{ if(window.firebase && firebase.apps.length) fdb = firebase.firestore(); }catch(e){ fdb = null; }
+  function setNote(t){ var el = document.getElementById('filterStoreNote'); if(el) el.textContent = t; }
+  function fbError(msg, e){
+    var code = e && e.code ? e.code : '';
+    var hint = code === 'permission-denied' ? ' — cần cho phép ghi collection "filters" và "filter_history" trong Rules của Firestore' : (code ? ' (' + code + ')' : '');
+    toast(msg + hint, 'err');
+    setNote(msg + hint + '. Dữ liệu vẫn được giữ trên trình duyệt này.');
+  }
+  function cloudSet(col, obj){
+    if(!fdb || !obj) return;
+    var b = Object.assign({}, obj); delete b.id;
+    fdb.collection(col).doc(obj.id).set(b).then(function(){
+      if(col === 'filters') toast('Đã lưu lên Firebase', 'ok2');
+    }).catch(function(e){ fbError('Không lưu được lên Firebase', e); });
+  }
+  function cloudDel(col, id){
+    if(!fdb) return;
+    fdb.collection(col).doc(id).delete().catch(function(e){ fbError('Không xoá được trên Firebase', e); });
+  }
+  function watch(col, key, persistFn){
+    var mig = 'migrated-' + col;
+    fdb.collection(col).onSnapshot(function(snap){
+      var done = false;
+      try{ done = !!localStorage.getItem(mig); localStorage.setItem(mig, '1'); }catch(e){}
+      if(snap.empty && !done && state[key].length){
+        state[key].forEach(function(o){ cloudSet(col, o); }); // đẩy dữ liệu cũ trên máy lên Firebase (một lần)
+        return;
+      }
+      state[key] = snap.docs.map(function(d){ var v = d.data() || {}; v.id = d.id; return v; });
+      persistFn(); render();
+      setNote('Dữ liệu được lưu trên Firebase và đồng bộ tự động trên mọi thiết bị.');
+    }, function(e){ fdb = null; fbError('Không kết nối được Firebase', e); });
+  }
+
+  function loadAll(){
+    try{ var r1 = localStorage.getItem(STORE_KEY); if(r1) state.items = JSON.parse(r1).filter(function(i){ return i.category === 'filter'; }); }catch(e){}
+    try{ var r2 = localStorage.getItem(SETTINGS_KEY); if(r2) state.settings = Object.assign(state.settings, JSON.parse(r2)); }catch(e){}
+    try{ var r3 = localStorage.getItem(HISTORY_KEY); if(r3) state.history = JSON.parse(r3).filter(function(h){ return h.category === 'filter'; }); }catch(e){}
+    render();
+    if(fdb){ setNote('Đang kết nối Firebase...'); watch('filters', 'items', persist); watch('filter_history', 'history', persistHistory); }
+    else setNote('Không kết nối được Firebase — dữ liệu đang lưu trên trình duyệt này.');
+  }
+
+  // ---- Tabs (desktop cards + mobile bottom nav) ----
+  function setActiveTab(tab){
+    state.activeTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-tab')===tab); });
+    document.querySelectorAll('.bn-btn[data-tab]').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-tab')===tab); });
+    document.getElementById('addBtn').textContent = CATEGORY_INFO[tab].addLabel;
+    render();
+  }
+  document.querySelectorAll('.tab-btn').forEach(function(btn){
+    btn.onclick = function(){ setActiveTab(btn.getAttribute('data-tab')); };
+  });
+  document.querySelectorAll('.bn-btn[data-tab]').forEach(function(btn){
+    btn.onclick = function(){ setActiveTab(btn.getAttribute('data-tab')); };
+  });
+  document.getElementById('addBtn').textContent = CATEGORY_INFO[state.activeTab].addLabel;
+
+  // ---- Modal ----
+  var overlay = document.getElementById('mOverlay');
+  function openModal(item){
+    var cat = item ? item.category : state.activeTab;
+    var info = CATEGORY_INFO[cat];
+    document.getElementById('mModalTitle').textContent = item ? 'Sửa mục' : 'Thêm mục mới';
+    document.getElementById('modalSub').textContent = 'Đang thêm vào: ' + info.label;
+    document.getElementById('editId').value = item ? item.id : '';
+    document.getElementById('fCategory').value = cat;
+    document.getElementById('fTypeLabel').textContent = info.typeLabel;
+    document.getElementById('fDateLabel').textContent = info.dateLabel;
+    document.getElementById('fNameWrap').style.display = cat === 'filter' ? 'none' : '';
+    document.getElementById('fLocationWrap').style.display = cat === 'filter' ? 'none' : '';
+    document.getElementById('fName').value = item ? (item.name||'') : '';
+    document.getElementById('fLocation').value = item ? (item.location||'') : '';
+    document.getElementById('fPerformedBy').value = item ? (item.performedBy||'') : '';
+    document.getElementById('fType').value = item ? item.type : '';
+    document.getElementById('fLastDate').value = item ? item.lastDate : new Date().toISOString().slice(0,10);
+    document.getElementById('fIntervalVal').value = item ? item.intervalVal : 3;
+    document.getElementById('fIntervalUnit').value = item ? item.intervalUnit : 'month';
+    document.getElementById('fNotes').value = item ? (item.notes||'') : '';
+    overlay.classList.add('show');
+    document.body.classList.add('modal-open');
+    (cat === 'filter' ? document.getElementById('fType') : document.getElementById('fName')).focus();
+  }
+  function closeModal(){ overlay.classList.remove('show'); document.body.classList.remove('modal-open'); }
+
+  document.getElementById('addBtn').onclick = function(){ openModal(null); };
+  document.getElementById('cancelBtn').onclick = closeModal;
+  overlay.onclick = function(e){ if(e.target === overlay) closeModal(); };
+
+  document.getElementById('saveBtn').onclick = function(){
+    var category = document.getElementById('fCategory').value;
+    var name = document.getElementById('fName').value.trim();
+    var type = document.getElementById('fType').value.trim();
+    var lastDate = document.getElementById('fLastDate').value;
+    var intervalVal = Number(document.getElementById('fIntervalVal').value);
+
+    if(category === 'filter'){
+      if(!type){ toast('Vui lòng nhập loại lọc', 'err'); return; }
+    } else if(!name){
+      toast('Vui lòng nhập tên thiết bị', 'err'); return;
+    }
+    if(!lastDate){ toast('Vui lòng chọn ngày gần nhất', 'err'); return; }
+    if(!intervalVal || intervalVal <= 0){ toast('Chu kỳ phải lớn hơn 0', 'err'); return; }
+
+    var id = document.getElementById('editId').value;
+    var prevItem = id ? state.items.find(function(i){ return i.id === id; }) : null;
+    var data = {
+      id: id || uid(),
+      category: category,
+      name: category === 'filter' ? type : name,
+      location: category === 'filter' ? '' : document.getElementById('fLocation').value.trim(),
+      performedBy: document.getElementById('fPerformedBy').value.trim(),
+      type: type,
+      lastDate: lastDate,
+      intervalVal: intervalVal,
+      intervalUnit: document.getElementById('fIntervalUnit').value,
+      notes: document.getElementById('fNotes').value.trim()
+    };
+    if(id){
+      var idx = state.items.findIndex(function(i){ return i.id === id; });
+      if(idx > -1) state.items[idx] = data;
+    } else {
+      state.items.push(data);
+    }
+    persist();
+    cloudSet('filters', data);
+    if(!prevItem || prevItem.lastDate !== data.lastDate){ pushHistory(data); }
+    render();
+    closeModal();
+    toast(id ? 'Đã cập nhật' : 'Đã thêm mục mới', 'ok2');
+  };
+
+  document.getElementById('listWrap').addEventListener('click', function(e){
+    var histDelBtn = e.target.closest('button[data-hist-del]');
+    if(histDelBtn){
+      var hid = histDelBtn.getAttribute('data-hist-del');
+      var hEntry = state.history.find(function(h){ return h.id === hid; });
+      showConfirm('Xoá dòng lịch sử này? Hành động này không thể hoàn tác.', function(){
+        state.history = state.history.filter(function(h){ return h.id !== hid; });
+        persistHistory(); cloudDel('filter_history', hid); render();
+        toast('Đã xoá dòng lịch sử');
+      });
+      return;
+    }
+    var btn = e.target.closest('button[data-act]');
+    if(!btn) return;
+    var id = btn.getAttribute('data-id');
+    var item = state.items.find(function(i){ return i.id === id; });
+    if(!item) return;
+    var act = btn.getAttribute('data-act');
+    if(act === 'edit'){ openModal(item); }
+    else if(act === 'del'){
+      showConfirm('Xoá "'+item.name+'"? Hành động này không thể hoàn tác.', function(){
+        state.items = state.items.filter(function(i){ return i.id !== id; });
+        persist(); cloudDel('filters', id); render();
+        toast('Đã xoá');
+      });
+    } else if(act === 'done'){
+      item.lastDate = new Date().toISOString().slice(0,10);
+      persist();
+      cloudSet('filters', item);
+      pushHistory(item);
+      render();
+      toast('Đã cập nhật ngày cho "'+item.name+'"', 'ok2');
+    }
+  });
+
+  // ---- List / History view toggle ----
+  document.querySelectorAll('#viewToggle .filter-btn').forEach(function(btn){
+    btn.onclick = function(){
+      document.querySelectorAll('#viewToggle .filter-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      state.viewMode = btn.getAttribute('data-view');
+      document.getElementById('statusFilters').style.display = state.viewMode === 'history' ? 'none' : '';
+      document.getElementById('addBtn').style.display = state.viewMode === 'history' ? 'none' : '';
+      render();
+    };
+  });
+
+  // ---- Status filters ----
+  document.querySelectorAll('#statusFilters .filter-btn').forEach(function(btn){
+    btn.onclick = function(){
+      document.querySelectorAll('#statusFilters .filter-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      state.statusFilter = btn.getAttribute('data-filter');
+      render();
+    };
+  });
+
+
+  // ---- Xuất Excel ----
+  document.getElementById('exportFilterBtn').onclick = function(){
+    if(typeof XLSX === 'undefined'){ toast('Chưa tải được thư viện xuất Excel', 'err'); return; }
+    if(!state.items.length){ toast('Chưa có dữ liệu để xuất', 'err'); return; }
+    var list = state.items.map(function(it){ return Object.assign({}, it, computeItem(it)); })
+      .sort(function(a,b){ return a.daysLeft - b.daysLeft; });
+    var rows = [['TT','Loại lọc','Người thực hiện','Chu kỳ','Lần gần nhất','Hạn tiếp theo','Còn lại (ngày)','Trạng thái','Ghi chú']]
+      .concat(list.map(function(c,i){
+        return [i+1, c.type||c.name||'', c.performedBy||'', intervalText(c.intervalVal,c.intervalUnit), fmt(c.lastDate), fmt(c.nextDue), c.daysLeft, statusLabel[c.status], c.notes||''];
+      }));
+    var ws = XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols'] = [6,26,20,12,14,14,14,14,30].map(function(w){ return {wch:w}; });
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Thay lọc định kỳ');
+    var hist = state.history.slice().sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); });
+    if(hist.length){
+      var hr = [['Ngày','Loại lọc','Người thực hiện','Ghi chú']].concat(hist.map(function(h){
+        return [fmt(h.date), h.type||h.name||'', h.performedBy||'', h.notes||''];
+      }));
+      var ws2 = XLSX.utils.aoa_to_sheet(hr);
+      ws2['!cols'] = [14,26,20,30].map(function(w){ return {wch:w}; });
+      XLSX.utils.book_append_sheet(wb, ws2, 'Lịch sử');
+    }
+    var n = new Date();
+    XLSX.writeFile(wb, 'Thay_loc_dinh_ky_' + String(n.getDate()).padStart(2,'0') + '-' + String(n.getMonth()+1).padStart(2,'0') + '-' + n.getFullYear() + '.xlsx');
+  };
+
+  window.__maintSetTab = setActiveTab;
+  loadAll();
+
+  // ---- PWA: manifest + add-to-home-screen ----
+  (function(){
+    var manifest = {
+      name: "Quản lý thiết bị phòng LAB",
+      short_name: "Thiết bị LAB",
+      start_url: ".",
+      display: "standalone",
+      background_color: "#EDF0F1",
+      theme_color: "#1B2430"
+    };
+    var blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
+    document.getElementById('manifestLink').setAttribute('href', URL.createObjectURL(blob));
+
+    var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    var banner = document.getElementById('installBanner');
+    var bannerText = document.getElementById('installBannerText');
+    document.getElementById('installBannerClose').onclick = function(){ banner.classList.remove('show'); };
+
+    if(isStandalone) return;
+
+    var deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', function(e){
+      e.preventDefault();
+      deferredPrompt = e;
+      bannerText.innerHTML = '<b>Cài ứng dụng này vào máy?</b> Dùng như app, mở nhanh từ màn hình chính. <span class="mono" style="text-decoration:underline; cursor:pointer;" id="installNowLink">Cài đặt ngay</span>';
+      banner.classList.add('show');
+      document.getElementById('installNowLink').onclick = function(){
+        banner.classList.remove('show');
+        deferredPrompt.prompt();
+      };
+    });
+
+    var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    if(isIOS){
+      bannerText.innerHTML = '<b>Dùng như app trên iPhone/iPad:</b> bấm nút Chia sẻ (⬆) trên Safari → chọn "Thêm vào MH chính".';
+      banner.classList.add('show');
+    }
+  })();
+})();
+</script>
+<script>
+(function(){
+  var nav=document.getElementById("mainNav");
+  function show(v){
+    document.body.classList.toggle("v-maint", v!=="devices");
+    nav.querySelectorAll(".nav-btn").forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-view")===v); });
+    if(v!=="devices" && window.__maintSetTab) window.__maintSetTab(v);
+    try{ localStorage.setItem("lab_view", v); }catch(e){}
+  }
+  nav.querySelectorAll(".nav-btn").forEach(function(b){ b.addEventListener("click", function(){ show(b.getAttribute("data-view")); }); });
+  try{ var v=localStorage.getItem("lab_view"); if(v==="filter") show(v); }catch(e){}
 })();
 </script>
 </body>
