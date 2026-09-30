@@ -275,7 +275,26 @@ body.link-view .topnav,body.link-view #homeApp,body.link-view #maintApp,body.lin
 @media(max-width:980px){#monApp .mgrid{grid-template-columns:minmax(0,1fr)}#monApp .form-panel{position:static}}
 
 /* ===== Theo dõi thiết bị LABO ===== */
-#monApp .mgrid{display:grid;grid-template-columns:400px minmax(0,1fr);gap:20px;align-items:start}#monApp .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}#monApp .panel-head{padding:14px 18px;border-bottom:1px solid var(--border);background:var(--head)}#monApp .panel-head h2{font-size:1.05rem;margin:0;font-weight:600}#monApp .panel-body{padding:16px 18px 18px}#monApp .form-panel{position:sticky;top:12px}#monApp label{display:block;font-size:.85rem;color:var(--text-dim);margin:0 0 4px}#monApp input[type=text],#monApp input[type=number],#monApp select,#monApp textarea{ width:100%;padding:9px 10px;border:1px solid var(--border);border-radius:8px;background:var(--field);color:var(--text);font:inherit}#monApp input:focus-visible,#monApp select:focus-visible,#monApp textarea:focus-visible,#monApp button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}#monApp textarea{resize:vertical;min-height:70px}#monApp .device-line{margin:14px 0 4px;font-size:.95rem}#monApp .caption{font-size:.82rem;color:var(--text-dim);margin:2px 0 0}#monApp .caption.warn{color:var(--warn-ink);background:var(--warn-bg);padding:6px 10px;border-radius:8px}#monApp #fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}#monApp #fields > div{min-width:0}#monApp #fields .full{grid-column:1/-1}#monApp .tag{grid-column:1/-1;font-weight:600;font-size:.9rem;padding:6px 10px;border-radius:8px;margin-top:4px}#monApp .tag.set{background:var(--set-bg);color:var(--set-ink)}#monApp .tag.act{background:var(--act-bg);color:var(--act-ink)}#monApp .check{display:flex;align-items:center;gap:8px;color:var(--text);font-size:1rem;margin:0;padding:9px 10px;border:1px solid var(--border);border-radius:8px;background:var(--field)}#monApp .check input{width:18px;height:18px;accent-color:var(--accent)}#monApp .note-wrap{margin-top:16px}#monApp .mbtn{margin-top:16px;width:100%;padding:12px 14px;border:0;border-radius:8px;background:var(--accent);color:var(--accent-ink);font:inherit;font-weight:600;cursor:pointer}#monApp .mbtn:disabled{opacity:.6;cursor:wait}#monApp .msg{margin-top:12px;padding:10px 12px;border-radius:8px;font-size:.92rem}#monApp .msg.err{background:var(--err-bg);color:var(--err-ink)}#monApp .msg.ok{background:var(--ok-bg);color:var(--ok-ink)}#monApp .msg.info{background:var(--info-bg);color:var(--info-ink)}#monApp .msg.warn{background:var(--warn-bg);color:var(--warn-ink)}#monApp .filters{display:flex;gap:12px;flex-wrap:wrap;align-items:end}#monApp .filters > div{flex:1 1 200px}#monApp .result-line{margin:14px 0 10px;color:var(--text-dim);font-size:.92rem}#monApp .result-line strong{color:var(--text)}#monApp .table-scroll{overflow:auto;border:1px solid var(--border);border-radius:8px;max-height:calc(100vh - 300px);min-height:200px}#monApp table{border-collapse:collapse;width:100%;font-size:.88rem}#monApp th,#monApp td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}#monApp td.note{white-space:normal;min-width:140px}#monApp th{background:var(--head);position:sticky;top:0;font-weight:600}#monApp tbody tr:nth-child(even){background:var(--zebra)}#monApp tr:last-child td{border-bottom:0}#monApp .tools{display:flex;gap:12px;flex-wrap:wrap;align-items:end;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}#monApp .tools > div{flex:0 1 160px}#monApp .tools .mbtn{margin:0;width:auto;padding:9px 16px;flex:0 0 auto}#monApp .mbtn.alt{background:var(--set-bg);color:var(--set-ink)}#monApp .export-msg{margin-top:10px}#monApp .day{border:1px solid var(--border);border-radius:10px;margin-top:10px;overflow:hidden;background:var(--surface)}#monApp .day > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--head);font-weight:600}#monApp .day > summary::-webkit-details-marker{display:none}#monApp .day > summary::before{content:"▸";color:var(--accent);transition:transform .15s}#monApp .day[open] > summary::before{transform:rotate(90deg)}#monApp .day .dow{color:var(--text-dim);font-weight:400}#monApp .day .count{margin-left:auto;font-size:.8rem;font-weight:500;background:var(--set-bg);color:var(--set-ink);padding:2px 10px;border-radius:999px}#monApp .day .table-scroll{border:0;border-top:1px solid var(--border);border-radius:0;max-height:480px;min-height:0}#monApp input[type=date]{width:100%;padding:9px 10px;border:1px solid var(--border);border-radius:8px;background:var(--field);color:var(--text);font:inherit} 
+#monApp .mgrid{display:grid;grid-template-columns:400px minmax(0,1fr);gap:20px;align-items:start}#monApp .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}#monApp .panel-head{padding:14px 18px;border-bottom:1px solid var(--border);background:var(--head)}#monApp .panel-head h2{font-size:1.05rem;margin:0;font-weight:600}#monApp .panel-body{padding:16px 18px 18px}#monApp .form-panel{position:sticky;top:12px}#monApp label{display:block;font-size:.85rem;color:var(--text-dim);margin:0 0 4px}#monApp input[type=text],#monApp input[type=number],#monApp select,#monApp textarea{ width:100%;padding:9px 10px;border:1px solid var(--border);border-radius:8px;background:var(--field);color:var(--text);font:inherit}#monApp input:focus-visible,#monApp select:focus-visible,#monApp textarea:focus-visible,#monApp button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}#monApp textarea{resize:vertical;min-height:70px}#monApp .device-line{margin:14px 0 4px;font-size:.95rem}#monApp .caption{font-size:.82rem;color:var(--text-dim);margin:2px 0 0}#monApp .caption.warn{color:var(--warn-ink);background:var(--warn-bg);padding:6px 10px;border-radius:8px}#monApp #mon-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}#monApp #mon-fields > div{min-width:0}#monApp #mon-fields .full{grid-column:1/-1}#monApp .tag{grid-column:1/-1;font-weight:600;font-size:.9rem;padding:6px 10px;border-radius:8px;margin-top:4px}#monApp .tag.set{background:var(--set-bg);color:var(--set-ink)}#monApp .tag.act{background:var(--act-bg);color:var(--act-ink)}#monApp .check{display:flex;align-items:center;gap:8px;color:var(--text);font-size:1rem;margin:0;padding:9px 10px;border:1px solid var(--border);border-radius:8px;background:var(--field)}#monApp .check input{width:18px;height:18px;accent-color:var(--accent)}#monApp .note-wrap{margin-top:16px}#monApp .mbtn{margin-top:16px;width:100%;padding:12px 14px;border:0;border-radius:8px;background:var(--accent);color:var(--accent-ink);font:inherit;font-weight:600;cursor:pointer}#monApp .mbtn:disabled{opacity:.6;cursor:wait}#monApp .msg{margin-top:12px;padding:10px 12px;border-radius:8px;font-size:.92rem}#monApp .msg.err{background:var(--err-bg);color:var(--err-ink)}#monApp .msg.ok{background:var(--ok-bg);color:var(--ok-ink)}#monApp .msg.info{background:var(--info-bg);color:var(--info-ink)}#monApp .msg.warn{background:var(--warn-bg);color:var(--warn-ink)}#monApp .filters{display:flex;gap:12px;flex-wrap:wrap;align-items:end}#monApp .filters > div{flex:1 1 200px}#monApp .result-line{margin:14px 0 10px;color:var(--text-dim);font-size:.92rem}#monApp .result-line strong{color:var(--text)}#monApp .table-scroll{overflow:auto;border:1px solid var(--border);border-radius:8px;max-height:calc(100vh - 300px);min-height:200px}#monApp table{border-collapse:collapse;width:100%;font-size:.88rem}#monApp th,#monApp td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}#monApp td.note{white-space:normal;min-width:140px}#monApp th{background:var(--head);position:sticky;top:0;font-weight:600}#monApp tbody tr:nth-child(even){background:var(--zebra)}#monApp tr:last-child td{border-bottom:0}#monApp .tools{display:flex;gap:12px;flex-wrap:wrap;align-items:end;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}#monApp .tools > div{flex:0 1 160px}#monApp .tools .mbtn{margin:0;width:auto;padding:9px 16px;flex:0 0 auto}#monApp .mbtn.alt{background:var(--set-bg);color:var(--set-ink)}#monApp .export-msg{margin-top:10px}#monApp .day{border:1px solid var(--border);border-radius:10px;margin-top:10px;overflow:hidden;background:var(--surface)}#monApp .day > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--head);font-weight:600}#monApp .day > summary::-webkit-details-marker{display:none}#monApp .day > summary::before{content:"▸";color:var(--accent);transition:transform .15s}#monApp .day[open] > summary::before{transform:rotate(90deg)}#monApp .day .dow{color:var(--text-dim);font-weight:400}#monApp .day .count{margin-left:auto;font-size:.8rem;font-weight:500;background:var(--set-bg);color:var(--set-ink);padding:2px 10px;border-radius:999px}#monApp .day .table-scroll{border:0;border-top:1px solid var(--border);border-radius:0;max-height:480px;min-height:0}#monApp input[type=date]{width:100%;padding:9px 10px;border:1px solid var(--border);border-radius:8px;background:var(--field);color:var(--text);font:inherit} 
+
+#calApp,#gasApp{--head:color-mix(in srgb,var(--text) 6%,var(--surface));--field:var(--surface);--zebra:color-mix(in srgb,var(--text) 3%,var(--surface));--set-bg:var(--accent-soft);--set-ink:var(--accent);--soft-bg:var(--accent-soft);--soft-ink:var(--accent);--voc-bg:var(--danger-soft);--voc-ink:var(--danger);--act-bg:var(--ok-soft);--act-ink:var(--ok);--warn-bg:var(--warn-soft);--warn-ink:var(--warn);--err-bg:var(--danger-soft);--err-ink:var(--danger);--ok-bg:var(--ok-soft);--ok-ink:var(--ok);--info-bg:var(--accent-soft);--info-ink:var(--accent);--accent-ink:var(--bg)}
+.mon-bar{display:flex;gap:14px;flex-wrap:wrap;align-items:end;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:18px}
+.mon-field{flex:1 1 230px}.mon-date{display:flex;gap:8px;align-items:center}.mon-date input{flex:1}
+.mon-date .mbtn{margin:0;width:auto;padding:8px 12px}
+.mon-status{font-size:12.5px;padding:4px 12px;border-radius:999px;background:var(--border);color:var(--text-dim);white-space:nowrap}
+.mon-status.ok{background:var(--ok-soft);color:var(--ok)}.mon-status.bad{background:var(--danger-soft);color:var(--danger)}
+#calApp input.missing,#gasApp input.missing{border-color:var(--danger);box-shadow:0 0 0 2px var(--danger-soft)}
+@media(max-width:980px){#calApp .mgrid,#gasApp .mgrid{grid-template-columns:minmax(0,1fr)}#calApp .form-panel,#gasApp .form-panel{position:static}}
+@media(max-width:420px){#calApp .row2,#gasApp .row2{grid-template-columns:1fr}}
+@media print{#gasApp .form-panel,#gasApp .tools,#gasApp .mon-bar,#gasApp header.top{display:none!important}#gasApp .mgrid{display:block}#gasApp .table-scroll{max-height:none;overflow:visible}}
+body:not([data-view="calib"]) #calApp{display:none}
+body:not([data-view="gas"]) #gasApp{display:none}
+body.link-view #calApp,body.link-view #gasApp{display:none!important}
+
+/* ===== Hiệu chuẩn tủ nuôi ===== */
+#calApp .wrap{max-width:1400px;margin:0 auto;padding:20px 24px 48px}#calApp .mgrid{display:grid;grid-template-columns:420px minmax(0,1fr);gap:20px;align-items:start}#calApp .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}#calApp .panel-head{padding:14px 18px;border-bottom:1px solid var(--border);background:var(--head)}#calApp .panel-head h2{font-size:1.05rem;margin:0;font-weight:600}#calApp .panel-body{padding:16px 18px 18px}#calApp .form-panel{position:sticky;top:12px}#calApp label{display:block;font-size:.85rem;color:var(--text-dim);margin:0 0 4px}#calApp input,#calApp select,#calApp textarea{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--field);color:var(--text);font:inherit}#calApp input:focus-visible,#calApp select:focus-visible,#calApp textarea:focus-visible,#calApp button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}#calApp textarea{resize:vertical;min-height:80px}#calApp .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}#calApp .banner{margin:16px 0 12px;padding:8px 12px;border-radius:8px;font-weight:600;font-size:.92rem}#calApp .banner.ok{background:var(--set-bg);color:var(--set-ink)}#calApp .banner.warn{background:var(--voc-bg);color:var(--voc-ink)}#calApp .banner.info{background:var(--info-bg);color:var(--info-ink)}#calApp .group-title{grid-column:1/-1;font-weight:600;font-size:.92rem;margin:10px 0 0;padding:6px 12px;border-radius:8px;background:var(--head);border-left:4px solid var(--accent)}#calApp .chint{grid-column:1/-1;font-size:.8rem;color:var(--text-dim);margin:-4px 0 0 2px}#calApp #cal-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}#calApp #cal-fields > div{min-width:0;display:flex;flex-direction:column;justify-content:flex-end}#calApp #cal-fields label{min-height:1.3em}#calApp #cal-fields .full{grid-column:1/-1}#calApp .mbtn{margin-top:16px;width:100%;padding:13px 14px;border:0;border-radius:10px;background:var(--accent);color:var(--accent-ink);font:inherit;font-size:1rem;font-weight:700;cursor:pointer}#calApp .mbtn:disabled{opacity:.6;cursor:wait}#calApp .msg{margin-top:12px;padding:10px 12px;border-radius:8px;font-size:.92rem}#calApp .msg.err{background:var(--err-bg);color:var(--err-ink)}#calApp .msg.ok{background:var(--ok-bg);color:var(--ok-ink)}#calApp .msg.info{background:var(--info-bg);color:var(--info-ink)}#calApp .result-line{margin:0 0 10px;color:var(--text-dim);font-size:.92rem}#calApp .result-line strong{color:var(--text)}#calApp .table-scroll{overflow:auto;border:1px solid var(--border);border-radius:8px;max-height:calc(100vh - 220px);min-height:160px}#calApp table{border-collapse:collapse;width:100%;font-size:.86rem}#calApp th,#calApp td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}#calApp td.note{white-space:normal;min-width:140px}#calApp th{background:var(--head);position:sticky;top:0;font-weight:600}#calApp tbody tr:nth-child(even){background:var(--zebra)}#calApp tr:last-child td{border-bottom:0}#calApp .right{flex-wrap:wrap}#calApp .tools{display:flex;gap:12px;flex-wrap:wrap;align-items:end;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}#calApp .tools > div{flex:0 1 160px}#calApp .tools .mbtn{margin:0;width:auto;padding:9px 16px;flex:0 0 auto;font-size:.95rem;background:var(--set-bg);color:var(--set-ink)}#calApp .export-msg{margin-top:10px}#calApp .day{border:1px solid var(--border);border-radius:10px;margin-top:10px;overflow:hidden;background:var(--surface)}#calApp .day > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--head);font-weight:600}#calApp .day > summary::-webkit-details-marker{display:none}#calApp .day > summary::before{content:"▸";color:var(--accent);transition:transform .15s}#calApp .day[open] > summary::before{transform:rotate(90deg)}#calApp .day .dow{color:var(--text-dim);font-weight:400}#calApp .day .count{margin-left:auto;font-size:.8rem;font-weight:500;background:var(--set-bg);color:var(--set-ink);padding:2px 10px;border-radius:999px}#calApp .day .table-scroll{border:0;border-top:1px solid var(--border);border-radius:0;max-height:480px;min-height:0} 
+/* ===== Thay bình khí ===== */
+#gasApp .wrap{max-width:1400px;margin:0 auto;padding:20px 24px 48px}#gasApp .mgrid{display:grid;grid-template-columns:420px minmax(0,1fr);gap:20px;align-items:start}#gasApp .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}#gasApp .panel-head{padding:14px 18px;border-bottom:1px solid var(--border);background:var(--head)}#gasApp .panel-head h2{font-size:1.05rem;margin:0;font-weight:600}#gasApp .panel-body{padding:16px 18px 18px}#gasApp .form-panel{position:sticky;top:12px}#gasApp label{display:block;font-size:.85rem;color:var(--text-dim);margin:0 0 4px}#gasApp input,#gasApp select,#gasApp textarea{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--field);color:var(--text);font:inherit}#gasApp input:focus-visible,#gasApp select:focus-visible,#gasApp button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}#gasApp input.missing{border-color:#e5484d;box-shadow:0 0 0 2px rgba(229,72,77,.25)}#gasApp .gfield{margin-top:14px}#gasApp .sn-list{display:grid;gap:8px}#gasApp .sn-row{display:flex;align-items:center;gap:10px}#gasApp .sn-row span{font-size:.82rem;color:var(--text-dim);min-width:46px}#gasApp input:disabled{opacity:.55;cursor:not-allowed}#gasApp .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}#gasApp .row2 .gfield{margin-top:0}#gasApp .mbtn{margin-top:18px;width:100%;padding:13px 14px;border:0;border-radius:10px;background:var(--accent);color:var(--accent-ink);font:inherit;font-size:1rem;font-weight:700;cursor:pointer}#gasApp .mbtn:disabled{opacity:.6;cursor:wait}#gasApp .mbtn.alt{margin:0;width:auto;padding:10px 16px;font-size:.95rem;background:var(--soft-bg);color:var(--soft-ink)}#gasApp .msg{margin-top:12px;padding:10px 12px;border-radius:8px;font-size:.92rem}#gasApp .msg.err{background:var(--err-bg);color:var(--err-ink)}#gasApp .msg.ok{background:var(--ok-bg);color:var(--ok-ink)}#gasApp .msg.warn{background:var(--warn-bg);color:var(--warn-ink)}#gasApp .msg.info{background:var(--info-bg);color:var(--info-ink)}#gasApp .tools{display:flex;gap:12px;flex-wrap:wrap;align-items:end}#gasApp .tools > div{flex:0 1 170px}#gasApp .tools.sep{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}#gasApp .result-line{margin:14px 0 10px;color:var(--text-dim);font-size:.92rem}#gasApp .result-line strong{color:var(--text)}#gasApp .table-scroll{overflow:auto;border:1px solid var(--border);border-radius:8px;max-height:calc(100vh - 340px);min-height:160px}#gasApp table{border-collapse:collapse;width:100%;font-size:.88rem}#gasApp th,#gasApp td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}#gasApp th{background:var(--head);position:sticky;top:0;font-weight:600}#gasApp tbody tr:nth-child(even){background:var(--zebra)}#gasApp tr:last-child td{border-bottom:0}#gasApp td.num{text-align:right}#gasApp .pill{display:inline-block;padding:1px 10px;border-radius:999px;font-size:.8rem;font-weight:600;background:var(--soft-bg);color:var(--soft-ink)} 
 </style>
 </head>
 <body data-view="home">
@@ -291,6 +310,8 @@ body.link-view .topnav,body.link-view #homeApp,body.link-view #maintApp,body.lin
       <button class="tile" data-view="devices"><span class="cnt" id="navCountDev">0</span><div class="ic">📋</div><h2>Danh sách thiết bị</h2><p>Quản lý thiết bị, lịch bảo trì, mã QR, in phiếu và xuất Excel.</p></button>
       <button class="tile" data-view="filter"><span class="cnt" id="countFilter">0</span><div class="ic">🧯</div><h2>Thay lọc định kỳ</h2><p>Theo dõi hạn thay lọc, cảnh báo quá hạn và lịch sử thay lọc.</p></button>
       <button class="tile" data-view="monitor"><div class="ic">🔬</div><h2>Theo dõi thiết bị LABO</h2><p>Ghi nhận thông số vận hành hằng ngày, xem lịch sử theo ngày và xuất Excel.</p></button>
+      <button class="tile" data-view="calib"><div class="ic">🌡️</div><h2>Đo và hiệu chuẩn tủ nuôi</h2><p>Ghi nhận CO2, O2, VOCs, độ bụi và hiệu chuẩn, xem lịch sử, xuất Excel.</p></button>
+      <button class="tile" data-view="gas"><div class="ic">🧪</div><h2>Giám sát thay bình khí</h2><p>Ghi lịch thay khí N2, CO2, khí trộn (S/N), tra cứu theo tháng, in và xuất Excel.</p></button>
     </div>
   </div>
   <div class="install-banner no-print" id="installBanner">
@@ -460,6 +481,119 @@ body.link-view .topnav,body.link-view #homeApp,body.link-view #maintApp,body.lin
           <p class="result-line" id="mon-result-line"></p>
           <div id="mon-no-match" class="msg warn" hidden>Không có dữ liệu ghi nhận nào khớp với bộ lọc đã chọn.</div>
           <div id="mon-day-list"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+  </div>
+
+  <div id="calApp">
+    <header class="top no-print"><div><h1>🌡️ Đo và hiệu chuẩn tủ nuôi</h1><div class="sub">Ghi nhận CO2, O2, VOCs, độ bụi và hiệu chuẩn (lưu trên Firebase)</div></div></header>
+    <div class="mon-bar">
+      <div class="mon-field"><label for="cal-ngay-do">🗓️ Ngày đo</label><div class="mon-date"><input type="date" id="cal-ngay-do"><span id="cal-work-dow"></span><button type="button" class="mbtn alt" id="cal-today-btn" title="Về ngày hôm nay">↺</button></div></div>
+      <div class="mon-field"><label for="cal-inspector">👤 Chuyên viên</label><input type="text" id="cal-inspector" autocomplete="name" placeholder="Nhập tên chuyên viên"></div>
+      <span class="mon-status" id="cal-status">Đang kết nối…</span>
+    </div>
+    <div class="mgrid">
+    <section class="panel form-panel">
+      <div class="panel-head"><h2>📝 Nhập thông số</h2></div>
+      <div class="panel-body">
+        <label for="cal-hang-muc">🎛️ Chọn tủ / Thông số</label>
+        <select id="cal-hang-muc"></select>
+        <div id="cal-banner"></div>
+        <div id="cal-fields"></div>
+        <div style="margin-top:14px">
+          <label for="cal-ghi-chu">📝 Ghi chú thêm (nếu có)</label>
+          <textarea id="cal-ghi-chu" placeholder="Nhập tình trạng thiết bị..."></textarea>
+        </div>
+        <button class="mbtn" id="cal-submit" type="button">💾 LƯU DỮ LIỆU</button>
+        <div id="cal-submit-msg" role="status"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>📊 Lịch sử dữ liệu</h2></div>
+      <div class="panel-body">
+        <div id="cal-history-empty" class="msg info" style="margin-top:0" hidden>Chưa có dữ liệu nào được ghi lại.</div>
+        <div id="cal-history-body" hidden>
+          <div class="tools" style="margin-top:0;padding-top:0;border-top:0">
+            <div style="flex:1 1 220px"><label for="cal-filter-hm">Xem theo hạng mục</label><select id="cal-filter-hm"></select></div>
+          </div>
+          <div class="tools">
+            <div><label for="cal-exp-from">Xuất Excel từ ngày</label><input type="date" id="cal-exp-from"></div>
+            <div><label for="cal-exp-to">đến ngày</label><input type="date" id="cal-exp-to"></div>
+            <button class="mbtn" id="cal-export-btn" type="button">📥 Xuất Excel</button>
+          </div>
+          <div style="font-size:.82rem;color:var(--muted);margin-top:6px">Bản xuất áp dụng theo hạng mục đang chọn ở trên.</div>
+          <div id="cal-export-msg" role="status"></div>
+          <p class="result-line" id="cal-result-line" style="margin-top:14px"></p>
+          <div id="cal-no-match" class="msg warn" hidden>Không có dữ liệu nào khớp với bộ lọc đã chọn.</div>
+          <div id="cal-day-list"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+  </div>
+
+  <div id="gasApp">
+    <header class="top no-print"><div><h1>🧪 Giám sát thay bình khí</h1><div class="sub">Lịch thay khí N2, CO2, khí trộn Trigas của IVF LAB (lưu trên Firebase)</div></div></header>
+    <div class="mon-bar no-print"><span class="mon-status" id="gas-status">Đang kết nối…</span></div>
+    <div class="mgrid">
+    <section class="panel form-panel">
+      <div class="panel-head"><h2>📝 Cập nhật lịch thay khí</h2></div>
+      <div class="panel-body">
+        <label for="gas-gas-type" style="margin-top:0">Loại khí</label>
+        <select id="gas-gas-type">
+          <option>Khí Nitơ (N2)</option>
+          <option>Khí CO2</option>
+          <option>Khí trộn (Trigas)</option>
+        </select>
+
+        <div class="gfield" id="gas-sn-wrap">
+          <label id="gas-sn-label">Số S/N</label>
+          <div class="sn-list" id="gas-sn-list"></div>
+        </div>
+
+        <div class="row2">
+          <div class="gfield"><label for="gas-date">Ngày thay</label><input type="date" id="gas-date"></div>
+          <div class="gfield"><label for="gas-qty">Số lượng bình</label><input type="number" id="gas-qty" min="1" step="1" value="1" inputmode="numeric"></div>
+        </div>
+        <div class="gfield">
+          <label for="gas-branch">Nhánh thay / Vị trí tủ</label>
+          <input type="text" id="gas-branch" placeholder="Ví dụ: Nhánh A, Tủ 1...">
+        </div>
+        <div class="gfield">
+          <label for="gas-user">Người thực hiện</label>
+          <input type="text" id="gas-user" placeholder="Tên nhân viên" autocomplete="name">
+        </div>
+
+        <button class="mbtn" id="gas-submit" type="button">💾 LƯU THÔNG TIN</button>
+        <div id="gas-submit-msg" role="status"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>📊 Tra cứu lịch sử</h2></div>
+      <div class="panel-body">
+        <div id="gas-history-empty" class="msg info" style="margin-top:0" hidden>Chưa có dữ liệu. Hãy nhập thông tin ở form nhập liệu.</div>
+        <div id="gas-history-body" hidden>
+          <div class="tools">
+            <div style="flex:1 1 220px"><label for="gas-filter-month">Xem dữ liệu theo tháng</label><select id="gas-filter-month"></select></div>
+          </div>
+          <div class="tools sep">
+            <div><label for="gas-exp-from">Xuất Excel từ ngày</label><input type="date" id="gas-exp-from"></div>
+            <div><label for="gas-exp-to">đến ngày</label><input type="date" id="gas-exp-to"></div>
+            <button class="mbtn alt" id="gas-export-btn" type="button">📥 Xuất Excel</button>
+            <button class="mbtn alt" id="gas-print-btn" type="button">🖨️ In</button>
+          </div>
+          <div id="gas-export-msg" role="status"></div>
+          <p class="result-line" id="gas-result-line"></p>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Ngày thay</th><th>Loại khí</th><th>Số S/N</th><th>Nhánh thay</th><th style="text-align:right">Số lượng</th><th>Người thực hiện</th></tr></thead>
+              <tbody id="gas-tbody"></tbody>
+            </table>
+          </div>
         </div>
       </div>
     </section>
@@ -1805,7 +1939,7 @@ body.link-view .topnav,body.link-view #homeApp,body.link-view #maintApp,body.lin
 </script>
 <script>
 (function(){
-  var titles={home:"",devices:"Danh sách thiết bị",filter:"Thay lọc định kỳ",monitor:"Theo dõi thiết bị LABO"};
+  var titles={home:"",devices:"Danh sách thiết bị",filter:"Thay lọc định kỳ",monitor:"Theo dõi thiết bị LABO",calib:"Đo và hiệu chuẩn tủ nuôi",gas:"Giám sát thay bình khí"};
   function show(v,push){
     document.body.setAttribute("data-view",v);
     document.getElementById("topTitle").textContent=titles[v]||"";
@@ -2107,6 +2241,424 @@ function paintToday() {
   updateInspectorCaption();
   renderFields();
   renderHistory(false);
+  listenHistory();
+})();
+
+})();
+</script>
+<script>
+(function(){
+const COLLECTION_NAME = "calibration_logs";
+let db = null;
+try { if (window.firebase && firebase.apps.length) db = firebase.firestore(); } catch (e) { db = null; }
+const FIREBASE_READY = !!db;
+
+/* =====================================================================
+   DANH SÁCH HẠNG MỤC + CẤU HÌNH TRƯỜNG NHẬP
+   ===================================================================== */
+const TU_CHI_CO2 = ["Tủ A1", "Tủ A2", "Tủ A3", "Chamber 1", "Chamber 2"];
+const TU_CO2_O2_HC = ["Tủ A4", "Tủ A5"];            // chỉ A4, A5 có hiệu chuẩn O2
+const HANG_MUC_KHAC = ["Tủ BT37/ Geri", "Độ bụi", "VOCs"];
+const ALL = [...TU_CHI_CO2, ...TU_CO2_O2_HC, ...HANG_MUC_KHAC];
+
+const F = (key, label, min, max, step, dec) => ({ key, label, min, max, step, dec });
+const CO2_DO = F("co2_do", "CO2 đo được (%)", 0, 20, 0.1, 1);
+const CO2_HC = F("co2_hc", "CO2 hiệu chuẩn (%)", 0, 20, 0.1, 1);
+const O2_DO  = F("o2_do", "O2 đo được (%)", 0, 25, 0.1, 1);
+const O2_HC  = F("o2_hc", "O2 hiệu chuẩn (%)", 0, 25, 0.1, 1);
+
+function layoutFor(hm) {
+  if (hm === "VOCs") return { banner: ["warn", "☣️ THÔNG SỐ VOCs KHÔNG KHÍ"],
+    groups: [{ fields: [F("vocs", "Nồng độ VOCs thực tế (PPM)", 0, 100, 0.01, 2)], full: true }] };
+  if (hm === "Độ bụi") return { banner: ["info", "🛡️ THÔNG SỐ ĐỘ BỤI PHÒNG LAB"],
+    groups: [{ fields: [F("bui_03", "Kích thước hạt 0.3 µm", 0, Infinity, 1, 0), F("bui_05", "Kích thước hạt 0.5 µm", 0, Infinity, 1, 0), F("bui_5", "Kích thước hạt 5 µm", 0, Infinity, 1, 0)] }] };
+  if (hm === "Tủ BT37/ Geri") return { banner: ["ok", "📊 THÔNG SỐ TỦ: BT37 / GERI"],   // không có hiệu chuẩn
+    groups: [{ fields: [F("co2_do", "Thông số CO2 đo được (%)", 0, 20, 0.1, 1), F("o2_do", "Thông số O2 đo được (%)", 0, 25, 0.1, 1)] }] };
+  const groups = [{ title: "Thông số CO2", hint: "Để 0 nếu không hiệu chuẩn", fields: [CO2_DO, CO2_HC] }];
+  if (TU_CO2_O2_HC.includes(hm)) groups.push({ title: "Thông số O2", hint: "Để 0 nếu không hiệu chuẩn", fields: [O2_DO, O2_HC] });
+  return { banner: ["ok", `📊 THÔNG SỐ TỦ: ${hm.toUpperCase()}`], groups };
+}
+
+const COLS = ["Ngày đo", "Hạng mục kiểm tra", "Chuyên viên", "CO2 Đo Được (%)", "CO2 Hiệu Chuẩn (%)", "O2 Đo Được (%)", "O2 Hiệu Chuẩn (%)",
+              "VOCs (PPM)", "Bụi 0.3µm", "Bụi 0.5µm", "Bụi 5µm", "Ghi chú"];
+
+/* =====================================================================
+   TIỆN ÍCH
+   ===================================================================== */
+const $ = (id) => document.getElementById("cal-" + id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const pad = (n) => String(n).padStart(2, "0");
+const todayStr = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
+const pyFloat = (v) => Number.isInteger(v) ? v.toFixed(1) : String(v);   // giống str(float) của Python
+let localData = [];
+
+/* =====================================================================
+   FORM ĐỘNG
+   ===================================================================== */
+function renderForm() {
+  const hm = $("hang-muc").value;
+  const { banner, groups } = layoutFor(hm);
+  $("banner").innerHTML = `<div class="banner ${banner[0]}">${esc(banner[1])}</div>`;
+  let html = "";
+  groups.forEach(g => {
+    if (g.title) html += `<div class="group-title">${esc(g.title)}</div>` + (g.hint ? `<div class="chint">${esc(g.hint)}</div>` : "");
+    g.fields.forEach(f => {
+      const full = g.full ? " full" : "";
+      html += `<div class="${full.trim()}"><label for="cal-in-${f.key}">${esc(f.label)}</label>
+        <input type="number" id="cal-in-${f.key}" data-key="${f.key}" min="${f.min}" ${Number.isFinite(f.max) ? `max="${f.max}"` : ""}
+          step="${f.step}" value="${f.dec ? (0).toFixed(f.dec) : 0}" inputmode="decimal"></div>`;
+    });
+  });
+  $("fields").innerHTML = html;
+  $("submit-msg").innerHTML = "";
+}
+
+function showMsg(type, text) { $("submit-msg").innerHTML = `<div class="msg ${type}">${esc(text)}</div>`; }
+
+/* =====================================================================
+   LƯU DỮ LIỆU
+   ===================================================================== */
+async function submitForm() {
+  if (!FIREBASE_READY) return showMsg("err", "⚠️ Chưa kết nối được Firebase nên chưa thể lưu dữ liệu.");
+  const hm = $("hang-muc").value;
+  const ngay = $("ngay-do").value || todayStr();
+  const inspector = $("inspector").value.trim();
+  if (!inspector) {
+    $("inspector").classList.add("missing"); $("inspector").focus();
+    return showMsg("err", "⚠️ Vui lòng nhập tên chuyên viên ở thanh trên cùng trước khi lưu.");
+  }
+  const { groups } = layoutFor(hm);
+
+  // Đọc giá trị từng trường (kiểm tra min/max như st.number_input)
+  const vals = {};
+  for (const g of groups) for (const f of g.fields) {
+    const raw = parseFloat($("in-" + f.key).value);
+    const v = Number.isNaN(raw) ? 0 : raw;
+    if (v < f.min || v > f.max) return showMsg("err", `⚠️ "${f.label}" phải nằm trong khoảng ${f.min} – ${f.max}.`);
+    const p = Math.pow(10, f.dec);
+    vals[f.key] = Math.round(v * p) / p;
+  }
+  const has = (k) => k in vals;
+  const num = (k, dec) => has(k) ? (dec === 0 ? String(vals[k]) : pyFloat(vals[k])) : "N/A";
+  // Hiệu chuẩn: > 0 thì lấy giá trị, ngược lại là "Không"; trường không áp dụng là "N/A"
+  const hc = (k) => has(k) ? (vals[k] > 0 ? pyFloat(vals[k]) : "Không") : "N/A";
+
+  const rec = {
+    "Ngày đo": ngay, "Hạng mục kiểm tra": hm, "Chuyên viên": inspector,
+    "CO2 Đo Được (%)": num("co2_do"), "CO2 Hiệu Chuẩn (%)": hc("co2_hc"),
+    "O2 Đo Được (%)": num("o2_do"), "O2 Hiệu Chuẩn (%)": hc("o2_hc"),
+    "VOCs (PPM)": num("vocs"), "Bụi 0.3µm": num("bui_03", 0), "Bụi 0.5µm": num("bui_05", 0), "Bụi 5µm": num("bui_5", 0),
+    "Ghi chú": $("ghi-chu").value,
+    createdAt: Date.now()
+  };
+
+  const btn = $("submit");
+  btn.disabled = true;
+  try {
+    await db.collection(COLLECTION_NAME).add(rec);
+    showMsg("ok", `🎉 Đã lưu thành công dữ liệu cho ${hm}!`);
+    $("ghi-chu").value = "";                        // clear_on_submit
+    const msg = $("submit-msg").innerHTML;
+    renderForm();
+    $("submit-msg").innerHTML = msg;
+  } catch (e) {
+    showMsg("err", "⚠️ Lưu thất bại: " + e.message + (e.code === "permission-denied" ? " — cần cho phép ghi collection \"calibration_logs\" trong Rules của Firestore." : ""));
+  }
+  btn.disabled = false;
+}
+
+/* =====================================================================
+   LỊCH SỬ (thời gian thực từ Firebase)
+   ===================================================================== */
+function setStatus(cls, text) { const el = $("status"); el.className = "mon-status " + cls; el.textContent = text; }
+
+const DOW = ["Chủ nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+const openDays = new Set();
+const fmtDay = (iso) => { const [y, m, d] = iso.split("-"); return `${d}/${m}/${y}`; };
+const dowOf = (iso) => { const [y, m, d] = iso.split("-").map(Number); return DOW[new Date(y, m - 1, d).getDay()]; };
+const SHOW_COLS = COLS.filter(c => c !== "Ngày đo");
+
+function filteredRows() {
+  const hm = $("filter-hm").value;
+  return hm === "Tất cả" ? localData : localData.filter(r => r["Hạng mục kiểm tra"] === hm);
+}
+
+function renderHistory() {
+  const empty = localData.length === 0;
+  $("history-empty").hidden = !empty;
+  $("history-body").hidden = empty;
+  if (empty) return;
+  const rows = filteredRows();
+  const byDay = {};
+  rows.forEach(r => { const k = r["Ngày đo"] || "—"; (byDay[k] = byDay[k] || []).push(r); });
+  const days = Object.keys(byDay).sort().reverse();
+  $("result-line").innerHTML = `Hạng mục: <strong>${esc($("filter-hm").value)}</strong> · <strong>${days.length}</strong> ngày · <strong>${rows.length}</strong> bản ghi`;
+  $("no-match").hidden = days.length > 0;
+  $("day-list").innerHTML = days.map(day => {
+    const list = byDay[day];   // localData đã sắp mới nhất trước
+    const trs = list.map(r => "<tr>" + SHOW_COLS.map(c => `<td class="${c === "Ghi chú" ? "note" : ""}">${esc(r[c])}</td>`).join("") + "</tr>").join("");
+    const head = day === "—" ? "Không rõ ngày" : `<span>${fmtDay(day)}</span><span class="dow">${dowOf(day)}</span>`;
+    return `<details class="day" data-day="${esc(day)}" ${openDays.has(day) ? "open" : ""}>
+      <summary>${head}<span class="count">${list.length} bản ghi</span></summary>
+      <div class="table-scroll"><table><thead><tr>${SHOW_COLS.map(c => `<th>${esc(c)}</th>`).join("")}</tr></thead>
+      <tbody>${trs}</tbody></table></div></details>`;
+  }).join("");
+}
+
+function exportExcel() {
+  const box = $("export-msg");
+  const from = $("exp-from").value, to = $("exp-to").value;
+  const say = (t, txt) => { box.innerHTML = `<div class="msg ${t} export-msg">${esc(txt)}</div>`; };
+  if (!from || !to) return say("err", "Vui lòng chọn đủ ngày bắt đầu và ngày kết thúc.");
+  if (from > to) return say("err", "Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày kết thúc.");
+  if (typeof XLSX === "undefined") return say("err", "Không tải được thư viện xuất Excel (cần kết nối mạng).");
+  const rows = filteredRows().filter(r => r["Ngày đo"] >= from && r["Ngày đo"] <= to)
+    .slice().sort((a, b) => (a["Ngày đo"] || "").localeCompare(b["Ngày đo"] || "") || (a.createdAt || 0) - (b.createdAt || 0));
+  if (!rows.length) return say("warn", "Không có bản ghi nào trong khoảng thời gian này.");
+  const data = rows.map(r => {
+    const o = {};
+    COLS.forEach(c => { const v = r[c] ?? ""; o[c] = c !== "Ghi chú" && /^-?\d+(\.\d+)?$/.test(v) ? Number(v) : v; });
+    return o;
+  });
+  const ws = XLSX.utils.json_to_sheet(data);
+  ws["!cols"] = [12, 16, 18, 16, 18, 14, 18, 12, 12, 12, 12, 32].map(w => ({ wch: w }));
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Hieu chuan");
+  XLSX.writeFile(wb, `HIEUCHUAN_${from}_${to}.xlsx`);
+  say("ok", `Đã xuất ${rows.length} bản ghi từ ${fmtDay(from)} đến ${fmtDay(to)}.`);
+}
+
+let dateEdited = false;   // true khi người dùng chọn ngày khác hôm nay
+function paintToday() {
+  if (!dateEdited || !$("ngay-do").value) { dateEdited = false; $("ngay-do").value = todayStr(); }
+  const v = $("ngay-do").value;
+  $("work-dow").textContent = v ? dowOf(v) : "";
+}
+
+function listenHistory() {
+  if (!FIREBASE_READY) {
+    setStatus("bad", "Chưa cấu hình Firebase");
+    $("history-empty").textContent = "Chưa kết nối được Firebase nên chưa thể lưu và xem lịch sử.";
+    return renderHistory();
+  }
+  db.collection(COLLECTION_NAME).onSnapshot((snap) => {
+    localData = snap.docs.map(d => d.data()).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    setStatus("ok", "Đã kết nối Firebase");
+    renderHistory();
+  }, (err) => {
+    setStatus("bad", "Lỗi kết nối Firebase");
+    $("history-empty").textContent = "Không đọc được dữ liệu từ Firebase: " + err.message + (err.code === "permission-denied" ? " — cần cho phép đọc/ghi collection \"calibration_logs\" trong Rules của Firestore." : "");
+    renderHistory();
+  });
+}
+
+/* =====================================================================
+   KHỞI TẠO + GIAO DIỆN SÁNG/TỐI
+   ===================================================================== */
+(function init() {
+  $("hang-muc").innerHTML = ALL.map(h => `<option>${esc(h)}</option>`).join("");
+  $("filter-hm").innerHTML = ["Tất cả", ...ALL].map(h => `<option>${esc(h)}</option>`).join("");
+  $("filter-hm").addEventListener("change", renderHistory);
+  $("export-btn").addEventListener("click", exportExcel);
+  $("day-list").addEventListener("toggle", (e) => {
+    const day = e.target.dataset && e.target.dataset.day;
+    if (day) e.target.open ? openDays.add(day) : openDays.delete(day);
+  }, true);
+  $("exp-to").value = todayStr();
+  $("exp-from").value = todayStr().slice(0, 8) + "01";
+  $("ngay-do").addEventListener("change", () => { dateEdited = $("ngay-do").value !== todayStr(); paintToday(); });
+  $("today-btn").addEventListener("click", () => { dateEdited = false; paintToday(); });
+  paintToday();
+  setInterval(paintToday, 60000);
+  $("hang-muc").addEventListener("change", renderForm);
+  try { $("inspector").value = localStorage.getItem("inspector_name") || ""; } catch (e) {}
+  $("inspector").addEventListener("input", () => {
+    $("inspector").classList.remove("missing");
+    try { localStorage.setItem("inspector_name", $("inspector").value); } catch (e) {}
+  });
+  $("submit").addEventListener("click", submitForm);
+
+  renderForm();
+  renderHistory();
+  listenHistory();
+})();
+
+})();
+</script>
+<script>
+(function(){
+const COLLECTION_NAME = "gas_changes";
+let db = null;
+try { if (window.firebase && firebase.apps.length) db = firebase.firestore(); } catch (e) { db = null; }
+const FIREBASE_READY = !!db;
+
+/* ===================================================================== */
+const $ = (id) => document.getElementById("gas-" + id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const pad = (n) => String(n).padStart(2, "0");
+const todayStr = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
+const fmtDay = (iso) => { const [y, m, d] = String(iso).split("-"); return d ? `${d}/${m}/${y}` : iso; };
+const fmtMonth = (iso) => { const [y, m] = String(iso).split("-"); return `${m}/${y}`; };
+const TRIGAS = "Khí trộn (Trigas)";
+let localData = [];
+
+function showMsg(type, text) { $("submit-msg").innerHTML = `<div class="msg ${type}">${esc(text)}</div>`; }
+function setStatus(cls, text) { const el = $("status"); el.className = "mon-status " + cls; el.textContent = text; }
+
+/* ---------- FORM ---------- */
+let snVals = [];
+const MAX_TRIGAS = 20;
+function toggleSN() {
+  const trigas = $("gas-type").value === TRIGAS;
+  const list = $("sn-list");
+  $("sn-wrap").hidden = !trigas;      // chỉ hiện ô S/N khi chọn Khí trộn (Trigas)
+  if (!trigas) { list.innerHTML = ""; return; }
+  const n = Math.min(Math.max(parseInt($("qty").value, 10) || 1, 1), MAX_TRIGAS);
+  $("sn-label").textContent = n > 1 ? `Số S/N của ${n} bình khí trộn (Bắt buộc)` : "Số S/N (Bắt buộc)";
+  list.innerHTML = Array.from({ length: n }, (_, i) => `<div class="sn-row">${n > 1 ? `<span>Bình ${i + 1}</span>` : ""}
+    <input type="text" data-idx="${i}" value="${esc(snVals[i] || "")}" placeholder="Nhập mã S/N bình khí trộn"></div>`).join("");
+}
+
+async function submitForm() {
+  ["branch", "user"].forEach(id => $(id).classList.remove("missing"));
+  document.querySelectorAll("#gas-sn-list input").forEach(el => el.classList.remove("missing"));
+  const gas = $("gas-type").value;
+  const branch = $("branch").value.trim(), user = $("user").value.trim();
+  const date = $("date").value || todayStr();
+  const qty = parseInt($("qty").value, 10);
+
+  if (!branch || !user) {
+    if (!branch) $("branch").classList.add("missing");
+    if (!user) $("user").classList.add("missing");
+    return showMsg("err", "❌ Vui lòng điền đầy đủ Nhánh thay và Người thực hiện!");
+  }
+  if (!Number.isInteger(qty) || qty < 1) return showMsg("err", "❌ Số lượng bình phải là số nguyên từ 1 trở lên!");
+  let snText = "-";
+  if (gas === TRIGAS) {
+    if (qty > MAX_TRIGAS) return showMsg("err", `❌ Khí trộn nhập tối đa ${MAX_TRIGAS} bình mỗi lần.`);
+    const inputs = [...document.querySelectorAll("#gas-sn-list input")];
+    const bad = inputs.filter(el => !el.value.trim() || el.value.trim() === "-");
+    if (bad.length) {
+      bad.forEach(el => el.classList.add("missing"));
+      return showMsg("err", "⚠️ Bắt buộc nhập số S/N đối với Khí trộn (Trigas)!" + (inputs.length > 1 ? ` Cần đủ ${inputs.length} mã S/N cho ${inputs.length} bình.` : ""));
+    }
+    const codes = inputs.map(el => el.value.trim());
+    if (new Set(codes.map(c => c.toLowerCase())).size !== codes.length) {
+      return showMsg("err", "⚠️ Có mã S/N bị nhập trùng nhau, vui lòng kiểm tra lại!");
+    }
+    snText = codes.join(", ");
+  }
+  if (!Number.isInteger(qty) || qty < 1) return showMsg("err", "❌ Số lượng bình phải là số nguyên từ 1 trở lên!");
+  if (!FIREBASE_READY) return showMsg("err", "⚠️ Chưa kết nối được Firebase nên chưa thể lưu dữ liệu.");
+
+  const btn = $("submit");
+  btn.disabled = true;
+  showMsg("info", "🔄 Đang đồng bộ lên hệ thống...");
+  try {
+    await db.collection(COLLECTION_NAME).add({
+      "Ngày Thay": date, "Loại Khí": gas, "Số S/N (Khí trộn)": snText,
+      "Nhánh Thay": branch, "Số Lượng Bình": qty, "Người Thực Hiện": user, createdAt: Date.now()
+    });
+    showMsg("ok", "🎉 Thành công! Đã lưu thông tin thay khí.");
+    // giống clear_on_submit: xóa các ô, giữ lại tên người thực hiện cho lần nhập sau
+    $("branch").value = ""; snVals = []; $("qty").value = 1; $("date").value = todayStr(); toggleSN();
+  } catch (e) {
+    showMsg("err", "⚠️ Lỗi mạng, chưa đồng bộ! " + e.message + (e.code === "permission-denied" ? " — cần cho phép ghi collection \"gas_changes\" trong Rules của Firestore." : ""));
+  }
+  btn.disabled = false;
+}
+
+/* ---------- LỊCH SỬ ---------- */
+function renderHistory() {
+  const empty = localData.length === 0;
+  $("history-empty").hidden = !empty;
+  $("history-body").hidden = empty;
+  if (empty) return;
+
+  const months = [...new Set(localData.map(r => fmtMonth(r["Ngày Thay"])))];   // đã sắp mới nhất trước
+  const sel = $("filter-month");
+  const prev = sel.value;
+  sel.innerHTML = months.map(m => `<option>${esc(m)}</option>`).join("");
+  sel.value = months.includes(prev) ? prev : months[0];
+  drawTable();
+}
+
+function drawTable() {
+  const m = $("filter-month").value;
+  const rows = localData.filter(r => fmtMonth(r["Ngày Thay"]) === m);
+  const total = rows.reduce((t, r) => t + (Number(r["Số Lượng Bình"]) || 0), 0);
+  $("result-line").innerHTML = `Tháng <strong>${esc(m)}</strong> · <strong>${rows.length}</strong> lần thay · tổng <strong>${total}</strong> bình`;
+  $("tbody").innerHTML = rows.map(r => `<tr>
+    <td>${esc(fmtDay(r["Ngày Thay"]))}</td><td><span class="pill">${esc(r["Loại Khí"])}</span></td>
+    <td>${esc(r["Số S/N (Khí trộn)"])}</td><td>${esc(r["Nhánh Thay"])}</td>
+    <td class="num">${esc(r["Số Lượng Bình"])}</td><td>${esc(r["Người Thực Hiện"])}</td></tr>`).join("");
+}
+
+function listenHistory() {
+  if (!FIREBASE_READY) {
+    setStatus("bad", "Chưa cấu hình Firebase");
+    $("history-empty").textContent = "Chưa kết nối được Firebase nên chưa thể lưu và xem lịch sử.";
+    return renderHistory();
+  }
+  db.collection(COLLECTION_NAME).onSnapshot((snap) => {
+    localData = snap.docs.map(d => d.data()).filter(r => r["Ngày Thay"])
+      .sort((a, b) => String(b["Ngày Thay"]).localeCompare(String(a["Ngày Thay"])) || (b.createdAt || 0) - (a.createdAt || 0));
+    setStatus("ok", "Đã kết nối Firebase");
+    renderHistory();
+  }, (err) => {
+    setStatus("bad", "Lỗi kết nối Firebase");
+    $("history-empty").textContent = "Không đọc được dữ liệu từ Firebase: " + err.message + (err.code === "permission-denied" ? " — cần cho phép đọc/ghi collection \"gas_changes\" trong Rules của Firestore." : "");
+    renderHistory();
+  });
+}
+
+/* ---------- XUẤT EXCEL THEO KHOẢNG THỜI GIAN ---------- */
+function exportExcel() {
+  const box = $("export-msg");
+  const from = $("exp-from").value, to = $("exp-to").value;
+  const say = (t, txt) => { box.innerHTML = `<div class="msg ${t}">${esc(txt)}</div>`; };
+  if (!from || !to) return say("err", "Vui lòng chọn đủ ngày bắt đầu và ngày kết thúc.");
+  if (from > to) return say("err", "Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày kết thúc.");
+  if (typeof XLSX === "undefined") return say("err", "Không tải được thư viện xuất Excel (cần kết nối mạng).");
+  const rows = localData.filter(r => r["Ngày Thay"] >= from && r["Ngày Thay"] <= to)
+    .slice().sort((a, b) => a["Ngày Thay"].localeCompare(b["Ngày Thay"]) || (a.createdAt || 0) - (b.createdAt || 0));
+  if (!rows.length) return say("warn", "Không có bản ghi nào trong khoảng thời gian này.");
+  const data = rows.map(r => ({
+    "Ngày Thay": fmtDay(r["Ngày Thay"]), "Loại Khí": r["Loại Khí"], "Số S/N (Khí trộn)": r["Số S/N (Khí trộn)"],
+    "Nhánh Thay": r["Nhánh Thay"], "Số Lượng Bình": Number(r["Số Lượng Bình"]) || 0, "Người Thực Hiện": r["Người Thực Hiện"]
+  }));
+  const ws = XLSX.utils.json_to_sheet(data);
+  ws["!cols"] = [14, 20, 20, 24, 14, 22].map(w => ({ wch: w }));
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Thay binh khi");
+  XLSX.writeFile(wb, `THAYKHI_${from}_${to}.xlsx`);
+  say("ok", `Đã xuất ${rows.length} bản ghi từ ${fmtDay(from)} đến ${fmtDay(to)}.`);
+}
+
+/* ---------- KHỞI TẠO + SÁNG/TỐI ---------- */
+(function init() {
+  $("date").value = todayStr();
+  $("exp-to").value = todayStr();
+  $("exp-from").value = todayStr().slice(0, 8) + "01";
+  try { $("user").value = localStorage.getItem("gas_user") || ""; } catch (e) {}
+  $("user").addEventListener("input", () => {
+    $("user").classList.remove("missing");
+    try { localStorage.setItem("gas_user", $("user").value); } catch (e) {}
+  });
+  $("branch").addEventListener("input", () => $("branch").classList.remove("missing"));
+  $("qty").addEventListener("input", toggleSN);
+  $("sn-list").addEventListener("input", (e) => {
+    const el = e.target;
+    if (el.dataset.idx !== undefined) { snVals[Number(el.dataset.idx)] = el.value; el.classList.remove("missing"); }
+  });
+  $("gas-type").addEventListener("change", toggleSN);
+  $("submit").addEventListener("click", submitForm);
+  $("filter-month").addEventListener("change", drawTable);
+  $("export-btn").addEventListener("click", exportExcel);
+  $("print-btn").addEventListener("click", () => window.print());
+
+  toggleSN();
+  renderHistory();
   listenHistory();
 })();
 
