@@ -395,6 +395,50 @@ tbody tr,.history-row{transition:background-color .15s}
   .view-toggle{border-right:0;padding-right:0}
 }
 @media print{.mtabs{display:none!important}#gasApp[data-mtab] .mgrid>.panel:not(.form-panel){display:block!important}}
+
+/* ===== Danh sách thiết bị trên điện thoại: dạng thẻ cố định (máy tính giữ nguyên bảng kéo giãn cột) ===== */
+@media screen and (max-width:700px){
+  .app-main .card{background:transparent;border:0;box-shadow:none}
+  .app-main table{table-layout:auto;min-width:0!important}
+  .app-main thead{display:none}
+  .app-main table,.app-main tbody,.app-main tr,.app-main td{display:block;width:100%}
+  .app-main tbody tr{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:12px 14px 10px;margin:0 0 12px}
+  .app-main tbody tr.grp{background:none;border:0;box-shadow:none;padding:0;margin:16px 0 8px}
+  .app-main tbody tr.grp td{display:block;text-align:left;border-radius:10px}
+  .app-main tbody tr.grp td::before{content:none}
+  .app-main td{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:5px 0;border:0;text-align:right;word-break:break-word}
+  .app-main td::before{content:attr(data-label);flex:none;color:var(--text-dim);font-weight:600;font-size:12px;text-align:left}
+  .app-main td.dev-name{display:block;text-align:left;font-size:16px;padding:0 48px 8px 0;margin-bottom:4px;border-bottom:1px solid var(--border)}
+  .app-main td.dev-name::before{content:none}
+  .app-main td[data-tt]{position:absolute;top:10px;right:12px;width:auto;padding:3px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:700}
+  .app-main td[data-tt]::before{content:none}
+  .app-main td.no-print{padding-top:10px}
+  .app-main td.no-print::before{content:none}
+  .app-main .row-actions{width:100%;gap:8px}
+  .app-main .row-actions .btn{flex:1;min-height:40px}
+  .app-main .toolbar>*{flex:1 1 100%;min-width:0}
+  .app-main .colpick-panel{left:0;right:auto;max-width:calc(100vw - 32px)}
+}
+
+/* ===== Lịch sử: hiển thị đủ thông tin, không phải kéo ngang ===== */
+#monApp .table-scroll,#calApp .table-scroll,#gasApp .table-scroll{overflow-x:hidden}
+#monApp table,#gasApp table{table-layout:auto;width:100%}
+#monApp th,#monApp td,#gasApp th,#gasApp td{white-space:normal;word-break:break-word;padding:9px 8px}
+#gasApp .pill{white-space:normal}
+#monApp td.he-act,#gasApp td.he-act{white-space:normal;min-width:96px}
+#monApp td.he-act .icon-btn,#gasApp td.he-act .icon-btn{margin:2px 0 2px 4px}
+/* Hiệu chuẩn: mỗi bản ghi là một thẻ, chỉ hiện các thông số có dữ liệu */
+#calApp thead{display:none}
+#calApp table,#calApp tbody{display:block;width:100%}
+#calApp tbody tr{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px 16px;padding:12px 14px;border-bottom:1px solid var(--border);width:auto}
+#calApp tbody tr:last-child{border-bottom:0}
+#calApp td{display:block;padding:2px 0;border:0;text-align:left;white-space:normal;word-break:break-word;width:auto}
+#calApp td::before{content:attr(data-label);display:block;font-size:11px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.03em;margin-bottom:1px}
+#calApp td[data-na]{display:none}
+#calApp td[data-label="Hạng mục kiểm tra"]{grid-column:1/-1;font-weight:700;font-size:1rem}
+#calApp td.note{grid-column:1/-1}
+#calApp td.he-act{grid-column:1/-1;text-align:right;padding-top:4px}
+#calApp td.he-act::before{content:none}
 </style>
 </head>
 <body data-view="home">
@@ -1179,6 +1223,7 @@ tbody tr,.history-row{transition:background-color .15s}
         '<button class="btn ghost" data-act="edit" title="Sửa">✎</button>' +
         '<button class="btn ghost danger" data-act="del" title="Xóa">🗑</button>' +
       '</div></td>';
+    for(var ci = 0; ci < cols.length; ci++){ if(tr.children[ci]) tr.children[ci].setAttribute("data-label", cols[ci].label); }
     var ttCell = tr.querySelector("[data-tt]");
     if(ttCell) ttCell.textContent = idx;
     tr.querySelectorAll("button").forEach(function(b){
@@ -1194,6 +1239,7 @@ tbody tr,.history-row{transition:background-color .15s}
 
   function renderGroupHeader(tb, label, count, colCount){
     var tr = document.createElement("tr");
+    tr.className = "grp";
     tr.innerHTML = '<td colspan="' + (colCount + 1) + '" style="background:var(--surface-2);font-weight:700;padding:10px 12px;border-bottom:1px solid var(--border)">' +
       esc(label) + ' <span style="font-weight:400;color:var(--text-dim);font-size:12px">(' + count + ')</span></td>';
     tb.appendChild(tr);
@@ -2329,6 +2375,8 @@ function filteredRows() {
   return device === "Tất cả" ? localData : localData.filter(r => r["Thiết bị"] === device);
 }
 
+const fmtDT = (t) => { const m = String(t ?? "").match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? `${m[3]}/${m[2]}/${m[1]}` : String(t ?? ""); };
+
 function groupRows(list) {
   const m = new Map();
   list.forEach(r => { const k = r["Thiết bị"] + "|" + r["Thời gian"]; if (!m.has(k)) m.set(k, []); m.get(k).push(r); });
@@ -2354,7 +2402,7 @@ function drawDays() {
     const missing = allDevices.filter(d => !done.has(d));
     const full = missing.length === 0;
     const trs = groups.map((g, gi) => g.map((r, i) => {
-      const head = i === 0 ? `<td rowspan="${g.length}" data-label="Thời gian">${esc(r["Thời gian"])}</td><td rowspan="${g.length}" data-label="Thiết bị">${esc(r["Thiết bị"])}</td>` : "";
+      const head = i === 0 ? `<td rowspan="${g.length}" data-label="Thời gian">${esc(fmtDT(r["Thời gian"]))}</td><td rowspan="${g.length}" data-label="Thiết bị">${esc(r["Thiết bị"])}</td>` : "";
       return `<tr class="g${gi % 2}${i === 0 ? " gs" : ""}">${head}<td data-label="Thông số">${esc(r["Thông số"])}</td><td data-label="Giá trị">${esc(r["Giá trị"])}</td><td data-label="Chuyên viên">${esc(r["Chuyên viên"])}</td><td class="note" data-label="Ghi chú">${esc(r["Ghi chú"])}</td><td class="he-act">${HistEdit.btns(r.id)}</td></tr>`;
     }).join("")).join("");
     const covTitle = full ? "Đã ghi đủ tất cả thiết bị" : "Chưa ghi: " + missing.join(", ");
@@ -2377,7 +2425,7 @@ function exportExcel() {
     .slice().sort((a, b) => a["Thời gian"].localeCompare(b["Thời gian"]) || a.stt - b.stt);
   if (!rows.length) return say("warn", "Không có bản ghi nào trong khoảng thời gian này.");
   const data = rows.map(r => ({
-    "Thời gian": r["Thời gian"], "Thiết bị": r["Thiết bị"], "Thông số": r["Thông số"],
+    "Thời gian": fmtDT(r["Thời gian"]), "Thiết bị": r["Thiết bị"], "Thông số": r["Thông số"],
     "Giá trị": /^-?\d+(\.\d+)?$/.test(r["Giá trị"]) ? Number(r["Giá trị"]) : r["Giá trị"],
     "Chuyên viên": r["Chuyên viên"], "Ghi chú": r["Ghi chú"]
   }));
@@ -2422,7 +2470,7 @@ function paintToday() {
     const rec = localData.find(r => r.id === b.dataset.id);
     if (!rec) return;
     const ref = db.collection(COLLECTION_NAME).doc(rec.id);
-    if (b.dataset.he === "del") return HistEdit.remove(`Xoá bản ghi "${rec["Thiết bị"]} – ${rec["Thông số"]}" lúc ${rec["Thời gian"]}? Không thể hoàn tác.`, () => ref.delete());
+    if (b.dataset.he === "del") return HistEdit.remove(`Xoá bản ghi "${rec["Thiết bị"]} – ${rec["Thông số"]}" ngày ${fmtDT(rec["Thời gian"])}? Không thể hoàn tác.`, () => ref.delete());
     HistEdit.edit({
       title: `Sửa bản ghi: ${rec["Thiết bị"]} – ${rec["Thông số"]}`,
       fields: [
@@ -2599,7 +2647,7 @@ function renderHistory() {
   $("no-match").hidden = days.length > 0;
   $("day-list").innerHTML = days.map(day => {
     const list = byDay[day];   // localData đã sắp mới nhất trước
-    const trs = list.map(r => "<tr>" + SHOW_COLS.map(c => `<td class="${c === "Ghi chú" ? "note" : ""}" data-label="${esc(c)}">${esc(r[c])}</td>`).join("") + `<td class="he-act">${HistEdit.btns(r.id)}</td></tr>`).join("");
+    const trs = list.map(r => "<tr>" + SHOW_COLS.map(c => `<td class="${c === "Ghi chú" ? "note" : ""}" data-label="${esc(c)}"${r[c] == null || r[c] === "" || r[c] === "N/A" ? " data-na" : ""}>${esc(r[c])}</td>`).join("") + `<td class="he-act">${HistEdit.btns(r.id)}</td></tr>`).join("");
     const head = day === "—" ? "Không rõ ngày" : `<span>${fmtDay(day)}</span><span class="dow">${dowOf(day)}</span>`;
     return `<details class="day" data-day="${esc(day)}" ${openDays.has(day) ? "open" : ""}>
       <summary>${head}<span class="count">${list.length} bản ghi</span></summary>
@@ -2620,7 +2668,7 @@ function exportExcel() {
   if (!rows.length) return say("warn", "Không có bản ghi nào trong khoảng thời gian này.");
   const data = rows.map(r => {
     const o = {};
-    COLS.forEach(c => { const v = r[c] ?? ""; o[c] = c !== "Ghi chú" && /^-?\d+(\.\d+)?$/.test(v) ? Number(v) : v; });
+    COLS.forEach(c => { const v = r[c] ?? ""; o[c] = c === "Ngày đo" ? (v ? fmtDay(v) : "") : (c !== "Ghi chú" && /^-?\d+(\.\d+)?$/.test(v) ? Number(v) : v); });
     return o;
   });
   const ws = XLSX.utils.json_to_sheet(data);
