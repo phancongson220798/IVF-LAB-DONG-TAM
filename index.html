@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LAB ĐỒNG TÂM</title>
+<title>Quản lý thiết bị phòng LAB</title>
 <meta name="theme-color" content="#0f6d63">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -301,6 +301,68 @@ body.link-view #calApp,body.link-view #gasApp{display:none!important}
 #monApp .mon-date input,#calApp .mon-date input{width:auto;flex:0 1 165px;min-width:0}
 .mon-date span{white-space:nowrap;font-weight:600;font-size:13px}
 .mon-field:has(.mon-date){flex:0 1 auto}
+
+/* ===== Sửa / xoá dòng lịch sử ===== */
+.he-act{white-space:nowrap;text-align:right}
+.he-act .icon-btn{margin-left:4px}
+#heOverlay .modal{padding:20px 22px;max-width:480px;max-height:92vh;overflow:auto}
+#heOverlay .modal h2{padding:0;border:none;margin:0 0 14px;font-size:17px}
+.he-f{margin-bottom:12px}
+.he-f textarea{min-height:70px;resize:vertical}
+.he-err{color:var(--danger);font-size:13px;min-height:18px;margin-top:4px}
+@media print{#gasApp .he-act,#gasApp th:last-child{display:none}}
+
+/* sửa bảng lịch sử: không đè chữ, thống kê theo thiết bị */
+#monApp table,#calApp table,#gasApp table{table-layout:auto}
+#monApp td,#calApp td,#gasApp td{word-break:normal}
+#monApp td.note{word-break:break-word}
+#monApp td[rowspan]{vertical-align:top;font-weight:600}
+#monApp tbody tr.g0{background:transparent}
+#monApp tbody tr.g1{background:var(--zebra)}
+#monApp tbody tr.gs td{border-top:2px solid var(--border)}
+#monApp .day > summary{flex-wrap:wrap}
+#monApp .day .cov{margin-left:auto;font-size:.8rem;font-weight:500;padding:2px 10px;border-radius:999px;background:var(--warn-soft);color:var(--warn);cursor:help}
+#monApp .day .cov.full{background:var(--ok-soft);color:var(--ok)}
+#monApp .day .cov + .count{margin-left:0}
+
+/* ===== Hiệu ứng & thao tác mượt hơn ===== */
+html{scroll-behavior:smooth}
+body{transition:background-color .25s,color .25s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes popIn{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes toastIn{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+#homeApp,.app-main,#maintApp,#monApp,#calApp,#gasApp{animation:fadeUp .38s cubic-bezier(.2,.7,.2,1) both}
+.tile{animation:fadeUp .5s cubic-bezier(.2,.7,.2,1) both;transition:transform .2s,border-color .2s,box-shadow .2s,background-color .25s,color .25s}
+.tile:nth-child(2){animation-delay:.06s}.tile:nth-child(3){animation-delay:.12s}.tile:nth-child(4){animation-delay:.18s}.tile:nth-child(5){animation-delay:.24s}
+.tile:hover{box-shadow:0 14px 30px rgba(0,0,0,.14)}
+.tile:active{transform:scale(.98)}
+.tile .ic{display:inline-block;transition:transform .25s cubic-bezier(.3,1.4,.5,1)}
+.tile:hover .ic{transform:scale(1.15) rotate(-5deg)}
+.btn,.mbtn,.icon-btn,.filter-btn,.hbtn{transition:background-color .15s,border-color .15s,color .15s,box-shadow .15s,transform .1s}
+.btn:not(:disabled):active,.mbtn:not(:disabled):active,.icon-btn:active,.filter-btn:active{transform:scale(.96)}
+.btn.primary:hover,.mbtn:hover{box-shadow:0 4px 14px rgba(0,0,0,.18)}
+input,select,textarea{transition:border-color .15s,box-shadow .2s,background-color .2s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.overlay.show,.overlay.open{animation:fadeIn .18s ease-out}
+.overlay.show .modal,.overlay.open .modal{animation:popIn .25s cubic-bezier(.2,.8,.2,1)}
+.toast{animation:toastIn .3s cubic-bezier(.2,.8,.2,1)}
+tbody tr,.history-row{transition:background-color .15s}
+#listWrap .card{transition:transform .18s,box-shadow .18s,border-color .18s}
+#listWrap .card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.12)}
+.stat-chip,.stats-group{transition:transform .18s}
+.stat-chip:hover{transform:translateY(-2px)}
+#monApp .day{transition:box-shadow .2s,border-color .2s}
+#monApp .day:hover{border-color:var(--accent)}
+#monApp .day[open]{box-shadow:0 6px 18px rgba(0,0,0,.08)}
+#monApp .day[open] .table-scroll{animation:fadeDown .28s ease-out}
+#monApp .day > summary{transition:background-color .15s}
+#monApp .day > summary:hover{background:var(--accent-soft)}
+.mon-status,.mon-bar{transition:background-color .3s,color .3s}
+.mgrid .panel{transition:box-shadow .2s}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+@media print{*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body data-view="home">
@@ -311,13 +373,13 @@ body.link-view #calApp,body.link-view #gasApp{display:none!important}
     <button class="btn" id="btnTheme" title="Đổi giao diện sáng/tối">◐</button>
   </div>
   <div id="homeApp">
-    <div class="home-head"><h1>LAB ĐỒNG TÂM</h1><div class="sub">Chọn chức năng cần dùng</div></div>
+    <div class="home-head"><h1>Quản lý thiết bị phòng LAB</h1><div class="sub">Chọn chức năng cần dùng</div></div>
     <div class="home-grid">
-      <button class="tile" data-view="devices"><span class="cnt" id="navCountDev">0</span><div class="ic">📋</div><h2>DANH SÁCH THIẾT BỊ</h2><p>Quản lý thiết bị, lịch bảo trì, mã QR, in phiếu và xuất Excel.</p></button>
-      <button class="tile" data-view="filter"><span class="cnt" id="countFilter">0</span><div class="ic">🧯</div><h2>THAY LỌC</h2><p>Theo dõi hạn thay lọc, cảnh báo quá hạn và lịch sử thay lọc.</p></button>
-      <button class="tile" data-view="monitor"><div class="ic">🔬</div><h2>THÔNG SỐ THIẾT BỊ</h2><p>Ghi nhận thông số vận hành hằng ngày, xem lịch sử theo ngày và xuất Excel.</p></button>
-      <button class="tile" data-view="calib"><div class="ic">🌡️</div><h2>HIỆU CHUẨN TỦ</h2><p>Ghi nhận CO2, O2, VOCs, độ bụi và hiệu chuẩn, xem lịch sử, xuất Excel.</p></button>
-      <button class="tile" data-view="gas"><div class="ic">🧪</div><h2>THAY KHÍ NUÔI CẤY</h2><p>Ghi lịch thay khí N2, CO2, khí trộn (S/N), tra cứu theo tháng, in và xuất Excel.</p></button>
+      <button class="tile" data-view="devices"><span class="cnt" id="navCountDev">0</span><div class="ic">📋</div><h2>Danh sách thiết bị</h2><p>Quản lý thiết bị, lịch bảo trì, mã QR, in phiếu và xuất Excel.</p></button>
+      <button class="tile" data-view="filter"><span class="cnt" id="countFilter">0</span><div class="ic">🧯</div><h2>Thay lọc định kỳ</h2><p>Theo dõi hạn thay lọc, cảnh báo quá hạn và lịch sử thay lọc.</p></button>
+      <button class="tile" data-view="monitor"><div class="ic">🔬</div><h2>Theo dõi thiết bị LABO</h2><p>Ghi nhận thông số vận hành hằng ngày, xem lịch sử theo ngày và xuất Excel.</p></button>
+      <button class="tile" data-view="calib"><div class="ic">🌡️</div><h2>Đo và hiệu chuẩn tủ nuôi</h2><p>Ghi nhận CO2, O2, VOCs, độ bụi và hiệu chuẩn, xem lịch sử, xuất Excel.</p></button>
+      <button class="tile" data-view="gas"><div class="ic">🧪</div><h2>Giám sát thay bình khí</h2><p>Ghi lịch thay khí N2, CO2, khí trộn (S/N), tra cứu theo tháng, in và xuất Excel.</p></button>
     </div>
   </div>
   <div class="install-banner no-print" id="installBanner">
@@ -447,7 +509,7 @@ body.link-view #calApp,body.link-view #gasApp{display:none!important}
     <div class="mgrid">
     <!-- TRÁI: FORM NHẬP LIỆU -->
     <section class="panel form-panel">
-      <div class="panel-head"><h2>📥 Thông số thiết bị</h2></div>
+      <div class="panel-head"><h2>📥 Tổng hợp thiết bị trong LAB</h2></div>
       <div class="panel-body">
         <label for="mon-device">Chọn thiết bị</label>
         <select id="mon-device"></select>
@@ -460,7 +522,7 @@ body.link-view #calApp,body.link-view #gasApp{display:none!important}
           <label for="mon-note">Ghi chú / Trạng thái bất thường (Nếu có)</label>
           <textarea id="mon-note"></textarea>
         </div>
-        <button class="mbtn" id="mon-submit">💾 XÁC NHẬN</button>
+        <button class="mbtn" id="mon-submit">💾 XÁC NHẬN LƯU VÀO HỆ THỐNG</button>
         <div id="mon-submit-msg" role="status"></div>
       </div>
     </section>
@@ -596,7 +658,7 @@ body.link-view #calApp,body.link-view #gasApp{display:none!important}
           <p class="result-line" id="gas-result-line"></p>
           <div class="table-scroll">
             <table>
-              <thead><tr><th>Ngày thay</th><th>Loại khí</th><th>Số S/N</th><th>Nhánh thay</th><th style="text-align:right">Số lượng</th><th>Người thực hiện</th></tr></thead>
+              <thead><tr><th>Ngày thay</th><th>Loại khí</th><th>Số S/N</th><th>Nhánh thay</th><th style="text-align:right">Số lượng</th><th>Người thực hiện</th><th></th></tr></thead>
               <tbody id="gas-tbody"></tbody>
             </table>
           </div>
@@ -1639,6 +1701,7 @@ body.link-view #calApp,body.link-view #gasApp{display:none!important}
           '<div class="history-title">'+escapeHtml(title||'—')+'</div>' +
           '<div class="history-sub">'+escapeHtml(subParts.join(' · ') || '—')+'</div>' +
         '</div>' +
+        '<button class="icon-btn" data-hist-edit="'+h.id+'">✎ Sửa</button>' +
         '<button class="icon-btn danger" data-hist-del="'+h.id+'">Xoá</button>' +
       '</div>';
     }).join('') + '</div>';
@@ -1816,6 +1879,24 @@ body.link-view #calApp,body.link-view #gasApp{display:none!important}
   };
 
   document.getElementById('listWrap').addEventListener('click', function(e){
+    var histEditBtn = e.target.closest('button[data-hist-edit]');
+    if(histEditBtn){
+      var eid = histEditBtn.getAttribute('data-hist-edit');
+      var he = state.history.find(function(h){ return h.id === eid; });
+      if(he){
+        HistEdit.edit({
+          title: 'Sửa lịch sử thay lọc',
+          fields: [
+            {key:'date', label:'Ngày thay', type:'date', value:he.date, req:true},
+            {key:'type', label:'Loại lọc', value:he.type},
+            {key:'performedBy', label:'Người thực hiện', value:he.performedBy},
+            {key:'notes', label:'Ghi chú', type:'textarea', value:he.notes}
+          ],
+          onSave: function(v){ Object.assign(he, v); persistHistory(); cloudSet('filter_history', he); render(); }
+        });
+      }
+      return;
+    }
     var histDelBtn = e.target.closest('button[data-hist-del]');
     if(histDelBtn){
       var hid = histDelBtn.getAttribute('data-hist-del');
@@ -1945,13 +2026,62 @@ body.link-view #calApp,body.link-view #gasApp{display:none!important}
 </script>
 <script>
 (function(){
+  var ov=document.createElement("div"); ov.className="overlay"; ov.id="heOverlay";
+  ov.innerHTML='<div class="modal"><h2 id="heTitle"></h2><div id="heFields"></div><div class="he-err" id="heErr"></div><div class="modal-actions"><button class="btn" id="heCancel" type="button">Huỷ</button><button class="btn primary" id="heSave" type="button">Lưu thay đổi</button></div></div>';
+  document.body.appendChild(ov);
+  var cur=null;
+  function esc(x){ return String(x==null?"":x).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+  function close(){ ov.classList.remove("show"); cur=null; }
+  function err(e){ var m=(e&&e.message)||String(e); if(e&&e.code==="permission-denied") m+=" — cần cho phép ghi collection này trong Rules của Firestore."; return m; }
+  window.HistEdit={
+    btns:function(id){ return '<button class="icon-btn" data-he="edit" data-id="'+esc(id)+'">✎ Sửa</button><button class="icon-btn danger" data-he="del" data-id="'+esc(id)+'">Xoá</button>'; },
+    edit:function(o){
+      cur=o; document.getElementById("heTitle").textContent=o.title; document.getElementById("heErr").textContent="";
+      document.getElementById("heFields").innerHTML=o.fields.map(function(f,i){
+        var id="heF"+i, v=esc(f.value), dis=f.readonly?" disabled":"", inner;
+        if(f.type==="textarea") inner='<textarea class="inp" id="'+id+'"'+dis+'>'+v+'</textarea>';
+        else if(f.type==="select") inner='<select class="inp" id="'+id+'"'+dis+'>'+f.options.map(function(op){ return '<option'+(op===f.value?" selected":"")+'>'+esc(op)+'</option>'; }).join("")+'</select>';
+        else inner='<input class="inp" id="'+id+'" type="'+(f.type||"text")+'"'+(f.type==="number"?' step="any"':'')+' value="'+v+'"'+dis+'>';
+        return '<div class="he-f"><label for="'+id+'">'+esc(f.label)+(f.req?" *":"")+'</label>'+inner+'</div>';
+      }).join("");
+      ov.classList.add("show");
+    },
+    remove:function(msg,fn){
+      if(!window.confirm(msg)) return;
+      Promise.resolve().then(fn).catch(function(e){ window.alert("Không xoá được: "+err(e)); });
+    }
+  };
+  document.getElementById("heCancel").onclick=close;
+  ov.addEventListener("click",function(e){ if(e.target===ov) close(); });
+  document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&cur) close(); });
+  document.getElementById("heSave").onclick=function(){
+    if(!cur) return;
+    var vals={}, msg="";
+    cur.fields.forEach(function(f,i){
+      if(f.readonly) return;
+      var v=document.getElementById("heF"+i).value.trim();
+      if(f.req&&!v&&!msg) msg='Vui lòng nhập "'+f.label+'".';
+      if(f.type==="number"&&v!==""){ var n=Number(v); if(isNaN(n)){ if(!msg) msg='"'+f.label+'" phải là số.'; } else v=n; }
+      vals[f.key]=v;
+    });
+    var e=document.getElementById("heErr");
+    if(msg){ e.textContent=msg; return; }
+    var btn=document.getElementById("heSave"); btn.disabled=true; e.textContent="";
+    Promise.resolve().then(function(){ return cur.onSave(vals); })
+      .then(function(){ btn.disabled=false; close(); })
+      .catch(function(x){ btn.disabled=false; e.textContent="Lưu thất bại: "+err(x); });
+  };
+})();
+</script>
+<script>
+(function(){
   var titles={home:"",devices:"Danh sách thiết bị",filter:"Thay lọc định kỳ",monitor:"Theo dõi thiết bị LABO",calib:"Đo và hiệu chuẩn tủ nuôi",gas:"Giám sát thay bình khí"};
   function show(v,push){
     document.body.setAttribute("data-view",v);
     document.getElementById("topTitle").textContent=titles[v]||"";
     if(v==="filter"&&window.__maintSetTab) window.__maintSetTab("filter");
     if(push){ try{ history.pushState({v:v},""); }catch(e){} }
-    window.scrollTo(0,0);
+    window.scrollTo({top:0,behavior:"instant"});
   }
   document.querySelectorAll(".tile").forEach(function(b){ b.addEventListener("click",function(){ show(b.getAttribute("data-view"),true); }); });
   document.getElementById("btnHome").addEventListener("click",function(){ show("home",true); });
@@ -2045,7 +2175,7 @@ function listenHistory() {
   db.collection(COLLECTION_NAME).onSnapshot((snap) => {
     localData = snap.docs.map(d => {
       const r = d.data();
-      return { "Thời gian": String(r["Thời gian"] ?? ""), "Thiết bị": r["Thiết bị"] ?? "", "Thông số": r["Thông số"] ?? "",
+      return { id: d.id, "Thời gian": String(r["Thời gian"] ?? ""), "Thiết bị": r["Thiết bị"] ?? "", "Thông số": r["Thông số"] ?? "",
                "Giá trị": r["Giá trị"] ?? "", "Chuyên viên": r["Chuyên viên"] ?? "", "Ghi chú": r["Ghi chú"] ?? "",
                "stt": r["stt"] ?? 0, "Ngày_Phụ": String(r["Thời gian"] ?? "").slice(0, 10) };
     }).filter(r => r["Thời gian"] !== "")
@@ -2167,21 +2297,39 @@ function filteredRows() {
   return device === "Tất cả" ? localData : localData.filter(r => r["Thiết bị"] === device);
 }
 
+function groupRows(list) {
+  const m = new Map();
+  list.forEach(r => { const k = r["Thiết bị"] + "|" + r["Thời gian"]; if (!m.has(k)) m.set(k, []); m.get(k).push(r); });
+  return [...m.values()].map(g => g.sort((a, b) => (a.stt || 0) - (b.stt || 0)));
+}
+
 function drawDays() {
   const rows = filteredRows();
   const byDay = {};
   rows.forEach(r => { (byDay[r["Ngày_Phụ"]] = byDay[r["Ngày_Phụ"]] || []).push(r); });
   const days = Object.keys(byDay).sort().reverse();
-  $("result-line").innerHTML = `Thiết bị: <strong>${esc($("filter-device").value)}</strong> · <strong>${days.length}</strong> ngày · <strong>${rows.length}</strong> bản ghi`;
+  const allDevices = Object.keys(DEVICE_CONFIGS);
+  const devByDay = {};
+  localData.forEach(r => { (devByDay[r["Ngày_Phụ"]] = devByDay[r["Ngày_Phụ"]] || new Set()).add(r["Thiết bị"]); });
+  const groupsByDay = {};
+  let totalRecords = 0;
+  days.forEach(d => { groupsByDay[d] = groupRows(byDay[d].slice().reverse()); totalRecords += groupsByDay[d].length; });
+  $("result-line").innerHTML = `Thiết bị: <strong>${esc($("filter-device").value)}</strong> · <strong>${days.length}</strong> ngày · <strong>${totalRecords}</strong> bản ghi <span style="color:var(--text-dim)">(mỗi lần ghi của một thiết bị = 1 bản ghi)</span>`;
   $("no-match").hidden = days.length > 0;
   $("day-list").innerHTML = days.map(day => {
-    const list = byDay[day].slice().reverse();
-    const trs = list.map(r => `<tr><td>${esc(r["Thời gian"])}</td><td>${esc(r["Thiết bị"])}</td><td>${esc(r["Thông số"])}</td>
-      <td>${esc(r["Giá trị"])}</td><td>${esc(r["Chuyên viên"])}</td><td class="note">${esc(r["Ghi chú"])}</td></tr>`).join("");
+    const groups = groupsByDay[day];
+    const done = devByDay[day] || new Set();
+    const missing = allDevices.filter(d => !done.has(d));
+    const full = missing.length === 0;
+    const trs = groups.map((g, gi) => g.map((r, i) => {
+      const head = i === 0 ? `<td rowspan="${g.length}">${esc(r["Thời gian"])}</td><td rowspan="${g.length}">${esc(r["Thiết bị"])}</td>` : "";
+      return `<tr class="g${gi % 2}${i === 0 ? " gs" : ""}">${head}<td>${esc(r["Thông số"])}</td><td>${esc(r["Giá trị"])}</td><td>${esc(r["Chuyên viên"])}</td><td class="note">${esc(r["Ghi chú"])}</td><td class="he-act">${HistEdit.btns(r.id)}</td></tr>`;
+    }).join("")).join("");
+    const covTitle = full ? "Đã ghi đủ tất cả thiết bị" : "Chưa ghi: " + missing.join(", ");
     return `<details class="day" data-day="${esc(day)}" ${openDays.has(day) ? "open" : ""}>
-      <summary><span>${fmtDay(day)}</span><span class="dow">${dowOf(day)}</span><span class="count">${list.length} bản ghi</span></summary>
+      <summary><span>${fmtDay(day)}</span><span class="dow">${dowOf(day)}</span><span class="cov ${full ? "full" : ""}" title="${esc(covTitle)}">🖥 ${done.size}/${allDevices.length} thiết bị</span><span class="count">${groups.length} bản ghi</span></summary>
       <div class="table-scroll"><table>
-        <thead><tr><th>Thời gian</th><th>Thiết bị</th><th>Thông số</th><th>Giá trị</th><th>Chuyên viên</th><th>Ghi chú</th></tr></thead>
+        <thead><tr><th>Thời gian</th><th>Thiết bị</th><th>Thông số</th><th>Giá trị</th><th>Chuyên viên</th><th>Ghi chú</th><th></th></tr></thead>
         <tbody>${trs}</tbody></table></div></details>`;
   }).join("");
 }
@@ -2236,6 +2384,23 @@ function paintToday() {
   }, true);
   $("exp-to").value = todayStr();
   $("exp-from").value = todayStr().slice(0, 8) + "01";
+  $("day-list").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-he]");
+    if (!b || !db) return;
+    const rec = localData.find(r => r.id === b.dataset.id);
+    if (!rec) return;
+    const ref = db.collection(COLLECTION_NAME).doc(rec.id);
+    if (b.dataset.he === "del") return HistEdit.remove(`Xoá bản ghi "${rec["Thiết bị"]} – ${rec["Thông số"]}" lúc ${rec["Thời gian"]}? Không thể hoàn tác.`, () => ref.delete());
+    HistEdit.edit({
+      title: `Sửa bản ghi: ${rec["Thiết bị"]} – ${rec["Thông số"]}`,
+      fields: [
+        { key: "Giá trị", label: "Giá trị", value: rec["Giá trị"], req: true },
+        { key: "Chuyên viên", label: "Chuyên viên", value: rec["Chuyên viên"] },
+        { key: "Ghi chú", label: "Ghi chú", type: "textarea", value: rec["Ghi chú"] }
+      ],
+      onSave: (v) => ref.set(v, { merge: true })
+    });
+  });
   $("work-date").addEventListener("change", () => {
     dateEdited = $("work-date").value !== todayStr();
     paintToday();
@@ -2402,11 +2567,11 @@ function renderHistory() {
   $("no-match").hidden = days.length > 0;
   $("day-list").innerHTML = days.map(day => {
     const list = byDay[day];   // localData đã sắp mới nhất trước
-    const trs = list.map(r => "<tr>" + SHOW_COLS.map(c => `<td class="${c === "Ghi chú" ? "note" : ""}">${esc(r[c])}</td>`).join("") + "</tr>").join("");
+    const trs = list.map(r => "<tr>" + SHOW_COLS.map(c => `<td class="${c === "Ghi chú" ? "note" : ""}">${esc(r[c])}</td>`).join("") + `<td class="he-act">${HistEdit.btns(r.id)}</td></tr>`).join("");
     const head = day === "—" ? "Không rõ ngày" : `<span>${fmtDay(day)}</span><span class="dow">${dowOf(day)}</span>`;
     return `<details class="day" data-day="${esc(day)}" ${openDays.has(day) ? "open" : ""}>
       <summary>${head}<span class="count">${list.length} bản ghi</span></summary>
-      <div class="table-scroll"><table><thead><tr>${SHOW_COLS.map(c => `<th>${esc(c)}</th>`).join("")}</tr></thead>
+      <div class="table-scroll"><table><thead><tr>${SHOW_COLS.map(c => `<th>${esc(c)}</th>`).join("")}<th></th></tr></thead>
       <tbody>${trs}</tbody></table></div></details>`;
   }).join("");
 }
@@ -2448,7 +2613,7 @@ function listenHistory() {
     return renderHistory();
   }
   db.collection(COLLECTION_NAME).onSnapshot((snap) => {
-    localData = snap.docs.map(d => d.data()).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    localData = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     setStatus("ok", "Đã kết nối Firebase");
     renderHistory();
   }, (err) => {
@@ -2472,6 +2637,22 @@ function listenHistory() {
   }, true);
   $("exp-to").value = todayStr();
   $("exp-from").value = todayStr().slice(0, 8) + "01";
+  $("day-list").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-he]");
+    if (!b || !db) return;
+    const rec = localData.find(r => r.id === b.dataset.id);
+    if (!rec) return;
+    const ref = db.collection(COLLECTION_NAME).doc(rec.id);
+    if (b.dataset.he === "del") return HistEdit.remove(`Xoá bản ghi "${rec["Hạng mục kiểm tra"]}" ngày ${fmtDay(rec["Ngày đo"] || "")}? Không thể hoàn tác.`, () => ref.delete());
+    const fields = [
+      { key: "Ngày đo", label: "Ngày đo", type: "date", value: rec["Ngày đo"], req: true },
+      { key: "Hạng mục kiểm tra", label: "Hạng mục", value: rec["Hạng mục kiểm tra"], readonly: true },
+      { key: "Chuyên viên", label: "Chuyên viên", value: rec["Chuyên viên"] }
+    ];
+    COLS.slice(3, -1).forEach(c => { if (rec[c] !== undefined && rec[c] !== "N/A") fields.push({ key: c, label: c, value: rec[c] }); });
+    fields.push({ key: "Ghi chú", label: "Ghi chú", type: "textarea", value: rec["Ghi chú"] });
+    HistEdit.edit({ title: `Sửa bản ghi: ${rec["Hạng mục kiểm tra"]}`, fields, onSave: (v) => ref.set(v, { merge: true }) });
+  });
   $("ngay-do").addEventListener("change", () => { dateEdited = $("ngay-do").value !== todayStr(); paintToday(); });
   $("today-btn").addEventListener("click", () => { dateEdited = false; paintToday(); });
   paintToday();
@@ -2597,7 +2778,7 @@ function drawTable() {
   $("tbody").innerHTML = rows.map(r => `<tr>
     <td>${esc(fmtDay(r["Ngày Thay"]))}</td><td><span class="pill">${esc(r["Loại Khí"])}</span></td>
     <td>${esc(r["Số S/N (Khí trộn)"])}</td><td>${esc(r["Nhánh Thay"])}</td>
-    <td class="num">${esc(r["Số Lượng Bình"])}</td><td>${esc(r["Người Thực Hiện"])}</td></tr>`).join("");
+    <td class="num">${esc(r["Số Lượng Bình"])}</td><td>${esc(r["Người Thực Hiện"])}</td><td class="he-act">${HistEdit.btns(r.id)}</td></tr>`).join("");
 }
 
 function listenHistory() {
@@ -2607,7 +2788,7 @@ function listenHistory() {
     return renderHistory();
   }
   db.collection(COLLECTION_NAME).onSnapshot((snap) => {
-    localData = snap.docs.map(d => d.data()).filter(r => r["Ngày Thay"])
+    localData = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(r => r["Ngày Thay"])
       .sort((a, b) => String(b["Ngày Thay"]).localeCompare(String(a["Ngày Thay"])) || (b.createdAt || 0) - (a.createdAt || 0));
     setStatus("ok", "Đã kết nối Firebase");
     renderHistory();
@@ -2662,6 +2843,26 @@ function exportExcel() {
   $("filter-month").addEventListener("change", drawTable);
   $("export-btn").addEventListener("click", exportExcel);
   $("print-btn").addEventListener("click", () => window.print());
+  $("tbody").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-he]");
+    if (!b || !db) return;
+    const rec = localData.find(r => r.id === b.dataset.id);
+    if (!rec) return;
+    const ref = db.collection(COLLECTION_NAME).doc(rec.id);
+    if (b.dataset.he === "del") return HistEdit.remove(`Xoá lần thay ${rec["Loại Khí"]} ngày ${fmtDay(rec["Ngày Thay"])}? Không thể hoàn tác.`, () => ref.delete());
+    HistEdit.edit({
+      title: `Sửa lần thay khí ngày ${fmtDay(rec["Ngày Thay"])}`,
+      fields: [
+        { key: "Ngày Thay", label: "Ngày thay", type: "date", value: rec["Ngày Thay"], req: true },
+        { key: "Loại Khí", label: "Loại khí", type: "select", options: ["Khí Nitơ (N2)", "Khí CO2", "Khí trộn (Trigas)"], value: rec["Loại Khí"] },
+        { key: "Số S/N (Khí trộn)", label: "Số S/N (Khí trộn)", value: rec["Số S/N (Khí trộn)"], req: true },
+        { key: "Nhánh Thay", label: "Nhánh thay / Vị trí tủ", value: rec["Nhánh Thay"], req: true },
+        { key: "Số Lượng Bình", label: "Số lượng bình", type: "number", value: rec["Số Lượng Bình"], req: true },
+        { key: "Người Thực Hiện", label: "Người thực hiện", value: rec["Người Thực Hiện"], req: true }
+      ],
+      onSave: (v) => ref.set(v, { merge: true })
+    });
+  });
 
   toggleSN();
   renderHistory();
