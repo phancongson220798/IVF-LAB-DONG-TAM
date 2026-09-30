@@ -181,10 +181,22 @@ textarea.inp{min-height:62px;resize:vertical}
 .nav-btn.active{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
 .nav-btn .c{font-family:var(--mono);font-size:18px}
 .mainnav #btnTheme{flex:none}
-#maintApp{display:none}
-body.v-maint #maintApp{display:block}
-body.v-maint .app-main{display:none}
-body.link-view .mainnav,body.link-view #maintApp,body.link-view #installBanner{display:none!important}
+
+.topnav{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.topnav-title{flex:1;font-weight:700;font-size:15px;color:var(--text-dim)}
+#btnHome{display:none}body:not([data-view="home"]) #btnHome{display:inline-block}
+.home-head{text-align:center;margin:8px 0 28px}.home-head h1{font-size:30px;margin:0}
+.home-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;max-width:1000px;margin:0 auto}
+.tile{position:relative;text-align:left;display:block;font:inherit;color:var(--text);background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:26px 24px;min-height:190px;cursor:pointer;box-shadow:var(--shadow);transition:transform .12s,border-color .12s}
+.tile:hover{border-color:var(--accent);transform:translateY(-2px)}
+.tile .ic{font-size:44px;line-height:1;margin-bottom:14px}.tile h2{font-size:19px;margin:0 0 6px}
+.tile p{margin:0;color:var(--text-dim);font-size:13.5px;line-height:1.55}
+.tile .cnt{position:absolute;top:18px;right:20px;background:var(--accent-soft);color:var(--accent);font-family:var(--mono);font-weight:700;border-radius:999px;padding:3px 12px;font-size:15px}
+body:not([data-view="home"]) #homeApp{display:none}
+body:not([data-view="devices"]) .app-main{display:none}
+body:not([data-view="filter"]) #maintApp{display:none}
+body:not([data-view="monitor"]) #monApp{display:none}
+body.link-view .topnav,body.link-view #homeApp,body.link-view #maintApp,body.link-view #monApp,body.link-view #installBanner{display:none!important}
 .stats-groups{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px}
 .stats-group{flex:1;min-width:280px}
 .stats-group-label{font-size:12px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin:0 0 6px 2px}
@@ -250,16 +262,37 @@ body.link-view .mainnav,body.link-view #maintApp,body.link-view #installBanner{d
 .install-banner.show{display:flex}
 .install-banner button{border:none;background:transparent;color:inherit;font-weight:700;font-size:15px;cursor:pointer}
 @media(max-width:520px){.row2,.row3{grid-template-columns:1fr}.stats-row{flex-wrap:wrap}}
-@media print{.mainnav,#maintApp,#installBanner,.toast-wrap{display:none!important}}
+@media print{.topnav,#homeApp,#maintApp,#monApp,#installBanner,.toast-wrap{display:none!important}}
+
+#monApp{--head:color-mix(in srgb,var(--text) 6%,var(--surface));--field:var(--surface);--zebra:color-mix(in srgb,var(--text) 3%,var(--surface));--set-bg:var(--accent-soft);--set-ink:var(--accent);--act-bg:var(--ok-soft);--act-ink:var(--ok);--warn-bg:var(--warn-soft);--warn-ink:var(--warn);--err-bg:var(--danger-soft);--err-ink:var(--danger);--ok-bg:var(--ok-soft);--ok-ink:var(--ok);--info-bg:var(--accent-soft);--info-ink:var(--accent);--accent-ink:var(--bg)}
+#monApp .mon-bar{display:flex;gap:14px;flex-wrap:wrap;align-items:end;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:18px}
+#monApp .mon-field{flex:1 1 230px}
+#monApp .mon-date{display:flex;gap:8px;align-items:center}
+#monApp .mon-date input{flex:1}
+#monApp .mon-date .mbtn{margin:0;width:auto;padding:8px 12px}
+#monApp .mon-status{font-size:12.5px;padding:4px 12px;border-radius:999px;background:var(--border);color:var(--text-dim);white-space:nowrap}
+#monApp .mon-status.ok{background:var(--ok-soft);color:var(--ok)}#monApp .mon-status.bad{background:var(--danger-soft);color:var(--danger)}
+@media(max-width:980px){#monApp .mgrid{grid-template-columns:minmax(0,1fr)}#monApp .form-panel{position:static}}
+
+/* ===== Theo dõi thiết bị LABO ===== */
+#monApp .mgrid{display:grid;grid-template-columns:400px minmax(0,1fr);gap:20px;align-items:start}#monApp .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}#monApp .panel-head{padding:14px 18px;border-bottom:1px solid var(--border);background:var(--head)}#monApp .panel-head h2{font-size:1.05rem;margin:0;font-weight:600}#monApp .panel-body{padding:16px 18px 18px}#monApp .form-panel{position:sticky;top:12px}#monApp label{display:block;font-size:.85rem;color:var(--text-dim);margin:0 0 4px}#monApp input[type=text],#monApp input[type=number],#monApp select,#monApp textarea{ width:100%;padding:9px 10px;border:1px solid var(--border);border-radius:8px;background:var(--field);color:var(--text);font:inherit}#monApp input:focus-visible,#monApp select:focus-visible,#monApp textarea:focus-visible,#monApp button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}#monApp textarea{resize:vertical;min-height:70px}#monApp .device-line{margin:14px 0 4px;font-size:.95rem}#monApp .caption{font-size:.82rem;color:var(--text-dim);margin:2px 0 0}#monApp .caption.warn{color:var(--warn-ink);background:var(--warn-bg);padding:6px 10px;border-radius:8px}#monApp #fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}#monApp #fields > div{min-width:0}#monApp #fields .full{grid-column:1/-1}#monApp .tag{grid-column:1/-1;font-weight:600;font-size:.9rem;padding:6px 10px;border-radius:8px;margin-top:4px}#monApp .tag.set{background:var(--set-bg);color:var(--set-ink)}#monApp .tag.act{background:var(--act-bg);color:var(--act-ink)}#monApp .check{display:flex;align-items:center;gap:8px;color:var(--text);font-size:1rem;margin:0;padding:9px 10px;border:1px solid var(--border);border-radius:8px;background:var(--field)}#monApp .check input{width:18px;height:18px;accent-color:var(--accent)}#monApp .note-wrap{margin-top:16px}#monApp .mbtn{margin-top:16px;width:100%;padding:12px 14px;border:0;border-radius:8px;background:var(--accent);color:var(--accent-ink);font:inherit;font-weight:600;cursor:pointer}#monApp .mbtn:disabled{opacity:.6;cursor:wait}#monApp .msg{margin-top:12px;padding:10px 12px;border-radius:8px;font-size:.92rem}#monApp .msg.err{background:var(--err-bg);color:var(--err-ink)}#monApp .msg.ok{background:var(--ok-bg);color:var(--ok-ink)}#monApp .msg.info{background:var(--info-bg);color:var(--info-ink)}#monApp .msg.warn{background:var(--warn-bg);color:var(--warn-ink)}#monApp .filters{display:flex;gap:12px;flex-wrap:wrap;align-items:end}#monApp .filters > div{flex:1 1 200px}#monApp .result-line{margin:14px 0 10px;color:var(--text-dim);font-size:.92rem}#monApp .result-line strong{color:var(--text)}#monApp .table-scroll{overflow:auto;border:1px solid var(--border);border-radius:8px;max-height:calc(100vh - 300px);min-height:200px}#monApp table{border-collapse:collapse;width:100%;font-size:.88rem}#monApp th,#monApp td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}#monApp td.note{white-space:normal;min-width:140px}#monApp th{background:var(--head);position:sticky;top:0;font-weight:600}#monApp tbody tr:nth-child(even){background:var(--zebra)}#monApp tr:last-child td{border-bottom:0}#monApp .tools{display:flex;gap:12px;flex-wrap:wrap;align-items:end;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}#monApp .tools > div{flex:0 1 160px}#monApp .tools .mbtn{margin:0;width:auto;padding:9px 16px;flex:0 0 auto}#monApp .mbtn.alt{background:var(--set-bg);color:var(--set-ink)}#monApp .export-msg{margin-top:10px}#monApp .day{border:1px solid var(--border);border-radius:10px;margin-top:10px;overflow:hidden;background:var(--surface)}#monApp .day > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--head);font-weight:600}#monApp .day > summary::-webkit-details-marker{display:none}#monApp .day > summary::before{content:"▸";color:var(--accent);transition:transform .15s}#monApp .day[open] > summary::before{transform:rotate(90deg)}#monApp .day .dow{color:var(--text-dim);font-weight:400}#monApp .day .count{margin-left:auto;font-size:.8rem;font-weight:500;background:var(--set-bg);color:var(--set-ink);padding:2px 10px;border-radius:999px}#monApp .day .table-scroll{border:0;border-top:1px solid var(--border);border-radius:0;max-height:480px;min-height:0}#monApp input[type=date]{width:100%;padding:9px 10px;border:1px solid var(--border);border-radius:8px;background:var(--field);color:var(--text);font:inherit} 
 </style>
 </head>
-<body>
+<body data-view="home">
 <div class="wrap">
-  <nav class="mainnav no-print" id="mainNav">
-    <button class="nav-btn active" data-view="devices"><span>📋 Danh sách thiết bị</span><span class="c" id="navCountDev">0</span></button>
-    <button class="nav-btn" data-view="filter"><span>🧯 Thay lọc định kỳ</span><span class="c" id="countFilter">0</span></button>
+<div class="topnav no-print">
+    <button class="btn" id="btnHome">← Màn hình chính</button>
+    <span class="topnav-title" id="topTitle"></span>
     <button class="btn" id="btnTheme" title="Đổi giao diện sáng/tối">◐</button>
-  </nav>
+  </div>
+  <div id="homeApp">
+    <div class="home-head"><h1>Quản lý thiết bị phòng LAB</h1><div class="sub">Chọn chức năng cần dùng</div></div>
+    <div class="home-grid">
+      <button class="tile" data-view="devices"><span class="cnt" id="navCountDev">0</span><div class="ic">📋</div><h2>Danh sách thiết bị</h2><p>Quản lý thiết bị, lịch bảo trì, mã QR, in phiếu và xuất Excel.</p></button>
+      <button class="tile" data-view="filter"><span class="cnt" id="countFilter">0</span><div class="ic">🧯</div><h2>Thay lọc định kỳ</h2><p>Theo dõi hạn thay lọc, cảnh báo quá hạn và lịch sử thay lọc.</p></button>
+      <button class="tile" data-view="monitor"><div class="ic">🔬</div><h2>Theo dõi thiết bị LABO</h2><p>Ghi nhận thông số vận hành hằng ngày, xem lịch sử theo ngày và xuất Excel.</p></button>
+    </div>
+  </div>
   <div class="install-banner no-print" id="installBanner">
     <span id="installBannerText"></span>
     <button id="installBannerClose">✕</button>
@@ -375,6 +408,62 @@ body.link-view .mainnav,body.link-view #maintApp,body.link-view #installBanner{d
 
   <div id="listWrap"></div>
   <div class="status-note no-print" id="filterStoreNote"></div>
+  </div>
+
+  <div id="monApp">
+    <header class="top no-print"><div><h1>🔬 Theo dõi thiết bị LABO</h1><div class="sub">Ghi nhận thông số vận hành và xem lịch sử theo ngày (lưu trên Firebase)</div></div></header>
+    <div class="mon-bar">
+      <div class="mon-field"><label for="mon-work-date">Ngày ghi nhận</label><div class="mon-date"><input type="date" id="mon-work-date"><span id="mon-work-dow"></span><button type="button" class="mbtn alt" id="mon-today-btn" title="Về ngày hôm nay">↺</button></div></div>
+      <div class="mon-field"><label for="mon-inspector">👤 Người thực hiện</label><input type="text" id="mon-inspector" autocomplete="name" placeholder="Nhập tên chuyên viên"></div>
+      <span class="mon-status" id="mon-status">Đang kết nối…</span>
+    </div>
+    <div class="mgrid">
+    <!-- TRÁI: FORM NHẬP LIỆU -->
+    <section class="panel form-panel">
+      <div class="panel-head"><h2>📥 Tổng hợp thiết bị trong LAB</h2></div>
+      <div class="panel-body">
+        <label for="mon-device">Chọn thiết bị</label>
+        <select id="mon-device"></select>
+
+        <p class="device-line">✍️ <em>Đang ghi nhận cho:</em> <strong id="mon-cur-device"></strong></p>
+        <p class="caption" id="mon-inspector-caption"></p>
+        <div id="mon-fields"></div>
+
+        <div class="note-wrap">
+          <label for="mon-note">Ghi chú / Trạng thái bất thường (Nếu có)</label>
+          <textarea id="mon-note"></textarea>
+        </div>
+        <button class="mbtn" id="mon-submit">💾 XÁC NHẬN LƯU VÀO HỆ THỐNG</button>
+        <div id="mon-submit-msg" role="status"></div>
+      </div>
+    </section>
+
+    <!-- PHẢI: LỊCH SỬ -->
+    <section class="panel">
+      <div class="panel-head"><h2>📋 Lịch sử theo dõi trực tuyến</h2></div>
+      <div class="panel-body">
+        <div id="mon-history-empty" class="msg info" hidden style="margin-top:0">Chưa có thông số nào được ghi lại trên hệ thống.</div>
+        <div id="mon-history-body">
+          <div class="filters">
+            <div>
+              <label for="mon-filter-device">Xem theo thiết bị</label>
+              <select id="mon-filter-device"></select>
+            </div>
+          </div>
+          <div class="tools">
+            <div><label for="mon-exp-from">Xuất Excel từ ngày</label><input type="date" id="mon-exp-from"></div>
+            <div><label for="mon-exp-to">đến ngày</label><input type="date" id="mon-exp-to"></div>
+            <button class="mbtn alt" id="mon-export-btn" type="button">📥 Xuất Excel</button>
+          </div>
+          <div class="caption" style="margin-top:6px">Bảng xuất áp dụng theo thiết bị đang chọn ở trên.</div>
+          <div id="mon-export-msg" role="status"></div>
+          <p class="result-line" id="mon-result-line"></p>
+          <div id="mon-no-match" class="msg warn" hidden>Không có dữ liệu ghi nhận nào khớp với bộ lọc đã chọn.</div>
+          <div id="mon-day-list"></div>
+        </div>
+      </div>
+    </section>
+  </div>
   </div>
 
   <div id="printSingle"></div>
@@ -1716,15 +1805,311 @@ body.link-view .mainnav,body.link-view #maintApp,body.link-view #installBanner{d
 </script>
 <script>
 (function(){
-  var nav=document.getElementById("mainNav");
-  function show(v){
-    document.body.classList.toggle("v-maint", v!=="devices");
-    nav.querySelectorAll(".nav-btn").forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-view")===v); });
-    if(v!=="devices" && window.__maintSetTab) window.__maintSetTab(v);
-    try{ localStorage.setItem("lab_view", v); }catch(e){}
+  var titles={home:"",devices:"Danh sách thiết bị",filter:"Thay lọc định kỳ",monitor:"Theo dõi thiết bị LABO"};
+  function show(v,push){
+    document.body.setAttribute("data-view",v);
+    document.getElementById("topTitle").textContent=titles[v]||"";
+    if(v==="filter"&&window.__maintSetTab) window.__maintSetTab("filter");
+    if(push){ try{ history.pushState({v:v},""); }catch(e){} }
+    window.scrollTo(0,0);
   }
-  nav.querySelectorAll(".nav-btn").forEach(function(b){ b.addEventListener("click", function(){ show(b.getAttribute("data-view")); }); });
-  try{ var v=localStorage.getItem("lab_view"); if(v==="filter") show(v); }catch(e){}
+  document.querySelectorAll(".tile").forEach(function(b){ b.addEventListener("click",function(){ show(b.getAttribute("data-view"),true); }); });
+  document.getElementById("btnHome").addEventListener("click",function(){ show("home",true); });
+  window.addEventListener("popstate",function(e){ show((e.state&&e.state.v)||"home",false); });
+})();
+</script>
+
+<script>
+(function(){
+const COLLECTION_NAME = "device_logs";
+let db = null;
+try { if (window.firebase && firebase.apps.length) db = firebase.firestore(); } catch (e) { db = null; }
+const FIREBASE_READY = !!db;
+
+/* =====================================================================
+   CẤU HÌNH CHI TIẾT CÁC THIẾT BỊ
+   ===================================================================== */
+const num = (def, step = 0.1) => ({ type: "number", default: def, step });
+const chk = (def) => ({ type: "checkbox", default: def });
+
+const CHAMBER_FIELDS = {
+  "Cài đặt: Nhiệt trái (°C)": num(37.0),
+  "Cài đặt: Nhiệt phải (°C)": num(37.0),
+  "Cài đặt: Nhiệt trung tâm (°C)": num(37.0),
+  "Cài đặt: Nhiệt khí (°C)": num(37.0),
+  "Cài đặt: CO2 (%)": num(6.0),
+  "Thực tế: Nhiệt trái (°C)": num(37.0),
+  "Thực tế: Nhiệt phải (°C)": num(37.0),
+  "Thực tế: Nhiệt trung tâm (°C)": num(37.0),
+  "Thực tế: Nhiệt khí (°C)": num(37.0),
+  "Thực tế: CO2 (%)": num(6.0)
+};
+const TU_A_3 = () => ({ "Nhiệt độ (°C)": num(37.0), "CO2 (%)": num(6.0), "Sục khí": chk(false) });
+const TU_A_O2 = () => ({ "Nhiệt độ (°C)": num(37.0), "CO2 (%)": num(6.0), "O2 (%)": num(5.0), "Sục khí": chk(false) });
+const BT37 = () => ({ "Nhiệt độ (°C)": num(35.0), "Flow (mL/min)": num(30.0, 1.0) });
+const TU_AM_SET = (t) => ({ "Cài đặt: Nhiệt độ (°C)": num(t), "Thực tế: Nhiệt độ (°C)": num(t) });
+const WORKSTATION = () => ({ "Nhiệt trái (°C)": num(37.0), "Nhiệt phải (°C)": num(37.0), "Nhiệt kính (°C)": num(37.0) });
+
+const DEVICE_CONFIGS = {
+  "Tủ A1": TU_A_3(),
+  "Tủ A2": TU_A_3(),
+  "Tủ A3": TU_A_3(),
+  "Tủ A4": TU_A_O2(),
+  "Tủ A5": TU_A_O2(),
+  "Chamber 1": CHAMBER_FIELDS,
+  "Chamber 2": CHAMBER_FIELDS,
+  "BT37 1": BT37(), "BT37 2": BT37(), "BT37 3": BT37(),
+  "BT37 4": BT37(), "BT37 5": BT37(), "BT37 6": BT37(),
+  "Tủ ấm LAB": TU_AM_SET(37.0),
+  "Tủ ấm TT": { "Nhiệt độ (°C)": num(37.0) },
+  "Tủ ấm LS1": TU_AM_SET(38.0),
+  "Tủ ấm LS2": TU_AM_SET(38.0),
+  "WorkStation CH": WORKSTATION(),
+  "WorkStation Đ-R": WORKSTATION(),
+  "Điều áp 1": { "Áp suất (PSI)": num(20.0) },
+  "Điều áp 2": { "Áp suất (PSI)": num(15.0) },
+  "Điều áp 3": { "Áp suất (PSI)": num(10.0) }
+};
+
+/* =====================================================================
+   TRẠNG THÁI (thay cho st.session_state)
+   ===================================================================== */
+let localData = [];           // [{Thời gian, Thiết bị, Thông số, Giá trị, Chuyên viên, Ghi chú, Ngày_Phụ}]
+const fieldValues = {};       // giữ giá trị đã nhập theo "thiết bị||thông số"
+let selectedDevice = Object.keys(DEVICE_CONFIGS)[0];
+
+const $ = (id) => document.getElementById("mon-" + id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const pad = (n) => String(n).padStart(2, "0");
+function nowStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+function todayStr() { return nowStr().slice(0, 10); }
+// Giống str(float) của Python: 37 -> "37.0", 37.5 -> "37.5"
+const pyFloat = (v) => Number.isInteger(v) ? v.toFixed(1) : String(v);
+
+/* =====================================================================
+   ĐỒNG BỘ LỊCH SỬ TỪ FIREBASE (thời gian thực)
+   ===================================================================== */
+function setStatus(cls, text) { const el = $("status"); el.className = "mon-status " + cls; el.textContent = text; }
+let firstSnapshot = true;
+
+function listenHistory() {
+  if (!FIREBASE_READY) {
+    setStatus("bad", "Chưa cấu hình Firebase");
+    $("history-empty").textContent = "Chưa kết nối được Firebase nên chưa thể lưu và xem lịch sử.";
+    renderHistory(false);
+    return;
+  }
+  db.collection(COLLECTION_NAME).onSnapshot((snap) => {
+    localData = snap.docs.map(d => {
+      const r = d.data();
+      return { "Thời gian": String(r["Thời gian"] ?? ""), "Thiết bị": r["Thiết bị"] ?? "", "Thông số": r["Thông số"] ?? "",
+               "Giá trị": r["Giá trị"] ?? "", "Chuyên viên": r["Chuyên viên"] ?? "", "Ghi chú": r["Ghi chú"] ?? "",
+               "stt": r["stt"] ?? 0, "Ngày_Phụ": String(r["Thời gian"] ?? "").slice(0, 10) };
+    }).filter(r => r["Thời gian"] !== "")
+      .sort((a, b) => a["Thời gian"].localeCompare(b["Thời gian"]) || a.stt - b.stt);
+    setStatus("ok", "Đã kết nối Firebase");
+    renderHistory(!firstSnapshot);
+    firstSnapshot = false;
+  }, (err) => {
+    setStatus("bad", "Lỗi kết nối Firebase");
+    $("history-empty").textContent = "Không đọc được dữ liệu từ Firebase: " + err.message + (err.code === "permission-denied" ? " — cần cho phép đọc/ghi collection \"device_logs\" trong Rules của Firestore." : "");
+    renderHistory(false);
+  });
+}
+
+/* =====================================================================
+   FORM NHẬP LIỆU ĐỘNG
+   ===================================================================== */
+function renderFields() {
+  const fields = DEVICE_CONFIGS[selectedDevice];
+  $("cur-device").textContent = selectedDevice;
+  let html = "", printedSetting = false, printedActual = false, i = 0;
+  for (const [name, cfg] of Object.entries(fields)) {
+    let label = name;
+    if (name.startsWith("Cài đặt:")) {
+      if (!printedSetting) { html += `<div class="tag set">⚙️ Thông số cài đặt</div>`; printedSetting = true; }
+      label = name.replace("Cài đặt: ", "");
+    } else if (name.startsWith("Thực tế:")) {
+      if (!printedActual) { html += `<div class="tag act">📊 Thông số thực tế</div>`; printedActual = true; }
+      label = name.replace("Thực tế: ", "");
+    }
+    const key = `${selectedDevice}||${name}`;
+    const id = `mon-f${i++}`;
+    const saved = key in fieldValues ? fieldValues[key] : cfg.default;
+    if (cfg.type === "number") {
+      html += `<div><label for="${id}">${esc(label)}</label>
+        <input type="number" id="${id}" data-key="${esc(key)}" data-field="${esc(name)}" step="${cfg.step}" value="${saved}"></div>`;
+    } else {
+      html += `<div class="full"><label class="check"><input type="checkbox" id="${id}" data-key="${esc(key)}" data-field="${esc(name)}" ${saved ? "checked" : ""}> ${esc(label)}</label></div>`;
+    }
+  }
+  $("fields").innerHTML = html;
+  $("fields").querySelectorAll("input").forEach(el => {
+    el.addEventListener("input", () => {
+      fieldValues[el.dataset.key] = el.type === "checkbox" ? el.checked : el.value;
+    });
+  });
+}
+
+function updateInspectorCaption() {
+  const name = $("inspector").value.trim();
+  const cap = $("inspector-caption");
+  if (name) { cap.className = "caption"; cap.innerHTML = `👤 Người thực hiện hiện tại: <strong>${esc(name)}</strong>`; }
+  else { cap.className = "caption warn"; cap.textContent = "⚠️ Lưu ý: Bạn chưa điền tên Chuyên viên ở phía trên cùng."; }
+}
+
+function showMsg(type, text) { $("submit-msg").innerHTML = `<div class="msg ${type}">${esc(text)}</div>`; }
+
+async function submitForm() {
+  const inspector = $("inspector").value.trim();
+  if (!inspector) {
+    showMsg("err", "⚠️ Lỗi: Vui lòng điền tên người thực hiện ở thanh trên cùng trước!");
+    return;
+  }
+  if (!FIREBASE_READY) {
+    showMsg("err", "⚠️ Chưa kết nối được Firebase nên chưa thể lưu dữ liệu.");
+    return;
+  }
+  const btn = $("submit");
+  btn.disabled = true;
+  const workDate = $("work-date").value || todayStr();
+  const now = workDate + " " + nowStr().slice(11);
+  const note = $("note").value;
+  const batch = db.batch();
+  let stt = 0;
+
+  $("fields").querySelectorAll("input").forEach(el => {
+    const name = el.dataset.field;
+    let display;
+    if (el.type === "checkbox") display = el.checked ? "Có (Đang bật)" : "Không";
+    else {
+      const v = parseFloat(el.value);
+      display = pyFloat(Number.isNaN(v) ? DEVICE_CONFIGS[selectedDevice][name].default : v);
+    }
+    batch.set(db.collection(COLLECTION_NAME).doc(), { "Thời gian": now, "Thiết bị": selectedDevice, "Thông số": name, "Giá trị": display,
+                              "Chuyên viên": inspector, "Ghi chú": note, "stt": stt++ });
+  });
+
+  try {
+    await batch.commit();
+    showMsg("ok", `🎉 Đã lưu thành công dữ liệu cho ${selectedDevice}!`);
+  } catch (e) {
+    showMsg("err", "⚠️ Lưu thất bại: " + e.message + (e.code === "permission-denied" ? " — cần cho phép ghi collection \"device_logs\" trong Rules của Firestore." : ""));
+  }
+  btn.disabled = false;
+}
+
+/* =====================================================================
+   LỊCH SỬ + BỘ LỌC
+   ===================================================================== */
+const DOW = ["Chủ nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+const openDays = new Set();
+const fmtDay = (iso) => { const [y, m, d] = iso.split("-"); return `${d}/${m}/${y}`; };
+const dowOf = (iso) => { const [y, m, d] = iso.split("-").map(Number); return DOW[new Date(y, m - 1, d).getDay()]; };
+
+function renderHistory(keepFilters) {
+  const empty = localData.length === 0;
+  $("history-empty").hidden = !empty;
+  $("history-body").hidden = empty;
+  if (empty) return;
+  const fd = $("filter-device");
+  const prev = keepFilters ? fd.value : "Tất cả";
+  fd.innerHTML = ["Tất cả", ...Object.keys(DEVICE_CONFIGS)].map(d => `<option>${esc(d)}</option>`).join("");
+  fd.value = prev;
+  drawDays();
+}
+
+function filteredRows() {
+  const device = $("filter-device").value;
+  return device === "Tất cả" ? localData : localData.filter(r => r["Thiết bị"] === device);
+}
+
+function drawDays() {
+  const rows = filteredRows();
+  const byDay = {};
+  rows.forEach(r => { (byDay[r["Ngày_Phụ"]] = byDay[r["Ngày_Phụ"]] || []).push(r); });
+  const days = Object.keys(byDay).sort().reverse();
+  $("result-line").innerHTML = `Thiết bị: <strong>${esc($("filter-device").value)}</strong> · <strong>${days.length}</strong> ngày · <strong>${rows.length}</strong> bản ghi`;
+  $("no-match").hidden = days.length > 0;
+  $("day-list").innerHTML = days.map(day => {
+    const list = byDay[day].slice().reverse();
+    const trs = list.map(r => `<tr><td>${esc(r["Thời gian"])}</td><td>${esc(r["Thiết bị"])}</td><td>${esc(r["Thông số"])}</td>
+      <td>${esc(r["Giá trị"])}</td><td>${esc(r["Chuyên viên"])}</td><td class="note">${esc(r["Ghi chú"])}</td></tr>`).join("");
+    return `<details class="day" data-day="${esc(day)}" ${openDays.has(day) ? "open" : ""}>
+      <summary><span>${fmtDay(day)}</span><span class="dow">${dowOf(day)}</span><span class="count">${list.length} bản ghi</span></summary>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Thời gian</th><th>Thiết bị</th><th>Thông số</th><th>Giá trị</th><th>Chuyên viên</th><th>Ghi chú</th></tr></thead>
+        <tbody>${trs}</tbody></table></div></details>`;
+  }).join("");
+}
+
+function exportExcel() {
+  const box = $("export-msg");
+  const from = $("exp-from").value, to = $("exp-to").value;
+  const say = (t, txt) => { box.innerHTML = `<div class="msg ${t} export-msg">${esc(txt)}</div>`; };
+  if (!from || !to) return say("err", "Vui lòng chọn đủ ngày bắt đầu và ngày kết thúc.");
+  if (from > to) return say("err", "Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày kết thúc.");
+  if (typeof XLSX === "undefined") return say("err", "Không tải được thư viện xuất Excel (cần kết nối mạng).");
+  const rows = filteredRows().filter(r => r["Ngày_Phụ"] >= from && r["Ngày_Phụ"] <= to)
+    .slice().sort((a, b) => a["Thời gian"].localeCompare(b["Thời gian"]) || a.stt - b.stt);
+  if (!rows.length) return say("warn", "Không có bản ghi nào trong khoảng thời gian này.");
+  const data = rows.map(r => ({
+    "Thời gian": r["Thời gian"], "Thiết bị": r["Thiết bị"], "Thông số": r["Thông số"],
+    "Giá trị": /^-?\d+(\.\d+)?$/.test(r["Giá trị"]) ? Number(r["Giá trị"]) : r["Giá trị"],
+    "Chuyên viên": r["Chuyên viên"], "Ghi chú": r["Ghi chú"]
+  }));
+  const ws = XLSX.utils.json_to_sheet(data);
+  ws["!cols"] = [{ wch: 20 }, { wch: 16 }, { wch: 30 }, { wch: 16 }, { wch: 18 }, { wch: 32 }];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Nhat ky");
+  XLSX.writeFile(wb, `LAB_${from}_${to}.xlsx`);
+  say("ok", `Đã xuất ${rows.length} bản ghi từ ${fmtDay(from)} đến ${fmtDay(to)}.`);
+}
+
+let dateEdited = false;   // true khi người dùng chọn ngày khác hôm nay
+function updateDow() { const v = $("work-date").value; $("work-dow").textContent = v ? dowOf(v) : ""; }
+function paintToday() {
+  if (!dateEdited || !$("work-date").value) { dateEdited = false; $("work-date").value = todayStr(); }
+  updateDow();
+}
+
+/* =====================================================================
+   KHỞI TẠO
+   ===================================================================== */
+(function init() {
+  try { $("inspector").value = localStorage.getItem("inspector_name") || ""; } catch (e) {}
+  $("device").innerHTML = Object.keys(DEVICE_CONFIGS).map(d => `<option>${esc(d)}</option>`).join("");
+  $("device").addEventListener("change", (e) => { selectedDevice = e.target.value; $("submit-msg").innerHTML = ""; renderFields(); });
+  $("inspector").addEventListener("input", () => {
+    updateInspectorCaption();
+    try { localStorage.setItem("inspector_name", $("inspector").value); } catch (e) {}
+  });
+  $("submit").addEventListener("click", submitForm);
+  $("filter-device").addEventListener("change", drawDays);
+  $("export-btn").addEventListener("click", exportExcel);
+  $("day-list").addEventListener("toggle", (e) => {
+    const day = e.target.dataset && e.target.dataset.day;
+    if (day) e.target.open ? openDays.add(day) : openDays.delete(day);
+  }, true);
+  $("exp-to").value = todayStr();
+  $("exp-from").value = todayStr().slice(0, 8) + "01";
+  $("work-date").addEventListener("change", () => {
+    dateEdited = $("work-date").value !== todayStr();
+    paintToday();
+  });
+  $("today-btn").addEventListener("click", () => { dateEdited = false; paintToday(); });
+  paintToday();
+  setInterval(paintToday, 60000);
+
+  updateInspectorCaption();
+  renderFields();
+  renderHistory(false);
+  listenHistory();
+})();
+
 })();
 </script>
 </body>
