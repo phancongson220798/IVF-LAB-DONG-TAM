@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Quản lý thiết bị phòng LAB</title>
+<title>LAB ĐỒNG TÂM</title>
 <meta name="theme-color" content="#0f6d63">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -373,13 +373,13 @@ tbody tr,.history-row{transition:background-color .15s}
     <button class="btn" id="btnTheme" title="Đổi giao diện sáng/tối">◐</button>
   </div>
   <div id="homeApp">
-    <div class="home-head"><h1>Quản lý thiết bị phòng LAB</h1><div class="sub">Chọn chức năng cần dùng</div></div>
+    <div class="home-head"><h1>LAB ĐỒNG TÂM</h1><div class="sub">Chọn chức năng cần dùng</div></div>
     <div class="home-grid">
-      <button class="tile" data-view="devices"><span class="cnt" id="navCountDev">0</span><div class="ic">📋</div><h2>Danh sách thiết bị</h2><p>Quản lý thiết bị, lịch bảo trì, mã QR, in phiếu và xuất Excel.</p></button>
-      <button class="tile" data-view="filter"><span class="cnt" id="countFilter">0</span><div class="ic">🧯</div><h2>Thay lọc định kỳ</h2><p>Theo dõi hạn thay lọc, cảnh báo quá hạn và lịch sử thay lọc.</p></button>
-      <button class="tile" data-view="monitor"><div class="ic">🔬</div><h2>Theo dõi thiết bị LABO</h2><p>Ghi nhận thông số vận hành hằng ngày, xem lịch sử theo ngày và xuất Excel.</p></button>
-      <button class="tile" data-view="calib"><div class="ic">🌡️</div><h2>Đo và hiệu chuẩn tủ nuôi</h2><p>Ghi nhận CO2, O2, VOCs, độ bụi và hiệu chuẩn, xem lịch sử, xuất Excel.</p></button>
-      <button class="tile" data-view="gas"><div class="ic">🧪</div><h2>Giám sát thay bình khí</h2><p>Ghi lịch thay khí N2, CO2, khí trộn (S/N), tra cứu theo tháng, in và xuất Excel.</p></button>
+      <button class="tile" data-view="devices"><span class="cnt" id="navCountDev">0</span><div class="ic">📋</div><h2>DANH SÁCH THIẾT BỊ</h2><p>Quản lý thiết bị, lịch bảo trì, mã QR, in phiếu và xuất Excel.</p></button>
+      <button class="tile" data-view="filter"><span class="cnt" id="countFilter">0</span><div class="ic">🧯</div><h2>THAY LỌC</h2><p>Theo dõi hạn thay lọc, cảnh báo quá hạn và lịch sử thay lọc.</p></button>
+      <button class="tile" data-view="monitor"><div class="ic">🔬</div><h2>THÔNG SỐ THIẾT BỊ</h2><p>Ghi nhận thông số vận hành hằng ngày, xem lịch sử theo ngày và xuất Excel.</p></button>
+      <button class="tile" data-view="calib"><div class="ic">🌡️</div><h2>HIỆU CHUẨN TỦ NUÔI CẤY</h2><p>Ghi nhận CO2, O2, VOCs, độ bụi và hiệu chuẩn, xem lịch sử, xuất Excel.</p></button>
+      <button class="tile" data-view="gas"><div class="ic">🧪</div><h2>THAY KHÍ NUÔI CẤY</h2><p>Ghi lịch thay khí N2, CO2, khí trộn (S/N), tra cứu theo tháng, in và xuất Excel.</p></button>
     </div>
   </div>
   <div class="install-banner no-print" id="installBanner">
@@ -509,7 +509,7 @@ tbody tr,.history-row{transition:background-color .15s}
     <div class="mgrid">
     <!-- TRÁI: FORM NHẬP LIỆU -->
     <section class="panel form-panel">
-      <div class="panel-head"><h2>📥 Tổng hợp thiết bị trong LAB</h2></div>
+      <div class="panel-head"><h2>📥 Thông số thiết bị</h2></div>
       <div class="panel-body">
         <label for="mon-device">Chọn thiết bị</label>
         <select id="mon-device"></select>
@@ -522,7 +522,7 @@ tbody tr,.history-row{transition:background-color .15s}
           <label for="mon-note">Ghi chú / Trạng thái bất thường (Nếu có)</label>
           <textarea id="mon-note"></textarea>
         </div>
-        <button class="mbtn" id="mon-submit">💾 XÁC NHẬN LƯU VÀO HỆ THỐNG</button>
+        <button class="mbtn" id="mon-submit">💾 XÁC NHẬN</button>
         <div id="mon-submit-msg" role="status"></div>
       </div>
     </section>
@@ -564,7 +564,7 @@ tbody tr,.history-row{transition:background-color .15s}
     </div>
     <div class="mgrid">
     <section class="panel form-panel">
-      <div class="panel-head"><h2>📝 Nhập thông số</h2></div>
+      <div class="panel-head"><h2>📝 Nồng độ khí tủ nuôi</h2></div>
       <div class="panel-body">
         <label for="cal-hang-muc">🎛️ Chọn tủ / Thông số</label>
         <select id="cal-hang-muc"></select>
@@ -574,7 +574,7 @@ tbody tr,.history-row{transition:background-color .15s}
           <label for="cal-ghi-chu">📝 Ghi chú thêm (nếu có)</label>
           <textarea id="cal-ghi-chu" placeholder="Nhập tình trạng thiết bị..."></textarea>
         </div>
-        <button class="mbtn" id="cal-submit" type="button">💾 LƯU DỮ LIỆU</button>
+        <button class="mbtn" id="cal-submit" type="button">💾 XÁC NHẬN</button>
         <div id="cal-submit-msg" role="status"></div>
       </div>
     </section>
