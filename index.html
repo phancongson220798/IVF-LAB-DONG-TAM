@@ -529,6 +529,50 @@ body.link-view #auditApp{display:none!important}
   #auditApp td::before{content:attr(data-label);flex:none;color:var(--text-dim);font-weight:600;font-size:12px;text-align:left}
 }
 @media print{#authScreen{display:none!important}}
+
+/* ===== Giao diện máy tính (>=981px): Thay lọc, Thông số, Hiệu chuẩn, Thay khí — điện thoại giữ nguyên ===== */
+@media screen and (min-width:981px){
+  body[data-view="filter"] .wrap,body[data-view="monitor"] .wrap,body[data-view="calib"] .wrap,body[data-view="gas"] .wrap{max-width:min(1560px,96vw)}
+
+  /* tiêu đề + thanh thông tin cùng một hàng */
+  body[data-view="monitor"] #monApp,body[data-view="calib"] #calApp,body[data-view="gas"] #gasApp{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 24px;align-items:center}
+  #monApp>*,#calApp>*,#gasApp>*{grid-column:1/-1}
+  #monApp>header.top,#calApp>header.top,#gasApp>header.top{grid-column:1;margin:0 0 14px}
+  #monApp>.mon-bar,#calApp>.mon-bar,#gasApp>.mon-bar{grid-column:2;margin:0 0 14px}
+  #monApp>header .sub,#calApp>header .sub,#gasApp>header .sub{max-width:340px}
+  #gasApp>.mon-bar{justify-self:end;padding:0;border:0;background:none}
+
+  /* form cố định bên trái, lịch sử rộng bên phải */
+  #monApp .mgrid,#calApp .mgrid,#gasApp .mgrid{grid-template-columns:minmax(380px,440px) minmax(0,1fr);gap:22px;align-items:start}
+  #monApp .form-panel,#calApp .form-panel,#gasApp .form-panel{position:sticky;top:12px;max-height:calc(100vh - 24px);display:flex;flex-direction:column}
+  #monApp .form-panel>.panel-head,#calApp .form-panel>.panel-head,#gasApp .form-panel>.panel-head{flex:none}
+  #monApp .form-panel>.panel-body,#calApp .form-panel>.panel-body,#gasApp .form-panel>.panel-body{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+
+  /* lịch sử: bảng thoáng hơn, tiêu đề cột dính, rê chuột nổi dòng */
+  #monApp .day > summary{padding:13px 18px}
+  #monApp th,#monApp td,#gasApp th,#gasApp td{padding:10px 12px}
+  #monApp .day .table-scroll{max-height:min(560px,62vh)}
+  #gasApp .table-scroll{max-height:calc(100vh - 250px)}
+  #monApp tbody tr:hover,#gasApp tbody tr:hover{background:color-mix(in srgb,var(--accent) 9%,transparent)}
+  #calApp tbody tr{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));padding:14px 18px}
+  #calApp tbody tr:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
+
+  /* Thay lọc: tiêu đề và thống kê cùng hàng, thanh công cụ dính, thẻ rộng hơn */
+  body[data-view="filter"] #maintApp{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 24px;align-items:center}
+  #maintApp>*{grid-column:1/-1}
+  #maintApp>header.top{grid-column:1;margin:0 0 14px}
+  #maintApp>#statsRow{grid-column:2;margin:0 0 14px;flex-wrap:nowrap}
+  #maintApp .stats-group{min-width:0}
+  #maintApp .stat-chip{min-width:104px}
+  #maintApp .toolbar{position:sticky;top:0;z-index:7;background:var(--bg);padding:10px 0;margin-bottom:8px;border-bottom:1px solid var(--border)}
+  #listWrap .grid{grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px}
+  #listWrap .card{padding:18px 20px}
+  .gauge{width:68px;height:68px}
+  .gauge::after{inset:8px}
+}
+@media screen and (min-width:1280px){
+  #listWrap .history-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+}
 </style>
 <script>
 (function(){
