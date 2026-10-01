@@ -573,6 +573,55 @@ body.link-view #auditApp{display:none!important}
 @media screen and (min-width:1280px){
   #listWrap .history-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 }
+
+/* ===== Điện thoại: ngày viết tắt (T5 01.10.26) và ô thông tin thu gọn ===== */
+.d-short{display:none}
+@media(max-width:700px){.d-full{display:none!important}.d-short{display:inline}}
+@media(max-width:640px){
+  /* Thông số thiết bị */
+  #monApp .day > summary{padding:10px 12px;gap:6px}
+  #monApp tbody tr{display:grid;grid-template-columns:1fr auto;gap:1px 10px;padding:7px 12px}
+  #monApp td{display:block;width:auto;padding:1px 0;text-align:left}
+  #monApp td::before{content:none}
+  #monApp td[data-label="Thời gian"],#monApp td[data-na]{display:none}
+  #monApp td[data-label="Thiết bị"]{grid-column:1/-1;font-weight:700;font-size:14px;padding-bottom:2px}
+  #monApp td[data-label="Thông số"]{grid-column:1;font-size:13.5px}
+  #monApp td[data-label="Giá trị"]{grid-column:2;font-weight:700;text-align:right}
+  #monApp td.note{grid-column:1/-1;font-size:12px;color:var(--text-dim)}
+  #monApp td.note::before{content:"📝 ";display:inline}
+  #monApp td.he-act{grid-column:1/-1;display:flex;justify-content:flex-end;padding-top:4px}
+  /* Thay khí */
+  #gasApp tbody tr{display:grid;grid-template-columns:1fr 1fr;gap:5px 12px;padding:10px 14px}
+  #gasApp td{display:block;width:auto;padding:0;text-align:left}
+  #gasApp td::before{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.03em;margin-bottom:1px}
+  #gasApp td.num{text-align:left}
+  #gasApp td[data-label="Ngày thay"]{font-weight:700}
+  #gasApp td.he-act{grid-column:1/-1;display:flex;justify-content:flex-end;padding-top:2px}
+  /* Hiệu chuẩn */
+  #calApp tbody tr{grid-template-columns:1fr 1fr;gap:4px 12px;padding:10px 12px}
+  #calApp td{font-size:13px}
+  #calApp td::before{font-size:10px}
+  #calApp td.he-act{padding-top:2px}
+  /* Thay lọc */
+  #listWrap .card{padding:12px;gap:10px}
+  .gauge{width:52px;height:52px}.gauge::after{inset:6px}.gauge span{font-size:11.5px}
+  #listWrap .card-name{font-size:14.5px}
+  #listWrap .card-meta{display:grid;grid-template-columns:1fr 1fr;gap:3px 10px;font-size:12px;line-height:1.4}
+  #listWrap .card-meta>div:last-child{grid-column:1/-1}
+  #listWrap .card-meta .lbl{display:block;min-width:0;font-size:10.5px;text-transform:uppercase;letter-spacing:.03em}
+  #listWrap .card-actions{margin-top:8px;gap:5px}
+  #listWrap .card-actions .icon-btn{padding:5px 8px;font-size:11.5px}
+  .history-row{padding:9px 12px;gap:8px}.history-date{min-width:0;font-size:12px}
+}
+@media screen and (max-width:700px){
+  /* Danh sách thiết bị */
+  .app-main tbody tr:not(.grp){display:grid;grid-template-columns:1fr 1fr;gap:3px 14px;padding:10px 12px 8px;margin-bottom:10px}
+  .app-main tbody td{display:block;width:auto;text-align:left;padding:2px 0}
+  .app-main tbody td::before{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.03em;margin-bottom:1px}
+  .app-main td.dev-name{grid-column:1/-1;padding:0 48px 6px 0;margin-bottom:2px}
+  .app-main td.no-print{grid-column:1/-1;padding-top:6px}
+  .app-main .row-actions .btn{min-height:36px}
+}
 </style>
 <script>
 (function(){
@@ -580,6 +629,15 @@ body.link-view #auditApp{display:none!important}
   window.__effTheme=function(){ var c=document.documentElement.getAttribute("data-theme"); return c||(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"); };
   window.__toggleTheme=function(){ var n=window.__effTheme()==="dark"?"light":"dark"; document.documentElement.setAttribute("data-theme",n); try{ localStorage.setItem("lab_theme",n); }catch(e){} };
 })();
+</script>
+<script>
+window.dShort=function(v){
+  if(v instanceof Date) v=v.getFullYear()+"-"+String(v.getMonth()+1).padStart(2,"0")+"-"+String(v.getDate()).padStart(2,"0");
+  var m=String(v==null?"":v).match(/^(\d{4})-(\d{2})-(\d{2})/); if(!m) return "";
+  var d=new Date(+m[1],+m[2]-1,+m[3]);
+  return ["CN","T2","T3","T4","T5","T6","T7"][d.getDay()]+" "+m[3]+"."+m[2]+"."+m[1].slice(2);
+};
+window.dBoth=function(v,full){ var t=window.dShort(v); return t?'<span class="d-full">'+full+'</span><span class="d-short">'+t+'</span>':full; };
 </script>
 </head>
 <body data-view="home" class="auth-locked">
@@ -877,7 +935,7 @@ body.link-view #auditApp{display:none!important}
           <p class="result-line" id="gas-result-line"></p>
           <div class="table-scroll">
             <table>
-              <thead><tr><th>Ngày thay</th><th>Loại khí</th><th>Số S/N</th><th>Nhánh thay</th><th style="text-align:right">Số lượng</th><th>Người thực hiện</th><th></th></tr></thead>
+              <thead><tr><th>Ngày thay</th><th>Loại khí</th><th>Số S/N</th><th>Nhánh thay</th><th style="text-align:right">Số lượng</th><th></th></tr></thead>
               <tbody id="gas-tbody"></tbody>
             </table>
           </div>
@@ -1893,10 +1951,9 @@ body.link-view #auditApp{display:none!important}
           '<div class="card-meta">' +
             '<div><span class="lbl">'+CATEGORY_INFO[c.category].typeLabel+':</span> <b>'+escapeHtml(c.type||c.name||'—')+'</b></div>' +
             (c.category==='filter' ? '' : '<div><span class="lbl">Vị trí:</span> '+escapeHtml(c.location||'—')+'</div>') +
-            '<div><span class="lbl">Người thực hiện:</span> '+escapeHtml(c.performedBy||'—')+'</div>' +
             '<div><span class="lbl">Chu kỳ:</span> '+intervalText(c.intervalVal, c.intervalUnit)+'</div>' +
-            '<div><span class="lbl">Lần gần nhất:</span> '+fmt(c.lastDate)+'</div>' +
-            '<div><span class="lbl">Hạn tiếp theo:</span> <b class="mono">'+fmt(c.nextDue)+'</b></div>' +
+            '<div><span class="lbl">Lần gần nhất:</span> '+fmtD(c.lastDate)+'</div>' +
+            '<div><span class="lbl">Hạn tiếp theo:</span> <b class="mono">'+fmtD(c.nextDue)+'</b></div>' +
           '</div>' +
           '<div class="card-actions">' +
             '<button class="icon-btn" data-act="done" data-id="'+c.id+'">✓ Đã làm hôm nay</button>' +
@@ -1907,6 +1964,8 @@ body.link-view #auditApp{display:none!important}
       '</div>';
     }).join('') + '</div>';
   }
+
+  function fmtD(v){ return window.dBoth(v, fmt(v)); }
 
   function renderHistory(wrap){
     var rows = state.history.filter(function(h){ return h.category === state.activeTab; });
@@ -1922,11 +1981,10 @@ body.link-view #auditApp{display:none!important}
       var title = h.category === 'filter' ? h.type : h.name;
       var subParts = [];
       if(h.category !== 'filter' && h.location) subParts.push(h.location);
-      if(h.performedBy) subParts.push(h.performedBy);
       if(h.notes) subParts.push(h.notes);
       return '' +
       '<div class="history-row">' +
-        '<div class="history-date mono">'+fmt(h.date)+'</div>' +
+        '<div class="history-date mono">'+fmtD(h.date)+'</div>' +
         '<div class="history-body">' +
           '<div class="history-title">'+escapeHtml(title||'—')+'</div>' +
           '<div class="history-sub">'+escapeHtml(subParts.join(' · ') || '—')+'</div>' +
@@ -2308,7 +2366,7 @@ body.link-view #auditApp{display:none!important}
   var titles={home:"",devices:"Danh sách thiết bị",filter:"Thay lọc định kỳ",monitor:"Theo dõi thiết bị LABO",calib:"Đo và hiệu chuẩn tủ nuôi",gas:"Giám sát thay bình khí",audit:"Nhật ký hoạt động"};
   function show(v,push){
     document.body.setAttribute("data-view",v);
-    document.getElementById("topTitle").textContent=titles[v]||"";
+    document.getElementById("topTitle").textContent="";
     if(v==="filter"&&window.__maintSetTab) window.__maintSetTab("filter");
     if(push){ try{ history.pushState({v:v},""); }catch(e){} }
     window.scrollTo({top:0,behavior:"instant"});
@@ -2554,14 +2612,14 @@ function drawDays() {
     const missing = allDevices.filter(d => !done.has(d));
     const full = missing.length === 0;
     const trs = groups.map((g, gi) => g.map((r, i) => {
-      const head = i === 0 ? `<td rowspan="${g.length}" data-label="Thời gian">${esc(fmtDT(r["Thời gian"]))}</td><td rowspan="${g.length}" data-label="Thiết bị">${esc(r["Thiết bị"])}</td>` : "";
-      return `<tr class="g${gi % 2}${i === 0 ? " gs" : ""}">${head}<td data-label="Thông số">${esc(r["Thông số"])}</td><td data-label="Giá trị">${esc(r["Giá trị"])}</td><td data-label="Chuyên viên">${esc(r["Chuyên viên"])}${window.acctTag(r)}</td><td class="note" data-label="Ghi chú">${esc(r["Ghi chú"])}</td><td class="he-act">${HistEdit.btns(r.id)}</td></tr>`;
+      const head = i === 0 ? `<td rowspan="${g.length}" data-label="Thời gian">${dBoth(r["Thời gian"], esc(fmtDT(r["Thời gian"])))}</td><td rowspan="${g.length}" data-label="Thiết bị">${esc(r["Thiết bị"])}</td>` : "";
+      return `<tr class="g${gi % 2}${i === 0 ? " gs" : ""}">${head}<td data-label="Thông số">${esc(r["Thông số"])}</td><td data-label="Giá trị">${esc(r["Giá trị"])}</td><td class="note" data-label="Ghi chú"${r["Ghi chú"] ? "" : " data-na"}>${esc(r["Ghi chú"])}</td><td class="he-act">${HistEdit.btns(r.id)}</td></tr>`;
     }).join("")).join("");
     const covTitle = full ? "Đã ghi đủ tất cả thiết bị" : "Chưa ghi: " + missing.join(", ");
     return `<details class="day" data-day="${esc(day)}" ${openDays.has(day) ? "open" : ""}>
-      <summary><span>${fmtDay(day)}</span><span class="dow">${dowOf(day)}</span><span class="cov ${full ? "full" : ""}" title="${esc(covTitle)}">🖥 ${done.size}/${allDevices.length} thiết bị</span><span class="count">${groups.length} bản ghi</span></summary>
+      <summary><span><span class="d-full">${fmtDay(day)}</span><span class="d-short">${dShort(day)}</span></span><span class="dow d-full">${dowOf(day)}</span><span class="cov ${full ? "full" : ""}" title="${esc(covTitle)}">🖥 ${done.size}/${allDevices.length} thiết bị</span><span class="count">${groups.length} bản ghi</span></summary>
       <div class="table-scroll"><table>
-        <thead><tr><th>Thời gian</th><th>Thiết bị</th><th>Thông số</th><th>Giá trị</th><th>Chuyên viên</th><th>Ghi chú</th><th></th></tr></thead>
+        <thead><tr><th>Thời gian</th><th>Thiết bị</th><th>Thông số</th><th>Giá trị</th><th>Ghi chú</th><th></th></tr></thead>
         <tbody>${trs}</tbody></table></div></details>`;
   }).join("");
 }
@@ -2779,7 +2837,7 @@ const DOW = ["Chủ nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm",
 const openDays = new Set();
 const fmtDay = (iso) => { const [y, m, d] = iso.split("-"); return `${d}/${m}/${y}`; };
 const dowOf = (iso) => { const [y, m, d] = iso.split("-").map(Number); return DOW[new Date(y, m - 1, d).getDay()]; };
-const SHOW_COLS = COLS.filter(c => c !== "Ngày đo");
+const SHOW_COLS = COLS.filter(c => c !== "Ngày đo" && c !== "Chuyên viên");
 
 function filteredRows() {
   const hm = $("filter-hm").value;
@@ -2800,7 +2858,7 @@ function renderHistory() {
   $("day-list").innerHTML = days.map(day => {
     const list = byDay[day];   // localData đã sắp mới nhất trước
     const trs = list.map(r => "<tr>" + SHOW_COLS.map(c => `<td class="${c === "Ghi chú" ? "note" : ""}" data-label="${esc(c)}"${r[c] == null || r[c] === "" || r[c] === "N/A" ? " data-na" : ""}>${esc(r[c])}${c === "Chuyên viên" ? window.acctTag(r) : ""}</td>`).join("") + `<td class="he-act">${HistEdit.btns(r.id)}</td></tr>`).join("");
-    const head = day === "—" ? "Không rõ ngày" : `<span>${fmtDay(day)}</span><span class="dow">${dowOf(day)}</span>`;
+    const head = day === "—" ? "Không rõ ngày" : `<span><span class="d-full">${fmtDay(day)}</span><span class="d-short">${dShort(day)}</span></span><span class="dow d-full">${dowOf(day)}</span>`;
     return `<details class="day" data-day="${esc(day)}" ${openDays.has(day) ? "open" : ""}>
       <summary>${head}<span class="count">${list.length} bản ghi</span></summary>
       <div class="table-scroll"><table><thead><tr>${SHOW_COLS.map(c => `<th>${esc(c)}</th>`).join("")}<th></th></tr></thead>
@@ -3008,9 +3066,9 @@ function drawTable() {
   const total = rows.reduce((t, r) => t + (Number(r["Số Lượng Bình"]) || 0), 0);
   $("result-line").innerHTML = `Tháng <strong>${esc(m)}</strong> · <strong>${rows.length}</strong> lần thay · tổng <strong>${total}</strong> bình`;
   $("tbody").innerHTML = rows.map(r => `<tr>
-    <td data-label="Ngày thay">${esc(fmtDay(r["Ngày Thay"]))}</td><td data-label="Loại khí"><span class="pill">${esc(r["Loại Khí"])}</span></td>
+    <td data-label="Ngày thay">${dBoth(r["Ngày Thay"], esc(fmtDay(r["Ngày Thay"])))}</td><td data-label="Loại khí"><span class="pill">${esc(r["Loại Khí"])}</span></td>
     <td data-label="Số S/N">${esc(r["Số S/N (Khí trộn)"])}</td><td data-label="Nhánh thay">${esc(r["Nhánh Thay"])}</td>
-    <td class="num" data-label="Số lượng">${esc(r["Số Lượng Bình"])}</td><td data-label="Người thực hiện">${esc(r["Người Thực Hiện"])}${window.acctTag(r)}</td><td class="he-act">${HistEdit.btns(r.id)}</td></tr>`).join("");
+    <td class="num" data-label="Số lượng">${esc(r["Số Lượng Bình"])}</td><td class="he-act">${HistEdit.btns(r.id)}</td></tr>`).join("");
 }
 
 function listenHistory() {
