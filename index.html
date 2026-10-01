@@ -664,6 +664,63 @@ body.link-view #auditApp{display:none!important}
   #monApp #mon-note{height:62px;min-height:62px}
   #monApp #mon-submit{position:sticky;bottom:10px;z-index:4;margin-top:12px;box-shadow:0 8px 20px rgba(0,0,0,.25)}
 }
+
+/* ===== Hiệu ứng nền: nền chung + mỗi mục lớn một kiểu riêng ===== */
+@property --bg-a{syntax:"<color>";inherits:true;initial-value:#0f9d8a}
+@property --bg-b{syntax:"<color>";inherits:true;initial-value:#3b82f6}
+:root{--blob-o:.17}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--blob-o:.26}}
+:root[data-theme="dark"]{--blob-o:.26}
+body{--bg-a:#0f9d8a;--bg-b:#3b82f6;transition:background-color .25s,color .25s,--bg-a .9s ease,--bg-b .9s ease}
+body[data-view="devices"]{--bg-a:#14b8a6;--bg-b:#22c55e}
+body[data-view="filter"]{--bg-a:#3b82f6;--bg-b:#06b6d4}
+body[data-view="monitor"]{--bg-a:#8b5cf6;--bg-b:#6366f1}
+body[data-view="calib"]{--bg-a:#f59e0b;--bg-b:#ef4444}
+body[data-view="gas"]{--bg-a:#f97316;--bg-b:#ec4899}
+body[data-view="audit"]{--bg-a:#64748b;--bg-b:#94a3b8}
+.wrap{position:relative;z-index:1}
+#appBg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;--fxc:color-mix(in srgb,var(--bg-a) 36%,transparent)}
+#appBg .b{position:absolute;border-radius:50%;filter:blur(70px);opacity:var(--blob-o);will-change:transform}
+#appBg .b1{width:46vmax;height:46vmax;left:-14vmax;top:-14vmax;background:var(--bg-a);animation:bgDrift1 26s ease-in-out infinite}
+#appBg .b2{width:40vmax;height:40vmax;right:-12vmax;top:28%;background:var(--bg-b);animation:bgDrift2 32s ease-in-out infinite}
+#appBg .b3{width:34vmax;height:34vmax;left:28%;bottom:-18vmax;background:color-mix(in srgb,var(--bg-a) 50%,var(--bg-b));animation:bgDrift3 38s ease-in-out infinite}
+@keyframes bgDrift1{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(9vmax,7vmax,0) scale(1.14)}}
+@keyframes bgDrift2{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-8vmax,-6vmax,0) scale(1.1)}}
+@keyframes bgDrift3{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-7vmax,-5vmax,0) scale(1.18)}}
+#appBg .fx{position:absolute;inset:-340px -240px;opacity:0;will-change:transform}
+@keyframes fxIn{from{opacity:0}to{opacity:.8}}
+@keyframes fxM46{to{transform:translate3d(-46px,-46px,0)}}
+@keyframes fxM30{to{transform:translate3d(-30px,-30px,0)}}
+@keyframes fxM24{to{transform:translate3d(-24px,-24px,0)}}
+@keyframes fxUp320{to{transform:translate3d(0,-320px,0)}}
+@keyframes fxUp220{to{transform:translate3d(0,-220px,0)}}
+@keyframes fxLeft240{to{transform:translate3d(-240px,0,0)}}
+@keyframes fxPulse{from{transform:scale(1)}to{transform:scale(1.14)}}
+/* Màn hình chính: lưới chấm */
+body[data-view="home"] #appBg .fx{background-image:radial-gradient(var(--fxc) 1.4px,transparent 1.8px);background-size:30px 30px;animation:fxIn .9s ease forwards,fxM30 26s linear infinite}
+/* Danh sách thiết bị: lưới kỹ thuật */
+body[data-view="devices"] #appBg .fx{background-image:linear-gradient(var(--fxc) 1px,transparent 1px),linear-gradient(90deg,var(--fxc) 1px,transparent 1px);background-size:46px 46px;animation:fxIn .9s ease forwards,fxM46 30s linear infinite}
+/* Thay lọc: bong bóng nước nổi lên */
+body[data-view="filter"] #appBg .fx{background-image:radial-gradient(circle at 18% 70%,transparent 0 9px,var(--fxc) 10px 11px,transparent 12px),radial-gradient(circle at 62% 30%,transparent 0 6px,var(--fxc) 7px 8px,transparent 9px),radial-gradient(circle at 85% 85%,transparent 0 13px,var(--fxc) 14px 15px,transparent 16px);background-size:320px 320px;animation:fxIn .9s ease forwards,fxUp320 22s linear infinite}
+/* Thông số thiết bị: sóng tín hiệu */
+body[data-view="monitor"] #appBg .fx{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='60'%3E%3Cpath d='M0 30 Q60 0 120 30 T240 30' fill='none' stroke='%238b5cf6' stroke-opacity='.4' stroke-width='1.6'/%3E%3C/svg%3E");background-size:240px 60px;animation:fxIn .9s ease forwards,fxLeft240 18s linear infinite}
+/* Hiệu chuẩn: vòng sóng lan toả */
+body[data-view="calib"] #appBg .fx{inset:-120px;background-image:repeating-radial-gradient(circle at 82% 14%,transparent 0 46px,var(--fxc) 47px 48px);animation:fxIn .9s ease forwards,fxPulse 9s ease-in-out infinite alternate}
+/* Thay khí: hạt khí bay lên */
+body[data-view="gas"] #appBg .fx{background-image:radial-gradient(circle at 25% 60%,var(--fxc) 0 3px,transparent 4px),radial-gradient(circle at 70% 20%,var(--fxc) 0 2px,transparent 3px),radial-gradient(circle at 50% 92%,var(--fxc) 0 4px,transparent 5px);background-size:220px 220px;animation:fxIn .9s ease forwards,fxUp220 14s linear infinite}
+/* Nhật ký: sọc chéo */
+body[data-view="audit"] #appBg .fx{background-image:linear-gradient(135deg,transparent 47%,var(--fxc) 49% 51%,transparent 53%);background-size:24px 24px;animation:fxIn .9s ease forwards,fxM24 20s linear infinite}
+/* Ô lớn ở màn hình chính: mỗi ô một màu */
+.tile{--t:var(--accent);overflow:hidden;background:linear-gradient(145deg,color-mix(in srgb,var(--t) 14%,var(--surface)),var(--surface) 62%)}
+.tile[data-view="devices"]{--t:#14b8a6}.tile[data-view="filter"]{--t:#3b82f6}.tile[data-view="monitor"]{--t:#8b5cf6}
+.tile[data-view="calib"]{--t:#f59e0b}.tile[data-view="gas"]{--t:#f97316}.tile[data-view="audit"]{--t:#64748b}
+.tile::after{content:"";position:absolute;right:-34px;bottom:-34px;width:130px;height:130px;border-radius:50%;background:color-mix(in srgb,var(--t) 24%,transparent);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.tile:hover{border-color:var(--t)}
+.tile:hover::after{transform:scale(1.6)}
+.tile .cnt{background:color-mix(in srgb,var(--t) 18%,transparent);color:var(--t)}
+@media(max-width:700px){#appBg .b3{display:none}#appBg .b{filter:blur(50px)}}
+@media(prefers-reduced-motion:reduce){#appBg .b,#appBg .fx,.auth-bg i,.auth-logo,.auth-spin{animation:none!important}#appBg .fx{opacity:.8}}
+@media print{#appBg{display:none!important}}
 </style>
 <script>
 (function(){
@@ -683,6 +740,7 @@ window.dBoth=function(v,full){ var t=window.dShort(v); return t?'<span class="d-
 </script>
 </head>
 <body data-view="home" class="auth-locked">
+<div id="appBg" aria-hidden="true"><i class="b b1"></i><i class="b b2"></i><i class="b b3"></i><div class="fx"></div></div>
 <div class="wrap">
 <div class="topnav no-print">
     <button class="btn" id="btnHome">← Màn hình chính</button>
@@ -859,8 +917,8 @@ window.dBoth=function(v,full){ var t=window.dShort(v); return t?'<span class="d-
             </div>
           </div>
           <div class="tools">
-            <div><label for="mon-exp-from">Từ ngày</label><input type="date" id="mon-exp-from"></div>
-            <div><label for="mon-exp-to">Đến ngày</label><input type="date" id="mon-exp-to"></div>
+            <div><label for="mon-exp-from">Xuất Excel từ ngày</label><input type="date" id="mon-exp-from"></div>
+            <div><label for="mon-exp-to">đến ngày</label><input type="date" id="mon-exp-to"></div>
             <button class="mbtn alt" id="mon-export-btn" type="button">📥 Xuất Excel</button>
           </div>
           <div class="caption" style="margin-top:6px">Bảng xuất áp dụng theo thiết bị đang chọn ở trên.</div>
@@ -907,8 +965,8 @@ window.dBoth=function(v,full){ var t=window.dShort(v); return t?'<span class="d-
             <div style="flex:1 1 220px"><label for="cal-filter-hm">Xem theo hạng mục</label><select id="cal-filter-hm"></select></div>
           </div>
           <div class="tools">
-            <div><label for="cal-exp-from">Từ ngày</label><input type="date" id="cal-exp-from"></div>
-            <div><label for="cal-exp-to">Đến ngày</label><input type="date" id="cal-exp-to"></div>
+            <div><label for="cal-exp-from">Xuất Excel từ ngày</label><input type="date" id="cal-exp-from"></div>
+            <div><label for="cal-exp-to">đến ngày</label><input type="date" id="cal-exp-to"></div>
             <button class="mbtn" id="cal-export-btn" type="button">📥 Xuất Excel</button>
           </div>
           <div style="font-size:.82rem;color:var(--muted);margin-top:6px">Bản xuất áp dụng theo hạng mục đang chọn ở trên.</div>
@@ -968,8 +1026,8 @@ window.dBoth=function(v,full){ var t=window.dShort(v); return t?'<span class="d-
             <div style="flex:1 1 220px"><label for="gas-filter-month">Xem dữ liệu theo tháng</label><select id="gas-filter-month"></select></div>
           </div>
           <div class="tools sep">
-            <div><label for="gas-exp-from">Từ ngày</label><input type="date" id="gas-exp-from"></div>
-            <div><label for="gas-exp-to">Đến ngày</label><input type="date" id="gas-exp-to"></div>
+            <div><label for="gas-exp-from">Xuất Excel từ ngày</label><input type="date" id="gas-exp-from"></div>
+            <div><label for="gas-exp-to">đến ngày</label><input type="date" id="gas-exp-to"></div>
             <button class="mbtn alt" id="gas-export-btn" type="button">📥 Xuất Excel</button>
             <button class="mbtn alt" id="gas-print-btn" type="button">🖨️ In</button>
           </div>
