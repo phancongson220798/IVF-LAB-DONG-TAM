@@ -622,6 +622,48 @@ body.link-view #auditApp{display:none!important}
   .app-main td.no-print{grid-column:1/-1;padding-top:6px}
   .app-main .row-actions .btn{min-height:36px}
 }
+
+/* ===== Ngày viết tắt ở ô chọn ngày + gọn form nhập trên điện thoại ===== */
+#mon-inspector-caption{display:none}
+.dwrap{display:contents}
+.dfmt{display:none}
+@media(max-width:700px){
+  .topnav{gap:6px;flex-wrap:nowrap}
+  .topnav .btn{white-space:nowrap;padding:8px 11px;font-size:13px;flex:none}
+  .topnav-title{display:none}
+  #btnHome{margin-right:auto}
+  .user-chip{flex:1;min-width:0;font-size:12px;text-align:right}
+  #btnLogout{padding:8px 10px}
+
+  #monApp>header .sub,#calApp>header .sub,#gasApp>header .sub{display:none}
+  #monApp>header h1,#calApp>header h1,#gasApp>header h1{font-size:20px}
+  .mon-bar{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px 12px;padding:12px 14px;margin-bottom:12px;align-items:end}
+  .mon-bar .mon-field{min-width:0;flex:none}
+  .mon-bar .mon-status{grid-column:1/-1;justify-self:start}
+  .mon-date{display:flex;align-items:center;gap:8px}
+  .mon-date span[id$="work-dow"]{display:none}
+  .mon-date .dwrap{flex:0 0 138px}
+
+  .dwrap{position:relative;display:block;min-width:0}
+  .dwrap>input[type="date"]{position:absolute!important;inset:0;width:100%!important;height:100%;margin:0;opacity:0;z-index:2}
+  .dwrap>.dfmt{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;padding:0 12px;border:1px solid var(--border-strong);border-radius:10px;background:var(--surface);color:var(--text);font-weight:600;font-size:15px;white-space:nowrap}
+  .dwrap>.dfmt::after{content:"📅";font-size:13px;opacity:.65}
+
+  #monApp .device-line{display:none}
+  #monApp .form-panel>.panel-head{padding:10px 14px}
+  #monApp .form-panel>.panel-head h2{font-size:15px}
+  #monApp .form-panel>.panel-body{padding:12px 14px 14px}
+  #monApp #mon-device{padding:10px 12px}
+  #monApp #mon-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin-top:12px}
+  #monApp #mon-fields>.tag{grid-column:1/-1;margin:6px 0 0}
+  #monApp #mon-fields>.full{grid-column:1/-1}
+  #monApp #mon-fields label{margin-bottom:3px;font-size:12px}
+  #monApp #mon-fields input[type="number"]{padding:9px 12px}
+  #monApp label.check{padding:9px 12px;font-size:14px;min-height:0}
+  #monApp .note-wrap{margin-top:10px}
+  #monApp #mon-note{height:62px;min-height:62px}
+  #monApp #mon-submit{position:sticky;bottom:10px;z-index:4;margin-top:12px;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+}
 </style>
 <script>
 (function(){
@@ -791,7 +833,7 @@ window.dBoth=function(v,full){ var t=window.dShort(v); return t?'<span class="d-
         <label for="mon-device">Chọn thiết bị</label>
         <select id="mon-device"></select>
 
-        <p class="device-line">✍️ <em>Đang ghi:</em> <strong id="mon-cur-device"></strong></p>
+        <p class="device-line">✍️ <em>Đang ghi nhận cho:</em> <strong id="mon-cur-device"></strong></p>
         <p class="caption" id="mon-inspector-caption"></p>
         <div id="mon-fields"></div>
 
@@ -2515,7 +2557,7 @@ function renderFields() {
 function updateInspectorCaption() {
   const name = $("inspector").value.trim();
   const cap = $("inspector-caption");
-  if (name) { cap.className = "caption"; cap.innerHTML = `👤 Người thực hiện: <strong>${esc(name)}</strong>`; }
+  if (name) { cap.className = "caption"; cap.innerHTML = `👤 Người thực hiện hiện tại: <strong>${esc(name)}</strong>`; }
   else { cap.className = "caption warn"; cap.textContent = "⚠️ Lưu ý: Bạn chưa điền tên Chuyên viên ở phía trên cùng."; }
 }
 
@@ -3259,6 +3301,20 @@ function exportExcel() {
     data=snap.docs.map(function(d){ var v=d.data()||{}; v.id=d.id; v.atMs=v.atMs||0; v.summary=v.summary||""; v.email=v.email||""; v.name=v.name||""; return v; });
     st("ok","Đã kết nối Firebase"); fill(); draw();
   },function(e){ st("bad","Lỗi kết nối"); $("line").textContent="Không đọc được nhật ký"+(e&&e.code==="permission-denied"?' — cần cho phép đọc/ghi collection "audit_logs" trong Rules của Firestore.':"."); });
+})();
+</script>
+<script type="text/x-deferred">
+(function(){
+  var list=[];
+  document.querySelectorAll('#monApp input[type="date"],#calApp input[type="date"],#gasApp input[type="date"]').forEach(function(inp){
+    var w=document.createElement("span"); w.className="dwrap";
+    var f=document.createElement("span"); f.className="dfmt";
+    inp.parentNode.insertBefore(w,inp); w.appendChild(inp); w.appendChild(f);
+    function sync(){ var t=window.dShort(inp.value); if(f.textContent!==(t||"—")) f.textContent=t||"—"; }
+    ["input","change"].forEach(function(e){ inp.addEventListener(e,sync); });
+    list.push(sync); sync();
+  });
+  setInterval(function(){ list.forEach(function(f){ f(); }); },600);
 })();
 </script>
 <script>
