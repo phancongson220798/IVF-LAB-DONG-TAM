@@ -721,6 +721,18 @@ body[data-view="audit"] #appBg .fx{background-image:linear-gradient(135deg,trans
 @media(max-width:700px){#appBg .b3{display:none}#appBg .b{filter:blur(50px)}}
 @media(prefers-reduced-motion:reduce){#appBg .b,#appBg .fx,.auth-bg i,.auth-logo,.auth-spin{animation:none!important}#appBg .fx{opacity:.8}}
 @media print{#appBg{display:none!important}}
+
+/* ===== Nền: bỏ chấm ở màn hình chính; điện thoại dùng nền tĩnh, không hiệu ứng ===== */
+body[data-view="home"] #appBg .fx{display:none}
+:root{--bgp:14%}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bgp:20%}}
+:root[data-theme="dark"]{--bgp:20%}
+@media(max-width:700px){
+  #appBg .b,#appBg .fx{display:none!important;animation:none!important}
+  #appBg{background:
+    radial-gradient(130% 55% at 0% 0%,color-mix(in srgb,var(--bg-a) var(--bgp),transparent),transparent 70%),
+    radial-gradient(120% 50% at 100% 100%,color-mix(in srgb,var(--bg-b) var(--bgp),transparent),transparent 70%)}
+}
 </style>
 <script>
 (function(){
