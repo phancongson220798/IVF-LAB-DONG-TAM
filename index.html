@@ -14,6 +14,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 :root{
@@ -439,13 +440,49 @@ tbody tr,.history-row{transition:background-color .15s}
 #calApp td.note{grid-column:1/-1}
 #calApp td.he-act{grid-column:1/-1;text-align:right;padding-top:4px}
 #calApp td.he-act::before{content:none}
+
+/* ===== Đăng nhập / tài khoản / nhật ký ===== */
+[hidden]{display:none!important}
+#authScreen{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);align-items:center;justify-content:center;padding:18px;overflow:auto}
+body.auth-locked #authScreen{display:flex}
+body.auth-locked .wrap,body.auth-locked .toast-wrap{visibility:hidden}
+.auth-card{width:100%;max-width:400px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:26px 24px;box-shadow:0 20px 50px rgba(0,0,0,.18);animation:popIn .3s cubic-bezier(.2,.8,.2,1)}
+.auth-card h1{font-size:20px;text-align:center;margin:0 0 4px}
+.auth-tabs{display:flex;gap:6px;margin-bottom:16px}
+.auth-tabs button{flex:1;padding:10px;border:1.5px solid var(--border-strong);background:var(--surface);color:var(--text-dim);border-radius:10px;font:inherit;font-weight:600;cursor:pointer;transition:all .15s}
+.auth-tabs button.active{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.auth-msg{min-height:20px;font-size:13px;color:var(--danger);margin:4px 0 10px;line-height:1.45}.auth-msg.ok{color:var(--ok)}
+.auth-link{background:none;border:0;color:var(--accent);cursor:pointer;font:inherit;font-size:13px;padding:0}
+.user-chip{font-size:12.5px;color:var(--text-dim);max-width:42vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+small.acct{display:block;font-size:11px;font-weight:400;color:var(--text-dim);margin-top:2px;word-break:break-all}
+body:not([data-view="audit"]) #auditApp{display:none}
+body.link-view #auditApp{display:none!important}
+#auditApp{animation:fadeUp .38s cubic-bezier(.2,.7,.2,1) both}
+.tile:nth-child(6){animation-delay:.3s}
+.aud-line{margin:0 0 10px;font-size:13px}
+.aud-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+#auditApp table{width:100%;border-collapse:collapse;table-layout:auto}
+#auditApp th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-dim);background:color-mix(in srgb,var(--text) 6%,var(--surface));padding:10px 12px}
+#auditApp td{padding:9px 12px;border-top:1px solid var(--border);vertical-align:top;word-break:break-word;font-size:13.5px}
+#auditApp td small{display:block;color:var(--text-dim);font-size:11.5px}
+#auditApp .act{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;background:var(--border);color:var(--text-dim)}
+#auditApp .act.add{background:var(--ok-soft);color:var(--ok)}#auditApp .act.update,#auditApp .act.set{background:var(--accent-soft);color:var(--accent)}#auditApp .act.delete{background:var(--danger-soft);color:var(--danger)}
+@media(max-width:700px){
+  #auditApp thead{display:none}
+  #auditApp table,#auditApp tbody,#auditApp tr,#auditApp td{display:block;width:100%}
+  #auditApp tr{padding:10px 14px;border-top:1px solid var(--border)}
+  #auditApp td{display:flex;justify-content:space-between;gap:14px;border:0;padding:3px 0;text-align:right}
+  #auditApp td::before{content:attr(data-label);flex:none;color:var(--text-dim);font-weight:600;font-size:12px;text-align:left}
+}
+@media print{#authScreen{display:none!important}}
 </style>
 </head>
-<body data-view="home">
+<body data-view="home" class="auth-locked">
 <div class="wrap">
 <div class="topnav no-print">
     <button class="btn" id="btnHome">← Màn hình chính</button>
     <span class="topnav-title" id="topTitle"></span>
+    <span class="user-chip" id="userChip" hidden></span><button class="btn" id="btnLogout" hidden>Đăng xuất</button>
     <button class="btn" id="btnTheme" title="Đổi giao diện sáng/tối">◐</button>
   </div>
   <div id="homeApp">
@@ -456,6 +493,7 @@ tbody tr,.history-row{transition:background-color .15s}
       <button class="tile" data-view="monitor"><div class="ic">🔬</div><h2>THÔNG SỐ THIẾT BỊ</h2><p>Ghi nhận thông số vận hành hằng ngày, xem lịch sử theo ngày và xuất Excel.</p></button>
       <button class="tile" data-view="calib"><div class="ic">🌡️</div><h2>HIỆU CHUẨN TỦ NUÔI CẤY</h2><p>Ghi nhận CO2, O2, VOCs, độ bụi và hiệu chuẩn, xem lịch sử, xuất Excel.</p></button>
       <button class="tile" data-view="gas"><div class="ic">🧪</div><h2>THAY KHÍ NUÔI CẤY</h2><p>Ghi lịch thay khí N2, CO2, khí trộn (S/N), tra cứu theo tháng, in và xuất Excel.</p></button>
+      <button class="tile" data-view="audit"><div class="ic">🧾</div><h2>NHẬT KÝ HOẠT ĐỘNG</h2><p>Xem ai đã nhập, sửa, xoá dữ liệu và bằng tài khoản nào.</p></button>
     </div>
   </div>
   <div class="install-banner no-print" id="installBanner">
@@ -744,6 +782,20 @@ tbody tr,.history-row{transition:background-color .15s}
   </div>
   </div>
 
+  <div id="auditApp">
+    <header class="top no-print"><div><h1>🧾 Nhật ký hoạt động</h1><div class="sub">Ai đã nhập, sửa, xoá dữ liệu và dùng tài khoản nào (500 hoạt động gần nhất)</div></div></header>
+    <div class="mon-bar">
+      <div class="mon-field"><label for="aud-user">Tài khoản</label><select id="aud-user" class="inp"></select></div>
+      <div class="mon-field"><label for="aud-act">Thao tác</label><select id="aud-act" class="inp"><option value="">Tất cả</option><option value="add">Thêm</option><option value="update">Sửa / Lưu</option><option value="delete">Xoá</option><option value="login">Đăng nhập / Đăng ký</option></select></div>
+      <div class="mon-field"><label for="aud-mod">Mục</label><select id="aud-mod" class="inp"></select></div>
+      <div class="mon-field"><label for="aud-q">Tìm kiếm</label><input id="aud-q" class="inp" type="text" placeholder="Nội dung, tên thiết bị..."></div>
+      <button class="btn" id="aud-export">📊 Xuất Excel</button>
+      <span class="mon-status" id="aud-status">Đang tải…</span>
+    </div>
+    <div class="aud-line" id="aud-line"></div>
+    <div class="aud-wrap"><table><thead><tr><th>Thời gian</th><th>Tài khoản</th><th>Thao tác</th><th>Mục</th><th>Nội dung</th></tr></thead><tbody id="aud-body"></tbody></table></div>
+  </div>
+
   <div id="printSingle"></div>
 </div>
 
@@ -903,7 +955,7 @@ tbody tr,.history-row{transition:background-color .15s}
 
 <div class="toast-wrap" id="toastWrap"></div>
 
-<script>
+<script type="text/x-deferred">
 (function(){
   "use strict";
   var COL = "devices";
@@ -1585,7 +1637,7 @@ tbody tr,.history-row{transition:background-color .15s}
 })();
 </script>
 
-<script>
+<script type="text/x-deferred">
 (function(){
   var STORE_KEY = 'equipment-list-v2';
   var SETTINGS_KEY = 'app-settings-v1';
@@ -2102,7 +2154,7 @@ tbody tr,.history-row{transition:background-color .15s}
   })();
 })();
 </script>
-<script>
+<script type="text/x-deferred">
 (function(){
   var ov=document.createElement("div"); ov.className="overlay"; ov.id="heOverlay";
   ov.innerHTML='<div class="modal"><h2 id="heTitle"></h2><div id="heFields"></div><div class="he-err" id="heErr"></div><div class="modal-actions"><button class="btn" id="heCancel" type="button">Huỷ</button><button class="btn primary" id="heSave" type="button">Lưu thay đổi</button></div></div>';
@@ -2151,9 +2203,9 @@ tbody tr,.history-row{transition:background-color .15s}
   };
 })();
 </script>
-<script>
+<script type="text/x-deferred">
 (function(){
-  var titles={home:"",devices:"Danh sách thiết bị",filter:"Thay lọc định kỳ",monitor:"Theo dõi thiết bị LABO",calib:"Đo và hiệu chuẩn tủ nuôi",gas:"Giám sát thay bình khí"};
+  var titles={home:"",devices:"Danh sách thiết bị",filter:"Thay lọc định kỳ",monitor:"Theo dõi thiết bị LABO",calib:"Đo và hiệu chuẩn tủ nuôi",gas:"Giám sát thay bình khí",audit:"Nhật ký hoạt động"};
   function show(v,push){
     document.body.setAttribute("data-view",v);
     document.getElementById("topTitle").textContent=titles[v]||"";
@@ -2167,7 +2219,7 @@ tbody tr,.history-row{transition:background-color .15s}
 })();
 </script>
 
-<script>
+<script type="text/x-deferred">
 (function(){
 const COLLECTION_NAME = "device_logs";
 let db = null;
@@ -2255,7 +2307,7 @@ function listenHistory() {
       const r = d.data();
       return { id: d.id, "Thời gian": String(r["Thời gian"] ?? ""), "Thiết bị": r["Thiết bị"] ?? "", "Thông số": r["Thông số"] ?? "",
                "Giá trị": r["Giá trị"] ?? "", "Chuyên viên": r["Chuyên viên"] ?? "", "Ghi chú": r["Ghi chú"] ?? "",
-               "stt": r["stt"] ?? 0, "Ngày_Phụ": String(r["Thời gian"] ?? "").slice(0, 10) };
+               "stt": r["stt"] ?? 0, createdByEmail: r.createdByEmail ?? "", "Ngày_Phụ": String(r["Thời gian"] ?? "").slice(0, 10) };
     }).filter(r => r["Thời gian"] !== "")
       .sort((a, b) => a["Thời gian"].localeCompare(b["Thời gian"]) || a.stt - b.stt);
     setStatus("ok", "Đã kết nối Firebase");
@@ -2403,7 +2455,7 @@ function drawDays() {
     const full = missing.length === 0;
     const trs = groups.map((g, gi) => g.map((r, i) => {
       const head = i === 0 ? `<td rowspan="${g.length}" data-label="Thời gian">${esc(fmtDT(r["Thời gian"]))}</td><td rowspan="${g.length}" data-label="Thiết bị">${esc(r["Thiết bị"])}</td>` : "";
-      return `<tr class="g${gi % 2}${i === 0 ? " gs" : ""}">${head}<td data-label="Thông số">${esc(r["Thông số"])}</td><td data-label="Giá trị">${esc(r["Giá trị"])}</td><td data-label="Chuyên viên">${esc(r["Chuyên viên"])}</td><td class="note" data-label="Ghi chú">${esc(r["Ghi chú"])}</td><td class="he-act">${HistEdit.btns(r.id)}</td></tr>`;
+      return `<tr class="g${gi % 2}${i === 0 ? " gs" : ""}">${head}<td data-label="Thông số">${esc(r["Thông số"])}</td><td data-label="Giá trị">${esc(r["Giá trị"])}</td><td data-label="Chuyên viên">${esc(r["Chuyên viên"])}${window.acctTag(r)}</td><td class="note" data-label="Ghi chú">${esc(r["Ghi chú"])}</td><td class="he-act">${HistEdit.btns(r.id)}</td></tr>`;
     }).join("")).join("");
     const covTitle = full ? "Đã ghi đủ tất cả thiết bị" : "Chưa ghi: " + missing.join(", ");
     return `<details class="day" data-day="${esc(day)}" ${openDays.has(day) ? "open" : ""}>
@@ -2497,7 +2549,7 @@ function paintToday() {
 
 })();
 </script>
-<script>
+<script type="text/x-deferred">
 (function(){
 const COLLECTION_NAME = "calibration_logs";
 let db = null;
@@ -2647,7 +2699,7 @@ function renderHistory() {
   $("no-match").hidden = days.length > 0;
   $("day-list").innerHTML = days.map(day => {
     const list = byDay[day];   // localData đã sắp mới nhất trước
-    const trs = list.map(r => "<tr>" + SHOW_COLS.map(c => `<td class="${c === "Ghi chú" ? "note" : ""}" data-label="${esc(c)}"${r[c] == null || r[c] === "" || r[c] === "N/A" ? " data-na" : ""}>${esc(r[c])}</td>`).join("") + `<td class="he-act">${HistEdit.btns(r.id)}</td></tr>`).join("");
+    const trs = list.map(r => "<tr>" + SHOW_COLS.map(c => `<td class="${c === "Ghi chú" ? "note" : ""}" data-label="${esc(c)}"${r[c] == null || r[c] === "" || r[c] === "N/A" ? " data-na" : ""}>${esc(r[c])}${c === "Chuyên viên" ? window.acctTag(r) : ""}</td>`).join("") + `<td class="he-act">${HistEdit.btns(r.id)}</td></tr>`).join("");
     const head = day === "—" ? "Không rõ ngày" : `<span>${fmtDay(day)}</span><span class="dow">${dowOf(day)}</span>`;
     return `<details class="day" data-day="${esc(day)}" ${openDays.has(day) ? "open" : ""}>
       <summary>${head}<span class="count">${list.length} bản ghi</span></summary>
@@ -2752,7 +2804,7 @@ function listenHistory() {
 
 })();
 </script>
-<script>
+<script type="text/x-deferred">
 (function(){
 const COLLECTION_NAME = "gas_changes";
 let db = null;
@@ -2858,7 +2910,7 @@ function drawTable() {
   $("tbody").innerHTML = rows.map(r => `<tr>
     <td data-label="Ngày thay">${esc(fmtDay(r["Ngày Thay"]))}</td><td data-label="Loại khí"><span class="pill">${esc(r["Loại Khí"])}</span></td>
     <td data-label="Số S/N">${esc(r["Số S/N (Khí trộn)"])}</td><td data-label="Nhánh thay">${esc(r["Nhánh Thay"])}</td>
-    <td class="num" data-label="Số lượng">${esc(r["Số Lượng Bình"])}</td><td data-label="Người thực hiện">${esc(r["Người Thực Hiện"])}</td><td class="he-act">${HistEdit.btns(r.id)}</td></tr>`).join("");
+    <td class="num" data-label="Số lượng">${esc(r["Số Lượng Bình"])}</td><td data-label="Người thực hiện">${esc(r["Người Thực Hiện"])}${window.acctTag(r)}</td><td class="he-act">${HistEdit.btns(r.id)}</td></tr>`).join("");
 }
 
 function listenHistory() {
@@ -2951,7 +3003,7 @@ function exportExcel() {
 
 })();
 </script>
-<script>
+<script type="text/x-deferred">
 (function(){
   ["monApp","calApp","gasApp"].forEach(function(id){
     var root=document.getElementById(id), grid=root&&root.querySelector(".mgrid");
@@ -2973,6 +3025,219 @@ function exportExcel() {
       root.scrollIntoView({behavior:"smooth",block:"start"});
     });
     set(cur);
+  });
+})();
+</script>
+<div id="authScreen" class="no-print">
+  <div class="auth-card">
+    <h1 id="authTitle">Quản lý thiết bị phòng LAB</h1>
+    <div class="sub" id="authSub" style="text-align:center;margin-bottom:16px">Đang kiểm tra đăng nhập…</div>
+    <div id="authForms" hidden>
+      <div class="auth-tabs"><button type="button" class="active" data-m="login">Đăng nhập</button><button type="button" data-m="register">Đăng ký</button></div>
+      <div class="mf" id="authNameWrap" hidden><label for="authName">Họ và tên</label><input type="text" id="authName" autocomplete="name" placeholder="Nguyễn Văn A"></div>
+      <div class="mf"><label for="authEmail">Email</label><input type="email" id="authEmail" autocomplete="username" placeholder="ten@email.com"></div>
+      <div class="mf"><label for="authPass">Mật khẩu</label><input type="password" id="authPass" autocomplete="current-password" placeholder="Ít nhất 6 ký tự"></div>
+      <div class="mf" id="authPass2Wrap" hidden><label for="authPass2">Nhập lại mật khẩu</label><input type="password" id="authPass2" autocomplete="new-password"></div>
+      <div class="auth-msg" id="authMsg"></div>
+      <button type="button" class="btn primary" id="authGo" style="width:100%;justify-content:center">Đăng nhập</button>
+      <div style="text-align:center;margin-top:12px"><button type="button" class="auth-link" id="authForgot">Quên mật khẩu?</button></div>
+    </div>
+  </div>
+</div>
+<script type="text/x-deferred">
+(function(){
+  var root=document.getElementById("auditApp"); if(!root) return;
+  var db=null; try{ db=firebase.firestore(); }catch(e){}
+  var MODS={devices:"Danh sách thiết bị",filters:"Thay lọc",filter_history:"Thay lọc (lịch sử)",device_logs:"Thông số thiết bị",calibration_logs:"Hiệu chuẩn tủ nuôi cấy",gas_changes:"Thay khí nuôi cấy",auth:"Tài khoản"};
+  var ACTS={add:"Thêm",set:"Lưu",update:"Sửa",delete:"Xoá",login:"Đăng nhập",register:"Đăng ký"};
+  var data=[];
+  function $(i){ return document.getElementById("aud-"+i); }
+  function esc(t){ return String(t==null?"":t).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+  function p2(n){ return String(n).padStart(2,"0"); }
+  function fmt(ms){ var d=new Date(ms); return p2(d.getDate())+"/"+p2(d.getMonth()+1)+"/"+d.getFullYear()+" "+p2(d.getHours())+":"+p2(d.getMinutes()); }
+  function filtered(){
+    var u=$("user").value, a=$("act").value, m=$("mod").value, q=$("q").value.trim().toLowerCase();
+    return data.filter(function(r){
+      if(u && r.email!==u) return false;
+      if(a==="update" ? (r.action!=="update"&&r.action!=="set") : a==="login" ? (r.action!=="login"&&r.action!=="register") : (a && r.action!==a)) return false;
+      if(m && r.col!==m) return false;
+      if(q && (r.summary+" "+r.email+" "+r.name+" "+(MODS[r.col]||r.col)).toLowerCase().indexOf(q)<0) return false;
+      return true;
+    });
+  }
+  function fill(){
+    var us={}; data.forEach(function(r){ if(r.email) us[r.email]=r.name||""; });
+    var cu=$("user").value, cm=$("mod").value;
+    $("user").innerHTML='<option value="">Tất cả tài khoản</option>'+Object.keys(us).sort().map(function(e){ return '<option value="'+esc(e)+'">'+esc((us[e]?us[e]+" — ":"")+e)+'</option>'; }).join("");
+    $("mod").innerHTML='<option value="">Tất cả mục</option>'+Object.keys(MODS).map(function(k){ return '<option value="'+k+'">'+MODS[k]+'</option>'; }).join("");
+    $("user").value=cu; $("mod").value=cm;
+  }
+  function draw(){
+    var rows=filtered();
+    $("line").innerHTML="Hiển thị <strong>"+rows.length+"</strong> / "+data.length+" hoạt động";
+    $("body").innerHTML=rows.length ? rows.map(function(r){
+      return '<tr><td data-label="Thời gian">'+fmt(r.atMs)+'</td><td data-label="Tài khoản"><div>'+esc(r.name||r.email)+(r.name?'<small>'+esc(r.email)+'</small>':'')+'</div></td><td data-label="Thao tác"><span class="act '+esc(r.action)+'">'+esc(ACTS[r.action]||r.action)+'</span></td><td data-label="Mục">'+esc(MODS[r.col]||r.col)+'</td><td data-label="Nội dung">'+esc(r.summary)+'</td></tr>';
+    }).join("") : '<tr><td colspan="5" style="text-align:center;color:var(--text-dim);padding:24px">Chưa có hoạt động nào.</td></tr>';
+  }
+  ["user","act","mod"].forEach(function(k){ $(k).addEventListener("change",draw); });
+  $("q").addEventListener("input",draw);
+  $("export").onclick=function(){
+    if(typeof XLSX==="undefined"){ alert("Chưa tải được thư viện xuất Excel"); return; }
+    var out=filtered().map(function(r){ var d=new Date(r.atMs); return {"Thời gian":p2(d.getDate())+"/"+p2(d.getMonth()+1)+"/"+d.getFullYear()+" "+p2(d.getHours())+":"+p2(d.getMinutes())+":"+p2(d.getSeconds()),"Tài khoản":r.email,"Họ tên":r.name,"Thao tác":ACTS[r.action]||r.action,"Mục":MODS[r.col]||r.col,"Mã bản ghi":r.docId,"Nội dung":r.summary}; });
+    if(!out.length){ alert("Không có dữ liệu để xuất"); return; }
+    var ws=XLSX.utils.json_to_sheet(out); ws["!cols"]=[18,28,20,12,24,22,60].map(function(w){ return {wch:w}; });
+    var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,"Nhật ký"); XLSX.writeFile(wb,"Nhat_ky_hoat_dong.xlsx");
+  };
+  function st(c,t){ var e=$("status"); e.className="mon-status "+c; e.textContent=t; }
+  if(!db){ st("bad","Chưa kết nối Firebase"); return; }
+  fill(); draw();
+  db.collection("audit_logs").orderBy("atMs","desc").limit(500).onSnapshot(function(snap){
+    data=snap.docs.map(function(d){ var v=d.data()||{}; v.id=d.id; v.atMs=v.atMs||0; v.summary=v.summary||""; v.email=v.email||""; v.name=v.name||""; return v; });
+    st("ok","Đã kết nối Firebase"); fill(); draw();
+  },function(e){ st("bad","Lỗi kết nối"); $("line").textContent="Không đọc được nhật ký"+(e&&e.code==="permission-denied"?' — cần cho phép đọc/ghi collection "audit_logs" trong Rules của Firestore.':"."); });
+})();
+</script>
+<script>
+(function(){
+  var cfg = {
+    apiKey: "AIzaSyDxhuqIRND_rvKPv3rmNMfaLNwr75A6kTQ",
+    authDomain: "lab-device.firebaseapp.com",
+    projectId: "lab-device",
+    storageBucket: "lab-device.firebasestorage.app",
+    messagingSenderId: "797762508345",
+    appId: "1:797762508345:web:4d04e215e4a48067581fe8"
+  };
+  var st = window.__auth = { user:null, pending:null };
+  var started = false;
+  function esc(t){ return String(t==null?"":t).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+  window.acctTag = function(r){ return r && r.createdByEmail ? '<small class="acct">TK: ' + esc(r.createdByEmail) + '</small>' : ""; };
+  function runApp(){
+    if(started) return; started = true;
+    document.body.classList.remove("auth-locked");
+    Array.prototype.slice.call(document.querySelectorAll('script[type="text/x-deferred"]')).forEach(function(o){
+      var n = document.createElement("script"); n.text = o.textContent; o.parentNode.replaceChild(n, o);
+    });
+  }
+  if(new URLSearchParams(location.search).has("device") || !window.firebase || !firebase.auth){ runApp(); return; }
+  try{ if(!firebase.apps.length) firebase.initializeApp(cfg); }catch(e){ runApp(); return; }
+  var auth = firebase.auth(), db = firebase.firestore(), FV = firebase.firestore.FieldValue;
+  function noop(){}
+  function isObj(x){ return x && typeof x === "object" && !Array.isArray(x) && Object.getPrototypeOf(x) === Object.prototype; }
+  function summary(d){
+    var out = [];
+    Object.keys(d || {}).forEach(function(k){
+      var v = d[k];
+      if(out.length >= 5 || /^(created|updated)By|AtServer$|^createdAt$/.test(k)) return;
+      if((typeof v === "string" || typeof v === "number") && String(v) !== "") out.push(k + ": " + v);
+    });
+    return out.join(" · ").slice(0, 300);
+  }
+  function meta(p){
+    var u = st.user, o = {};
+    o[p + "ByEmail"] = u.email || ""; o[p + "ByName"] = u.displayName || ""; o[p + "ByUid"] = u.uid; o[p + "AtServer"] = FV.serverTimestamp();
+    return o;
+  }
+  var origCol = db.collection.bind(db), origBatch = db.batch.bind(db);
+  function log(action, col, id, sm){
+    if(!st.user || col === "audit_logs") return;
+    origCol("audit_logs").add({ at: FV.serverTimestamp(), atMs: Date.now(), uid: st.user.uid, email: st.user.email || "", name: st.user.displayName || "", action: action, col: col, docId: id || "", summary: sm || "" }).catch(noop);
+  }
+  function wrapDoc(d){
+    var oset = d.set, oup = d.update, odel = d["delete"];
+    d.set = function(data, o){
+      if(st.user && isObj(data)) data = Object.assign({}, data, meta("updated"));
+      var p = oset.call(d, data, o); p.then(function(){ log("set", d.parent.id, d.id, summary(data)); }, noop); return p;
+    };
+    d.update = function(){
+      var a = Array.prototype.slice.call(arguments), one = a.length === 1 && isObj(a[0]);
+      if(st.user && one) a[0] = Object.assign({}, a[0], meta("updated"));
+      var p = oup.apply(d, a); p.then(function(){ log("update", d.parent.id, d.id, one ? summary(a[0]) : ""); }, noop); return p;
+    };
+    d["delete"] = function(){
+      return d.get().then(function(s){ return s.exists ? summary(s.data()) : ""; }, function(){ return ""; }).then(function(sm){
+        return odel.call(d).then(function(){ log("delete", d.parent.id, d.id, sm); });
+      });
+    };
+    return d;
+  }
+  db.collection = function(n){
+    var c = origCol(n), oadd = c.add, odoc = c.doc;
+    c.add = function(data){
+      if(st.user && c.id !== "audit_logs" && isObj(data)) data = Object.assign({}, data, meta("created"), meta("updated"));
+      var p = oadd.call(c, data); p.then(function(ref){ log("add", c.id, ref.id, summary(data)); }, noop); return p;
+    };
+    c.doc = function(){ return wrapDoc(odoc.apply(c, arguments)); };
+    return c;
+  };
+  db.batch = function(){
+    var b = origBatch(), os = b.set, oc = b.commit, n = 0, first = null, col = "";
+    b.set = function(ref, data, o){
+      if(st.user && isObj(data)) data = Object.assign({}, data, meta("created"), meta("updated"));
+      n++; if(!first){ first = data; col = ref.parent.id; }
+      return os.call(b, ref, data, o);
+    };
+    b.commit = function(){ var p = oc.call(b); p.then(function(){ if(n) log("add", col, "", n + " dòng — " + summary(first)); }, noop); return p; };
+    return b;
+  };
+
+  // ----- giao diện đăng nhập -----
+  var $ = function(i){ return document.getElementById(i); };
+  var mode = "login";
+  $("authTitle").textContent = (document.title || "Quản lý thiết bị phòng LAB");
+  function setMode(m){
+    mode = m;
+    document.querySelectorAll(".auth-tabs button").forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-m") === m); });
+    $("authNameWrap").hidden = $("authPass2Wrap").hidden = m !== "register";
+    $("authGo").textContent = m === "register" ? "Tạo tài khoản" : "Đăng nhập";
+    $("authForgot").hidden = m === "register";
+    $("authPass").setAttribute("autocomplete", m === "register" ? "new-password" : "current-password");
+    msg("");
+  }
+  function msg(t, ok){ var e = $("authMsg"); e.textContent = t; e.className = "auth-msg" + (ok ? " ok" : ""); }
+  function errText(e){
+    var c = e && e.code || "";
+    var m = { "auth/invalid-credential":"Email hoặc mật khẩu không đúng.", "auth/wrong-password":"Mật khẩu không đúng.", "auth/user-not-found":"Không tìm thấy tài khoản với email này.", "auth/invalid-email":"Email không hợp lệ.", "auth/email-already-in-use":"Email này đã được đăng ký.", "auth/weak-password":"Mật khẩu quá yếu (cần ít nhất 6 ký tự).", "auth/too-many-requests":"Thử quá nhiều lần, vui lòng đợi một lúc rồi thử lại.", "auth/network-request-failed":"Lỗi mạng, vui lòng kiểm tra kết nối.", "auth/operation-not-allowed":"Chưa bật đăng nhập Email/Mật khẩu trong Firebase Authentication.", "auth/user-disabled":"Tài khoản đã bị vô hiệu hoá." }[c];
+    return m || ("Có lỗi xảy ra" + (c ? " (" + c + ")" : "") + ".");
+  }
+  document.querySelectorAll(".auth-tabs button").forEach(function(b){ b.addEventListener("click", function(){ setMode(b.getAttribute("data-m")); }); });
+  function submit(){
+    var email = $("authEmail").value.trim(), pw = $("authPass").value, name = $("authName").value.trim();
+    if(!email || !pw){ msg("Vui lòng nhập email và mật khẩu."); return; }
+    $("authGo").disabled = true; msg("");
+    if(mode === "register"){
+      if(!name){ msg("Vui lòng nhập họ và tên."); $("authGo").disabled = false; return; }
+      if(pw !== $("authPass2").value){ msg("Hai mật khẩu không khớp."); $("authGo").disabled = false; return; }
+      var done; st.pending = new Promise(function(r){ done = r; });
+      auth.createUserWithEmailAndPassword(email, pw).then(function(c){
+        return c.user.updateProfile({ displayName: name }).then(function(){ return c.user.reload(); }).then(function(){ st.user = auth.currentUser; log("register", "auth", "", "Đăng ký tài khoản"); });
+      }).catch(function(e){ msg(errText(e)); }).then(function(){ done(); $("authGo").disabled = false; });
+    } else {
+      auth.signInWithEmailAndPassword(email, pw).then(function(c){ st.user = c.user; log("login", "auth", "", "Đăng nhập"); }).catch(function(e){ msg(errText(e)); }).then(function(){ $("authGo").disabled = false; });
+    }
+  }
+  $("authGo").addEventListener("click", submit);
+  ["authEmail","authPass","authPass2","authName"].forEach(function(i){ $(i).addEventListener("keydown", function(e){ if(e.key === "Enter") submit(); }); });
+  $("authForgot").addEventListener("click", function(){
+    var email = $("authEmail").value.trim();
+    if(!email){ msg("Nhập email vào ô Email trước, rồi bấm lại “Quên mật khẩu?”."); return; }
+    auth.sendPasswordResetEmail(email).then(function(){ msg("Đã gửi email đặt lại mật khẩu tới " + email + ".", true); }).catch(function(e){ msg(errText(e)); });
+  });
+  $("btnLogout").addEventListener("click", function(){ if(confirm("Đăng xuất khỏi tài khoản này?")) auth.signOut().then(function(){ location.reload(); }); });
+
+  auth.onAuthStateChanged(function(u){
+    Promise.resolve(st.pending).then(function(){
+      u = auth.currentUser;
+      if(u){
+        st.user = u;
+        $("userChip").textContent = "👤 " + (u.displayName || u.email); $("userChip").title = u.email || ""; $("userChip").hidden = false; $("btnLogout").hidden = false;
+        runApp();
+      } else {
+        st.user = null;
+        $("authSub").textContent = "Đăng nhập để sử dụng ứng dụng";
+        $("authForms").hidden = false;
+        document.body.classList.add("auth-locked");
+      }
+    });
   });
 })();
 </script>
