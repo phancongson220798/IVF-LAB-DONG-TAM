@@ -443,16 +443,70 @@ tbody tr,.history-row{transition:background-color .15s}
 
 /* ===== Đăng nhập / tài khoản / nhật ký ===== */
 [hidden]{display:none!important}
-#authScreen{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);align-items:center;justify-content:center;padding:18px;overflow:auto}
+#authScreen{display:none;position:fixed;inset:0;z-index:300;align-items:center;justify-content:center;padding:18px;overflow:auto;background:radial-gradient(60% 50% at 12% 8%,color-mix(in srgb,var(--accent) 20%,transparent),transparent),radial-gradient(55% 45% at 92% 92%,color-mix(in srgb,var(--accent) 15%,transparent),transparent),var(--bg);transition:background-color .25s}
 body.auth-locked #authScreen{display:flex}
-body.auth-locked .wrap,body.auth-locked .toast-wrap{visibility:hidden}
-.auth-card{width:100%;max-width:400px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:26px 24px;box-shadow:0 20px 50px rgba(0,0,0,.18);animation:popIn .3s cubic-bezier(.2,.8,.2,1)}
+body.auth-locked:not(.auth-leaving) .wrap,body.auth-locked:not(.auth-leaving) .toast-wrap{visibility:hidden}
+#authScreen.leaving{animation:authOut .38s ease forwards;pointer-events:none}
+@keyframes authOut{to{opacity:0;transform:scale(1.03)}}
+@keyframes authFloat{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(24px,-28px) scale(1.12)}}
+@keyframes authShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+@keyframes authSpin{to{transform:rotate(360deg)}}
+@keyframes authLogo{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.auth-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.auth-bg i{position:absolute;border-radius:50%;background:color-mix(in srgb,var(--accent) 26%,transparent);filter:blur(46px);animation:authFloat 14s ease-in-out infinite}
+.auth-bg i:nth-child(1){width:260px;height:260px;left:-60px;top:12%}
+.auth-bg i:nth-child(2){width:200px;height:200px;right:-40px;top:55%;animation-delay:-5s;animation-duration:17s}
+.auth-bg i:nth-child(3){width:150px;height:150px;left:42%;bottom:-50px;animation-delay:-9s}
+.auth-theme{position:absolute;top:16px;right:16px;width:42px;height:42px;border-radius:50%;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow);transition:transform .25s,background-color .2s,border-color .2s}
+.auth-theme:hover{border-color:var(--accent);color:var(--accent);transform:rotate(18deg)}
+.auth-theme:active{transform:scale(.92)}
+.auth-theme .sun,.auth-theme .moon{display:flex;position:absolute;transition:opacity .3s,transform .4s}
+.auth-theme[data-eff="dark"] .moon,.auth-theme:not([data-eff="dark"]) .sun{opacity:0;transform:rotate(-90deg) scale(.5)}
+.auth-card{position:relative;width:100%;max-width:410px;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:22px;padding:30px 26px 22px;box-shadow:0 24px 60px rgba(0,0,0,.2);animation:popIn .45s cubic-bezier(.2,.8,.2,1) both}
+.auth-card.shake{animation:authShake .42s}
+.auth-logo{width:62px;height:62px;border-radius:20px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;color:var(--bg);background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 55%,#3b82f6));box-shadow:0 10px 24px color-mix(in srgb,var(--accent) 40%,transparent);animation:authLogo 3.6s ease-in-out infinite}
 .auth-card h1{font-size:20px;text-align:center;margin:0 0 4px}
-.auth-tabs{display:flex;gap:6px;margin-bottom:16px}
-.auth-tabs button{flex:1;padding:10px;border:1.5px solid var(--border-strong);background:var(--surface);color:var(--text-dim);border-radius:10px;font:inherit;font-weight:600;cursor:pointer;transition:all .15s}
-.auth-tabs button.active{background:var(--accent);border-color:var(--accent);color:var(--bg)}
-.auth-msg{min-height:20px;font-size:13px;color:var(--danger);margin:4px 0 10px;line-height:1.45}.auth-msg.ok{color:var(--ok)}
-.auth-link{background:none;border:0;color:var(--accent);cursor:pointer;font:inherit;font-size:13px;padding:0}
+.auth-sub{text-align:center;margin:0 0 18px;font-size:13.5px;color:var(--text-dim);min-height:20px}
+.auth-spin{width:30px;height:30px;margin:6px auto 10px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--accent);animation:authSpin .8s linear infinite}
+.auth-spin[hidden]{display:none}
+.auth-tabs{position:relative;display:grid;grid-template-columns:1fr 1fr;padding:4px;margin-bottom:16px;background:color-mix(in srgb,var(--text) 7%,var(--surface));border-radius:13px}
+.auth-ind{position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:10px;background:var(--accent);box-shadow:0 4px 12px color-mix(in srgb,var(--accent) 35%,transparent);transition:transform .32s cubic-bezier(.3,1.2,.4,1)}
+.auth-tabs.reg .auth-ind{transform:translateX(100%)}
+.auth-tabs button{position:relative;z-index:1;padding:10px 6px;border:0;background:none;font:inherit;font-weight:600;color:var(--text-dim);cursor:pointer;transition:color .25s}
+.auth-tabs button.active{color:var(--bg)}
+.auth-collapse{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .32s cubic-bezier(.2,.8,.2,1),opacity .25s}
+.auth-collapse.open{grid-template-rows:1fr;opacity:1}
+.auth-collapse>div{overflow:hidden;min-height:0}
+.auth-f{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding:0 6px 0 12px;border:1.5px solid var(--border-strong);border-radius:12px;background:var(--surface);transition:border-color .18s,box-shadow .2s}
+.auth-f .ico{display:flex;color:var(--text-dim);transition:color .18s,transform .25s}
+.auth-f:focus-within{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.auth-f:focus-within .ico{color:var(--accent);transform:scale(1.12)}
+#authScreen .auth-f input{flex:1;min-width:0;width:auto;border:0;outline:none;box-shadow:none;background:transparent;color:var(--text);font:inherit;font-size:15px;padding:13px 4px}
+#authScreen .auth-f input:focus{border:0;box-shadow:none}
+.auth-f .eye{display:flex;border:0;background:none;color:var(--text-dim);cursor:pointer;padding:8px;border-radius:8px;transition:color .15s,background-color .15s}
+.auth-f .eye:hover{color:var(--accent);background:var(--accent-soft)}
+.auth-f .eye .e2,.auth-f .eye.on .e1{display:none}.auth-f .eye.on .e2{display:flex}.auth-f .eye .e1{display:flex}
+.auth-bars{display:flex;gap:5px;align-items:center;margin:-2px 0 12px}
+.auth-bars i{flex:1;height:5px;border-radius:3px;background:var(--border);transition:background-color .25s}
+.auth-bars span{font-size:12px;color:var(--text-dim);min-width:68px;text-align:right}
+.auth-bars[data-s="1"] i:nth-child(-n+1){background:var(--danger)}
+.auth-bars[data-s="2"] i:nth-child(-n+2){background:var(--warn)}
+.auth-bars[data-s="3"] i:nth-child(-n+3){background:var(--accent)}
+.auth-bars[data-s="4"] i:nth-child(-n+4){background:var(--ok)}
+.auth-msg{min-height:20px;font-size:13px;color:var(--danger);margin:0 0 10px;line-height:1.45;transition:opacity .2s}.auth-msg.ok{color:var(--ok)}
+.auth-go{position:relative;width:100%;padding:13px;border:0;border-radius:12px;background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 70%,#3b82f6));color:var(--bg);font:inherit;font-weight:700;font-size:15px;cursor:pointer;box-shadow:0 8px 20px color-mix(in srgb,var(--accent) 35%,transparent);transition:transform .12s,box-shadow .2s,filter .2s}
+.auth-go:hover:not(:disabled){filter:brightness(1.07);box-shadow:0 10px 26px color-mix(in srgb,var(--accent) 45%,transparent)}
+.auth-go:active:not(:disabled){transform:scale(.98)}
+.auth-go:disabled{cursor:progress}
+.auth-go .spin{position:absolute;left:50%;top:50%;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;border:2.5px solid color-mix(in srgb,var(--bg) 35%,transparent);border-top-color:var(--bg);opacity:0;animation:authSpin .7s linear infinite}
+.auth-go.loading .lbl{opacity:0}.auth-go.loading .spin{opacity:1}
+.auth-go .lbl{transition:opacity .15s}
+.auth-row{text-align:center;margin-top:12px;min-height:20px}
+.auth-link{background:none;border:0;color:var(--accent);cursor:pointer;font:inherit;font-size:13px;padding:2px 4px;transition:opacity .2s}
+.auth-link:hover{text-decoration:underline}
+.auth-link.gone{opacity:0;pointer-events:none}
+.auth-foot{margin:14px 0 0;text-align:center;font-size:11.5px;color:var(--text-dim)}
+@media(max-width:420px){.auth-card{padding:24px 18px 18px;border-radius:18px}}
 .user-chip{font-size:12.5px;color:var(--text-dim);max-width:42vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 small.acct{display:block;font-size:11px;font-weight:400;color:var(--text-dim);margin-top:2px;word-break:break-all}
 body:not([data-view="audit"]) #auditApp{display:none}
@@ -476,6 +530,13 @@ body.link-view #auditApp{display:none!important}
 }
 @media print{#authScreen{display:none!important}}
 </style>
+<script>
+(function(){
+  try{ var t=localStorage.getItem("lab_theme"); if(t) document.documentElement.setAttribute("data-theme",t); }catch(e){}
+  window.__effTheme=function(){ var c=document.documentElement.getAttribute("data-theme"); return c||(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"); };
+  window.__toggleTheme=function(){ var n=window.__effTheme()==="dark"?"light":"dark"; document.documentElement.setAttribute("data-theme",n); try{ localStorage.setItem("lab_theme",n); }catch(e){} };
+})();
+</script>
 </head>
 <body data-view="home" class="auth-locked">
 <div class="wrap">
@@ -1542,12 +1603,7 @@ body.link-view #auditApp{display:none!important}
   $("overlay").addEventListener("click", function(e){ if(e.target === $("overlay")) closeModal(); });
   document.addEventListener("keydown", function(e){ if(e.key === "Escape") closeModal(); });
   ["q","filter","useFilter","areaFilter","sort"].forEach(function(id){ $(id).addEventListener("input", render); });
-  $("btnTheme").addEventListener("click", function(){
-    var cur = document.documentElement.getAttribute("data-theme");
-    var next = cur === "dark" ? "light" : (cur === "light" ? "dark" : "light");
-    document.documentElement.setAttribute("data-theme", next);
-    try{ localStorage.setItem("lab_theme", next); }catch(e){}
-  });
+  $("btnTheme").addEventListener("click", function(){ window.__toggleTheme(); });
   try{
     var t = localStorage.getItem("lab_theme");
     if(t) document.documentElement.setAttribute("data-theme", t);
@@ -3029,18 +3085,24 @@ function exportExcel() {
 })();
 </script>
 <div id="authScreen" class="no-print">
-  <div class="auth-card">
+  <div class="auth-bg"><i></i><i></i><i></i></div>
+  <button type="button" class="auth-theme" id="authTheme" aria-label="Đổi giao diện sáng/tối" title="Đổi giao diện sáng/tối"><span class="sun"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span><span class="moon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg></span></button>
+  <div class="auth-card" id="authCard">
+    <div class="auth-logo"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v6L4.5 19a2 2 0 0 0 1.8 3h11.4a2 2 0 0 0 1.8-3L14 9V3"/><path d="M7.5 15h9"/></svg></div>
     <h1 id="authTitle">Quản lý thiết bị phòng LAB</h1>
-    <div class="sub" id="authSub" style="text-align:center;margin-bottom:16px">Đang kiểm tra đăng nhập…</div>
+    <p class="auth-sub" id="authSub">Đang kiểm tra đăng nhập…</p>
+    <div class="auth-spin" id="authSpin"></div>
     <div id="authForms" hidden>
-      <div class="auth-tabs"><button type="button" class="active" data-m="login">Đăng nhập</button><button type="button" data-m="register">Đăng ký</button></div>
-      <div class="mf" id="authNameWrap" hidden><label for="authName">Họ và tên</label><input type="text" id="authName" autocomplete="name" placeholder="Nguyễn Văn A"></div>
-      <div class="mf"><label for="authEmail">Email</label><input type="email" id="authEmail" autocomplete="username" placeholder="ten@email.com"></div>
-      <div class="mf"><label for="authPass">Mật khẩu</label><input type="password" id="authPass" autocomplete="current-password" placeholder="Ít nhất 6 ký tự"></div>
-      <div class="mf" id="authPass2Wrap" hidden><label for="authPass2">Nhập lại mật khẩu</label><input type="password" id="authPass2" autocomplete="new-password"></div>
-      <div class="auth-msg" id="authMsg"></div>
-      <button type="button" class="btn primary" id="authGo" style="width:100%;justify-content:center">Đăng nhập</button>
-      <div style="text-align:center;margin-top:12px"><button type="button" class="auth-link" id="authForgot">Quên mật khẩu?</button></div>
+      <div class="auth-tabs" id="authTabs"><span class="auth-ind"></span><button type="button" class="active" data-m="login">Đăng nhập</button><button type="button" data-m="register">Đăng ký</button></div>
+      <div class="auth-collapse" id="authNameWrap"><div><div class="auth-f"><span class="ico"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5"/></svg></span><input type="text" id="authName" autocomplete="name" placeholder="Họ và tên" aria-label="Họ và tên"></div></div></div>
+      <div class="auth-f"><span class="ico"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg></span><input type="email" id="authEmail" autocomplete="username" placeholder="Email" aria-label="Email"></div>
+      <div class="auth-f"><span class="ico"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><input type="password" id="authPass" autocomplete="current-password" placeholder="Mật khẩu (ít nhất 6 ký tự)" aria-label="Mật khẩu"><button type="button" class="eye" data-for="authPass" aria-label="Hiện/ẩn mật khẩu"><span class="e1"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><span class="e2"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M3 3l18 18"/></svg></span></button></div>
+      <div class="auth-collapse" id="authStrength"><div><div class="auth-bars" id="authBars" data-s="0"><i></i><i></i><i></i><i></i><span id="authStrengthTxt"></span></div></div></div>
+      <div class="auth-collapse" id="authPass2Wrap"><div><div class="auth-f"><span class="ico"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><input type="password" id="authPass2" autocomplete="new-password" placeholder="Nhập lại mật khẩu" aria-label="Nhập lại mật khẩu"><button type="button" class="eye" data-for="authPass2" aria-label="Hiện/ẩn mật khẩu"><span class="e1"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><span class="e2"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M3 3l18 18"/></svg></span></button></div></div></div>
+      <div class="auth-msg" id="authMsg" role="alert"></div>
+      <button type="button" class="auth-go" id="authGo"><span class="lbl">Đăng nhập</span><span class="spin"></span></button>
+      <div class="auth-row"><button type="button" class="auth-link" id="authForgot">Quên mật khẩu?</button></div>
+      <p class="auth-foot">Mọi thao tác nhập liệu được ghi nhật ký theo tài khoản.</p>
     </div>
   </div>
 </div>
@@ -3113,7 +3175,11 @@ function exportExcel() {
   window.acctTag = function(r){ return r && r.createdByEmail ? '<small class="acct">TK: ' + esc(r.createdByEmail) + '</small>' : ""; };
   function runApp(){
     if(started) return; started = true;
-    document.body.classList.remove("auth-locked");
+    var a = document.getElementById("authScreen");
+    if(a && document.body.classList.contains("auth-locked")){
+      a.classList.add("leaving"); document.body.classList.add("auth-leaving");
+      setTimeout(function(){ document.body.classList.remove("auth-locked", "auth-leaving"); a.classList.remove("leaving"); }, 380);
+    } else document.body.classList.remove("auth-locked");
     Array.prototype.slice.call(document.querySelectorAll('script[type="text/x-deferred"]')).forEach(function(o){
       var n = document.createElement("script"); n.text = o.textContent; o.parentNode.replaceChild(n, o);
     });
@@ -3182,44 +3248,70 @@ function exportExcel() {
 
   // ----- giao diện đăng nhập -----
   var $ = function(i){ return document.getElementById(i); };
-  var mode = "login";
+  var mode = "login", okFlag = false;
   $("authTitle").textContent = (document.title || "Quản lý thiết bị phòng LAB");
+  var tabs = $("authTabs"), card = $("authCard"), thBtn = $("authTheme");
+  function syncTheme(){ thBtn.setAttribute("data-eff", window.__effTheme()); }
+  syncTheme();
+  new MutationObserver(syncTheme).observe(document.documentElement, { attributes:true, attributeFilter:["data-theme"] });
+  if(window.matchMedia) try{ matchMedia("(prefers-color-scheme: dark)").addEventListener("change", syncTheme); }catch(e){}
+  thBtn.addEventListener("click", function(){ window.__toggleTheme(); });
   function setMode(m){
     mode = m;
-    document.querySelectorAll(".auth-tabs button").forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-m") === m); });
-    $("authNameWrap").hidden = $("authPass2Wrap").hidden = m !== "register";
-    $("authGo").textContent = m === "register" ? "Tạo tài khoản" : "Đăng nhập";
-    $("authForgot").hidden = m === "register";
+    tabs.classList.toggle("reg", m === "register");
+    tabs.querySelectorAll("button").forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-m") === m); });
+    ["authNameWrap","authPass2Wrap","authStrength"].forEach(function(i){ $(i).classList.toggle("open", m === "register"); });
+    $("authGo").querySelector(".lbl").textContent = m === "register" ? "Tạo tài khoản" : "Đăng nhập";
+    $("authForgot").classList.toggle("gone", m === "register");
     $("authPass").setAttribute("autocomplete", m === "register" ? "new-password" : "current-password");
+    $("authSub").textContent = m === "register" ? "Tạo tài khoản để bắt đầu nhập liệu" : "Đăng nhập để sử dụng ứng dụng";
     msg("");
   }
-  function msg(t, ok){ var e = $("authMsg"); e.textContent = t; e.className = "auth-msg" + (ok ? " ok" : ""); }
+  function msg(t, ok){
+    var e = $("authMsg"); e.textContent = t; e.className = "auth-msg" + (ok ? " ok" : "");
+    if(t && !ok){ card.classList.remove("shake"); void card.offsetWidth; card.classList.add("shake"); }
+  }
+  card.addEventListener("animationend", function(e){ if(e.animationName === "authShake") card.classList.remove("shake"); });
+  function busy(b){ var g = $("authGo"); g.disabled = b; g.classList.toggle("loading", b); }
+  function success(){ okFlag = true; var g = $("authGo"); g.classList.remove("loading"); g.querySelector(".lbl").textContent = "✓ Thành công"; }
   function errText(e){
     var c = e && e.code || "";
     var m = { "auth/invalid-credential":"Email hoặc mật khẩu không đúng.", "auth/wrong-password":"Mật khẩu không đúng.", "auth/user-not-found":"Không tìm thấy tài khoản với email này.", "auth/invalid-email":"Email không hợp lệ.", "auth/email-already-in-use":"Email này đã được đăng ký.", "auth/weak-password":"Mật khẩu quá yếu (cần ít nhất 6 ký tự).", "auth/too-many-requests":"Thử quá nhiều lần, vui lòng đợi một lúc rồi thử lại.", "auth/network-request-failed":"Lỗi mạng, vui lòng kiểm tra kết nối.", "auth/operation-not-allowed":"Chưa bật đăng nhập Email/Mật khẩu trong Firebase Authentication.", "auth/user-disabled":"Tài khoản đã bị vô hiệu hoá." }[c];
     return m || ("Có lỗi xảy ra" + (c ? " (" + c + ")" : "") + ".");
   }
-  document.querySelectorAll(".auth-tabs button").forEach(function(b){ b.addEventListener("click", function(){ setMode(b.getAttribute("data-m")); }); });
+  tabs.querySelectorAll("button").forEach(function(b){ b.addEventListener("click", function(){ setMode(b.getAttribute("data-m")); }); });
+  document.querySelectorAll("#authScreen .eye").forEach(function(b){
+    b.addEventListener("click", function(){ var i = $(b.getAttribute("data-for")), show = i.type === "password"; i.type = show ? "text" : "password"; b.classList.toggle("on", show); i.focus(); });
+  });
+  $("authPass").addEventListener("input", function(){
+    var v = this.value, sc = 0;
+    if(v.length >= 6) sc++; if(v.length >= 10) sc++; if(/[A-Z]/.test(v) && /[a-z]/.test(v)) sc++; if(/\d/.test(v) && /[^A-Za-z0-9]/.test(v)) sc++;
+    if(!v) sc = 0;
+    $("authBars").setAttribute("data-s", sc); $("authStrengthTxt").textContent = ["", "Yếu", "Trung bình", "Khá", "Mạnh"][sc];
+  });
   function submit(){
+    if($("authGo").disabled) return;
     var email = $("authEmail").value.trim(), pw = $("authPass").value, name = $("authName").value.trim();
     if(!email || !pw){ msg("Vui lòng nhập email và mật khẩu."); return; }
-    $("authGo").disabled = true; msg("");
+    msg("");
     if(mode === "register"){
-      if(!name){ msg("Vui lòng nhập họ và tên."); $("authGo").disabled = false; return; }
-      if(pw !== $("authPass2").value){ msg("Hai mật khẩu không khớp."); $("authGo").disabled = false; return; }
+      if(!name){ msg("Vui lòng nhập họ và tên."); return; }
+      if(pw !== $("authPass2").value){ msg("Hai mật khẩu không khớp."); return; }
+      busy(true);
       var done; st.pending = new Promise(function(r){ done = r; });
       auth.createUserWithEmailAndPassword(email, pw).then(function(c){
-        return c.user.updateProfile({ displayName: name }).then(function(){ return c.user.reload(); }).then(function(){ st.user = auth.currentUser; log("register", "auth", "", "Đăng ký tài khoản"); });
-      }).catch(function(e){ msg(errText(e)); }).then(function(){ done(); $("authGo").disabled = false; });
+        return c.user.updateProfile({ displayName: name }).then(function(){ return c.user.reload(); }).then(function(){ st.user = auth.currentUser; log("register", "auth", "", "Đăng ký tài khoản"); success(); });
+      }).catch(function(e){ msg(errText(e)); }).then(function(){ done(); if(!okFlag) busy(false); });
     } else {
-      auth.signInWithEmailAndPassword(email, pw).then(function(c){ st.user = c.user; log("login", "auth", "", "Đăng nhập"); }).catch(function(e){ msg(errText(e)); }).then(function(){ $("authGo").disabled = false; });
+      busy(true);
+      auth.signInWithEmailAndPassword(email, pw).then(function(c){ st.user = c.user; log("login", "auth", "", "Đăng nhập"); success(); }).catch(function(e){ msg(errText(e)); }).then(function(){ if(!okFlag) busy(false); });
     }
   }
   $("authGo").addEventListener("click", submit);
   ["authEmail","authPass","authPass2","authName"].forEach(function(i){ $(i).addEventListener("keydown", function(e){ if(e.key === "Enter") submit(); }); });
   $("authForgot").addEventListener("click", function(){
     var email = $("authEmail").value.trim();
-    if(!email){ msg("Nhập email vào ô Email trước, rồi bấm lại “Quên mật khẩu?”."); return; }
+    if(!email){ msg("Nhập email vào ô Email trước, rồi bấm lại “Quên mật khẩu?”."); $("authEmail").focus(); return; }
     auth.sendPasswordResetEmail(email).then(function(){ msg("Đã gửi email đặt lại mật khẩu tới " + email + ".", true); }).catch(function(e){ msg(errText(e)); });
   });
   $("btnLogout").addEventListener("click", function(){ if(confirm("Đăng xuất khỏi tài khoản này?")) auth.signOut().then(function(){ location.reload(); }); });
@@ -3233,8 +3325,9 @@ function exportExcel() {
         runApp();
       } else {
         st.user = null;
-        $("authSub").textContent = "Đăng nhập để sử dụng ứng dụng";
+        $("authSpin").hidden = true;
         $("authForms").hidden = false;
+        setMode("login");
         document.body.classList.add("auth-locked");
       }
     });
