@@ -791,7 +791,7 @@ window.dBoth=function(v,full){ var t=window.dShort(v); return t?'<span class="d-
         <label for="mon-device">Chọn thiết bị</label>
         <select id="mon-device"></select>
 
-        <p class="device-line">✍️ <em>Đang ghi nhận cho:</em> <strong id="mon-cur-device"></strong></p>
+        <p class="device-line">✍️ <em>Đang ghi:</em> <strong id="mon-cur-device"></strong></p>
         <p class="caption" id="mon-inspector-caption"></p>
         <div id="mon-fields"></div>
 
@@ -2515,7 +2515,7 @@ function renderFields() {
 function updateInspectorCaption() {
   const name = $("inspector").value.trim();
   const cap = $("inspector-caption");
-  if (name) { cap.className = "caption"; cap.innerHTML = `👤 Người thực hiện hiện tại: <strong>${esc(name)}</strong>`; }
+  if (name) { cap.className = "caption"; cap.innerHTML = `👤 Người thực hiện: <strong>${esc(name)}</strong>`; }
   else { cap.className = "caption warn"; cap.textContent = "⚠️ Lưu ý: Bạn chưa điền tên Chuyên viên ở phía trên cùng."; }
 }
 
