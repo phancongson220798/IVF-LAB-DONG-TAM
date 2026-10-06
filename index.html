@@ -791,7 +791,7 @@ window.dBoth=function(v,full){ var t=window.dShort(v); return t?'<span class="d-
       <button class="tile" data-view="monitor"><div class="ic">🔬</div><h2>THÔNG SỐ THIẾT BỊ</h2><p>Ghi nhận thông số vận hành hằng ngày, xem lịch sử theo ngày và xuất Excel.</p></button>
       <button class="tile" data-view="calib"><div class="ic">🌡️</div><h2>HIỆU CHUẨN TỦ NUÔI CẤY</h2><p>Ghi nhận CO2, O2, VOCs, độ bụi và hiệu chuẩn, xem lịch sử, xuất Excel.</p></button>
       <button class="tile" data-view="gas"><div class="ic">🧪</div><h2>THAY KHÍ NUÔI CẤY</h2><p>Ghi lịch thay khí N2, CO2, khí trộn (S/N), tra cứu theo tháng, in và xuất Excel.</p></button>
-      <button class="tile" data-view="order"><div class="ic">📦</div><h2>ĐẶT HÀNG KHÍ &amp; NITƠ</h2><p>Theo dõi đặt nitơ lỏng, khí N2, CO2, khí trộn, thống kê theo tháng, xuất Excel.</p></button>
+      <button class="tile" data-view="order"><div class="ic">📦</div><h2>THEO DÕI ĐẶT HÀNG</h2><p>Theo dõi đặt nitơ lỏng, khí N2, CO2, khí trộn, thống kê theo tháng, xuất Excel.</p></button>
       <button class="tile" data-view="audit"><div class="ic">🧾</div><h2>NHẬT KÝ HOẠT ĐỘNG</h2><p>Xem ai đã nhập, sửa, xoá dữ liệu và bằng tài khoản nào.</p></button>
     </div>
   </div>
@@ -1082,7 +1082,7 @@ window.dBoth=function(v,full){ var t=window.dShort(v); return t?'<span class="d-
   </div>
 
   <div id="ordApp">
-    <header class="top no-print"><div><h1>📦 Đặt hàng khí &amp; nitơ lỏng</h1><div class="sub">Theo dõi đơn đặt nitơ lỏng, khí N2, CO2, khí trộn của IVF LAB (lưu trên Firebase)</div></div></header>
+    <header class="top no-print"><div><h1>📦 Theo dõi đặt hàng</h1><div class="sub">Theo dõi đơn đặt nitơ lỏng, khí N2, CO2, khí trộn của IVF LAB (lưu trên Firebase)</div></div></header>
     <div class="mon-bar no-print"><span class="mon-status" id="ord-status">Đang kết nối…</span></div>
     <div class="mgrid">
     <section class="panel form-panel">
@@ -2549,7 +2549,7 @@ window.dBoth=function(v,full){ var t=window.dShort(v); return t?'<span class="d-
 </script>
 <script type="text/x-deferred">
 (function(){
-  var titles={home:"",devices:"Danh sách thiết bị",filter:"Thay lọc định kỳ",monitor:"Theo dõi thiết bị LABO",calib:"Đo và hiệu chuẩn tủ nuôi",gas:"Giám sát thay bình khí",order:"Đặt hàng khí & nitơ",audit:"Nhật ký hoạt động"};
+  var titles={home:"",devices:"Danh sách thiết bị",filter:"Thay lọc định kỳ",monitor:"Theo dõi thiết bị LABO",calib:"Đo và hiệu chuẩn tủ nuôi",gas:"Giám sát thay bình khí",order:"Theo dõi đặt hàng",audit:"Nhật ký hoạt động"};
   function show(v,push){
     document.body.setAttribute("data-view",v);
     document.getElementById("topTitle").textContent="";
@@ -3542,7 +3542,7 @@ function exportExcel(){
 (function(){
   var root=document.getElementById("auditApp"); if(!root) return;
   var db=null; try{ db=firebase.firestore(); }catch(e){}
-  var MODS={devices:"Danh sách thiết bị",filters:"Thay lọc",filter_history:"Thay lọc (lịch sử)",device_logs:"Thông số thiết bị",calibration_logs:"Hiệu chuẩn tủ nuôi cấy",gas_changes:"Thay khí nuôi cấy",order_requests:"Đặt hàng khí & nitơ",auth:"Tài khoản"};
+  var MODS={devices:"Danh sách thiết bị",filters:"Thay lọc",filter_history:"Thay lọc (lịch sử)",device_logs:"Thông số thiết bị",calibration_logs:"Hiệu chuẩn tủ nuôi cấy",gas_changes:"Thay khí nuôi cấy",order_requests:"Theo dõi đặt hàng",auth:"Tài khoản"};
   var ACTS={add:"Thêm",set:"Lưu",update:"Sửa",delete:"Xoá",login:"Đăng nhập",register:"Đăng ký"};
   var data=[];
   function $(i){ return document.getElementById("aud-"+i); }
