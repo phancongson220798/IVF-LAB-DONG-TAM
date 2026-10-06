@@ -278,24 +278,24 @@ body.link-view .topnav,body.link-view #homeApp,body.link-view #maintApp,body.lin
 /* ===== Theo dõi thiết bị LABO ===== */
 #monApp .mgrid{display:grid;grid-template-columns:400px minmax(0,1fr);gap:20px;align-items:start}#monApp .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}#monApp .panel-head{padding:14px 18px;border-bottom:1px solid var(--border);background:var(--head)}#monApp .panel-head h2{font-size:1.05rem;margin:0;font-weight:600}#monApp .panel-body{padding:16px 18px 18px}#monApp .form-panel{position:sticky;top:12px}#monApp label{display:block;font-size:.85rem;color:var(--text-dim);margin:0 0 4px}#monApp input[type=text],#monApp input[type=number],#monApp select,#monApp textarea{ width:100%;padding:9px 10px;border:1px solid var(--border);border-radius:8px;background:var(--field);color:var(--text);font:inherit}#monApp input:focus-visible,#monApp select:focus-visible,#monApp textarea:focus-visible,#monApp button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}#monApp textarea{resize:vertical;min-height:70px}#monApp .device-line{margin:14px 0 4px;font-size:.95rem}#monApp .caption{font-size:.82rem;color:var(--text-dim);margin:2px 0 0}#monApp .caption.warn{color:var(--warn-ink);background:var(--warn-bg);padding:6px 10px;border-radius:8px}#monApp #mon-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}#monApp #mon-fields > div{min-width:0}#monApp #mon-fields .full{grid-column:1/-1}#monApp .tag{grid-column:1/-1;font-weight:600;font-size:.9rem;padding:6px 10px;border-radius:8px;margin-top:4px}#monApp .tag.set{background:var(--set-bg);color:var(--set-ink)}#monApp .tag.act{background:var(--act-bg);color:var(--act-ink)}#monApp .check{display:flex;align-items:center;gap:8px;color:var(--text);font-size:1rem;margin:0;padding:9px 10px;border:1px solid var(--border);border-radius:8px;background:var(--field)}#monApp .check input{width:18px;height:18px;accent-color:var(--accent)}#monApp .note-wrap{margin-top:16px}#monApp .mbtn{margin-top:16px;width:100%;padding:12px 14px;border:0;border-radius:8px;background:var(--accent);color:var(--accent-ink);font:inherit;font-weight:600;cursor:pointer}#monApp .mbtn:disabled{opacity:.6;cursor:wait}#monApp .msg{margin-top:12px;padding:10px 12px;border-radius:8px;font-size:.92rem}#monApp .msg.err{background:var(--err-bg);color:var(--err-ink)}#monApp .msg.ok{background:var(--ok-bg);color:var(--ok-ink)}#monApp .msg.info{background:var(--info-bg);color:var(--info-ink)}#monApp .msg.warn{background:var(--warn-bg);color:var(--warn-ink)}#monApp .filters{display:flex;gap:12px;flex-wrap:wrap;align-items:end}#monApp .filters > div{flex:1 1 200px}#monApp .result-line{margin:14px 0 10px;color:var(--text-dim);font-size:.92rem}#monApp .result-line strong{color:var(--text)}#monApp .table-scroll{overflow:auto;border:1px solid var(--border);border-radius:8px;max-height:calc(100vh - 300px);min-height:200px}#monApp table{border-collapse:collapse;width:100%;font-size:.88rem}#monApp th,#monApp td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}#monApp td.note{white-space:normal;min-width:140px}#monApp th{background:var(--head);position:sticky;top:0;font-weight:600}#monApp tbody tr:nth-child(even){background:var(--zebra)}#monApp tr:last-child td{border-bottom:0}#monApp .tools{display:flex;gap:12px;flex-wrap:wrap;align-items:end;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}#monApp .tools > div{flex:0 1 160px}#monApp .tools .mbtn{margin:0;width:auto;padding:9px 16px;flex:0 0 auto}#monApp .mbtn.alt{background:var(--set-bg);color:var(--set-ink)}#monApp .export-msg{margin-top:10px}#monApp .day{border:1px solid var(--border);border-radius:10px;margin-top:10px;overflow:hidden;background:var(--surface)}#monApp .day > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--head);font-weight:600}#monApp .day > summary::-webkit-details-marker{display:none}#monApp .day > summary::before{content:"▸";color:var(--accent);transition:transform .15s}#monApp .day[open] > summary::before{transform:rotate(90deg)}#monApp .day .dow{color:var(--text-dim);font-weight:400}#monApp .day .count{margin-left:auto;font-size:.8rem;font-weight:500;background:var(--set-bg);color:var(--set-ink);padding:2px 10px;border-radius:999px}#monApp .day .table-scroll{border:0;border-top:1px solid var(--border);border-radius:0;max-height:480px;min-height:0}#monApp input[type=date]{width:100%;padding:9px 10px;border:1px solid var(--border);border-radius:8px;background:var(--field);color:var(--text);font:inherit} 
 
-#calApp,#gasApp{--head:color-mix(in srgb,var(--text) 6%,var(--surface));--field:var(--surface);--zebra:color-mix(in srgb,var(--text) 3%,var(--surface));--set-bg:var(--accent-soft);--set-ink:var(--accent);--soft-bg:var(--accent-soft);--soft-ink:var(--accent);--voc-bg:var(--danger-soft);--voc-ink:var(--danger);--act-bg:var(--ok-soft);--act-ink:var(--ok);--warn-bg:var(--warn-soft);--warn-ink:var(--warn);--err-bg:var(--danger-soft);--err-ink:var(--danger);--ok-bg:var(--ok-soft);--ok-ink:var(--ok);--info-bg:var(--accent-soft);--info-ink:var(--accent);--accent-ink:var(--bg)}
+#calApp,#gasApp,#ordApp{--head:color-mix(in srgb,var(--text) 6%,var(--surface));--field:var(--surface);--zebra:color-mix(in srgb,var(--text) 3%,var(--surface));--set-bg:var(--accent-soft);--set-ink:var(--accent);--soft-bg:var(--accent-soft);--soft-ink:var(--accent);--voc-bg:var(--danger-soft);--voc-ink:var(--danger);--act-bg:var(--ok-soft);--act-ink:var(--ok);--warn-bg:var(--warn-soft);--warn-ink:var(--warn);--err-bg:var(--danger-soft);--err-ink:var(--danger);--ok-bg:var(--ok-soft);--ok-ink:var(--ok);--info-bg:var(--accent-soft);--info-ink:var(--accent);--accent-ink:var(--bg)}
 .mon-bar{display:flex;gap:14px;flex-wrap:wrap;align-items:end;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:18px}
 .mon-field{flex:1 1 230px}.mon-date{display:flex;gap:8px;align-items:center}.mon-date input{flex:1}
 .mon-date .mbtn{margin:0;width:auto;padding:8px 12px}
 .mon-status{font-size:12.5px;padding:4px 12px;border-radius:999px;background:var(--border);color:var(--text-dim);white-space:nowrap}
 .mon-status.ok{background:var(--ok-soft);color:var(--ok)}.mon-status.bad{background:var(--danger-soft);color:var(--danger)}
-#calApp input.missing,#gasApp input.missing{border-color:var(--danger);box-shadow:0 0 0 2px var(--danger-soft)}
-@media(max-width:980px){#calApp .mgrid,#gasApp .mgrid{grid-template-columns:minmax(0,1fr)}#calApp .form-panel,#gasApp .form-panel{position:static}}
-@media(max-width:420px){#calApp .row2,#gasApp .row2{grid-template-columns:1fr}}
-@media print{#gasApp .form-panel,#gasApp .tools,#gasApp .mon-bar,#gasApp header.top{display:none!important}#gasApp .mgrid{display:block}#gasApp .table-scroll{max-height:none;overflow:visible}}
+#calApp input.missing,#gasApp input.missing,#ordApp input.missing{border-color:var(--danger);box-shadow:0 0 0 2px var(--danger-soft)}
+@media(max-width:980px){#calApp .mgrid,#gasApp .mgrid,#ordApp .mgrid{grid-template-columns:minmax(0,1fr)}#calApp .form-panel,#gasApp .form-panel,#ordApp .form-panel{position:static}}
+@media(max-width:420px){#calApp .row2,#gasApp .row2,#ordApp .row2{grid-template-columns:1fr}}
+@media print{#gasApp .form-panel,#ordApp .form-panel,#gasApp .tools,#ordApp .tools,#gasApp .mon-bar,#ordApp .mon-bar,#gasApp header.top,#ordApp header.top{display:none!important}#gasApp .mgrid,#ordApp .mgrid{display:block}#gasApp .table-scroll,#ordApp .table-scroll{max-height:none;overflow:visible}}
 body:not([data-view="calib"]) #calApp{display:none}
-body:not([data-view="gas"]) #gasApp{display:none}
-body.link-view #calApp,body.link-view #gasApp{display:none!important}
+body:not([data-view="gas"]) #gasApp{display:none}body:not([data-view="order"]) #ordApp{display:none}
+body.link-view #calApp,body.link-view #gasApp,body.link-view #ordApp{display:none!important}
 
 /* ===== Hiệu chuẩn tủ nuôi ===== */
 #calApp .wrap{max-width:1400px;margin:0 auto;padding:20px 24px 48px}#calApp .mgrid{display:grid;grid-template-columns:420px minmax(0,1fr);gap:20px;align-items:start}#calApp .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}#calApp .panel-head{padding:14px 18px;border-bottom:1px solid var(--border);background:var(--head)}#calApp .panel-head h2{font-size:1.05rem;margin:0;font-weight:600}#calApp .panel-body{padding:16px 18px 18px}#calApp .form-panel{position:sticky;top:12px}#calApp label{display:block;font-size:.85rem;color:var(--text-dim);margin:0 0 4px}#calApp input,#calApp select,#calApp textarea{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--field);color:var(--text);font:inherit}#calApp input:focus-visible,#calApp select:focus-visible,#calApp textarea:focus-visible,#calApp button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}#calApp textarea{resize:vertical;min-height:80px}#calApp .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}#calApp .banner{margin:16px 0 12px;padding:8px 12px;border-radius:8px;font-weight:600;font-size:.92rem}#calApp .banner.ok{background:var(--set-bg);color:var(--set-ink)}#calApp .banner.warn{background:var(--voc-bg);color:var(--voc-ink)}#calApp .banner.info{background:var(--info-bg);color:var(--info-ink)}#calApp .group-title{grid-column:1/-1;font-weight:600;font-size:.92rem;margin:10px 0 0;padding:6px 12px;border-radius:8px;background:var(--head);border-left:4px solid var(--accent)}#calApp .chint{grid-column:1/-1;font-size:.8rem;color:var(--text-dim);margin:-4px 0 0 2px}#calApp #cal-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}#calApp #cal-fields > div{min-width:0;display:flex;flex-direction:column;justify-content:flex-end}#calApp #cal-fields label{min-height:1.3em}#calApp #cal-fields .full{grid-column:1/-1}#calApp .mbtn{margin-top:16px;width:100%;padding:13px 14px;border:0;border-radius:10px;background:var(--accent);color:var(--accent-ink);font:inherit;font-size:1rem;font-weight:700;cursor:pointer}#calApp .mbtn:disabled{opacity:.6;cursor:wait}#calApp .msg{margin-top:12px;padding:10px 12px;border-radius:8px;font-size:.92rem}#calApp .msg.err{background:var(--err-bg);color:var(--err-ink)}#calApp .msg.ok{background:var(--ok-bg);color:var(--ok-ink)}#calApp .msg.info{background:var(--info-bg);color:var(--info-ink)}#calApp .result-line{margin:0 0 10px;color:var(--text-dim);font-size:.92rem}#calApp .result-line strong{color:var(--text)}#calApp .table-scroll{overflow:auto;border:1px solid var(--border);border-radius:8px;max-height:calc(100vh - 220px);min-height:160px}#calApp table{border-collapse:collapse;width:100%;font-size:.86rem}#calApp th,#calApp td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}#calApp td.note{white-space:normal;min-width:140px}#calApp th{background:var(--head);position:sticky;top:0;font-weight:600}#calApp tbody tr:nth-child(even){background:var(--zebra)}#calApp tr:last-child td{border-bottom:0}#calApp .right{flex-wrap:wrap}#calApp .tools{display:flex;gap:12px;flex-wrap:wrap;align-items:end;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}#calApp .tools > div{flex:0 1 160px}#calApp .tools .mbtn{margin:0;width:auto;padding:9px 16px;flex:0 0 auto;font-size:.95rem;background:var(--set-bg);color:var(--set-ink)}#calApp .export-msg{margin-top:10px}#calApp .day{border:1px solid var(--border);border-radius:10px;margin-top:10px;overflow:hidden;background:var(--surface)}#calApp .day > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--head);font-weight:600}#calApp .day > summary::-webkit-details-marker{display:none}#calApp .day > summary::before{content:"▸";color:var(--accent);transition:transform .15s}#calApp .day[open] > summary::before{transform:rotate(90deg)}#calApp .day .dow{color:var(--text-dim);font-weight:400}#calApp .day .count{margin-left:auto;font-size:.8rem;font-weight:500;background:var(--set-bg);color:var(--set-ink);padding:2px 10px;border-radius:999px}#calApp .day .table-scroll{border:0;border-top:1px solid var(--border);border-radius:0;max-height:480px;min-height:0} 
 /* ===== Thay bình khí ===== */
-#gasApp .wrap{max-width:1400px;margin:0 auto;padding:20px 24px 48px}#gasApp .mgrid{display:grid;grid-template-columns:420px minmax(0,1fr);gap:20px;align-items:start}#gasApp .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}#gasApp .panel-head{padding:14px 18px;border-bottom:1px solid var(--border);background:var(--head)}#gasApp .panel-head h2{font-size:1.05rem;margin:0;font-weight:600}#gasApp .panel-body{padding:16px 18px 18px}#gasApp .form-panel{position:sticky;top:12px}#gasApp label{display:block;font-size:.85rem;color:var(--text-dim);margin:0 0 4px}#gasApp input,#gasApp select,#gasApp textarea{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--field);color:var(--text);font:inherit}#gasApp input:focus-visible,#gasApp select:focus-visible,#gasApp button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}#gasApp input.missing{border-color:#e5484d;box-shadow:0 0 0 2px rgba(229,72,77,.25)}#gasApp .gfield{margin-top:14px}#gasApp .sn-list{display:grid;gap:8px}#gasApp .sn-row{display:flex;align-items:center;gap:10px}#gasApp .sn-row span{font-size:.82rem;color:var(--text-dim);min-width:46px}#gasApp input:disabled{opacity:.55;cursor:not-allowed}#gasApp .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}#gasApp .row2 .gfield{margin-top:0}#gasApp .mbtn{margin-top:18px;width:100%;padding:13px 14px;border:0;border-radius:10px;background:var(--accent);color:var(--accent-ink);font:inherit;font-size:1rem;font-weight:700;cursor:pointer}#gasApp .mbtn:disabled{opacity:.6;cursor:wait}#gasApp .mbtn.alt{margin:0;width:auto;padding:10px 16px;font-size:.95rem;background:var(--soft-bg);color:var(--soft-ink)}#gasApp .msg{margin-top:12px;padding:10px 12px;border-radius:8px;font-size:.92rem}#gasApp .msg.err{background:var(--err-bg);color:var(--err-ink)}#gasApp .msg.ok{background:var(--ok-bg);color:var(--ok-ink)}#gasApp .msg.warn{background:var(--warn-bg);color:var(--warn-ink)}#gasApp .msg.info{background:var(--info-bg);color:var(--info-ink)}#gasApp .tools{display:flex;gap:12px;flex-wrap:wrap;align-items:end}#gasApp .tools > div{flex:0 1 170px}#gasApp .tools.sep{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}#gasApp .result-line{margin:14px 0 10px;color:var(--text-dim);font-size:.92rem}#gasApp .result-line strong{color:var(--text)}#gasApp .table-scroll{overflow:auto;border:1px solid var(--border);border-radius:8px;max-height:calc(100vh - 340px);min-height:160px}#gasApp table{border-collapse:collapse;width:100%;font-size:.88rem}#gasApp th,#gasApp td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}#gasApp th{background:var(--head);position:sticky;top:0;font-weight:600}#gasApp tbody tr:nth-child(even){background:var(--zebra)}#gasApp tr:last-child td{border-bottom:0}#gasApp td.num{text-align:right}#gasApp .pill{display:inline-block;padding:1px 10px;border-radius:999px;font-size:.8rem;font-weight:600;background:var(--soft-bg);color:var(--soft-ink)} 
+#gasApp .wrap,#ordApp .wrap{max-width:1400px;margin:0 auto;padding:20px 24px 48px}#gasApp .mgrid,#ordApp .mgrid{display:grid;grid-template-columns:420px minmax(0,1fr);gap:20px;align-items:start}#gasApp .panel,#ordApp .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}#gasApp .panel-head,#ordApp .panel-head{padding:14px 18px;border-bottom:1px solid var(--border);background:var(--head)}#gasApp .panel-head h2,#ordApp .panel-head h2{font-size:1.05rem;margin:0;font-weight:600}#gasApp .panel-body,#ordApp .panel-body{padding:16px 18px 18px}#gasApp .form-panel,#ordApp .form-panel{position:sticky;top:12px}#gasApp label,#ordApp label{display:block;font-size:.85rem;color:var(--text-dim);margin:0 0 4px}#gasApp input,#ordApp input,#gasApp select,#ordApp select,#gasApp textarea,#ordApp textarea{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--field);color:var(--text);font:inherit}#gasApp input:focus-visible,#ordApp input:focus-visible,#gasApp select:focus-visible,#ordApp select:focus-visible,#gasApp button:focus-visible,#ordApp button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}#gasApp input.missing,#ordApp input.missing{border-color:#e5484d;box-shadow:0 0 0 2px rgba(229,72,77,.25)}#gasApp .gfield,#ordApp .gfield{margin-top:14px}#gasApp .sn-list,#ordApp .sn-list{display:grid;gap:8px}#gasApp .sn-row,#ordApp .sn-row{display:flex;align-items:center;gap:10px}#gasApp .sn-row span,#ordApp .sn-row span{font-size:.82rem;color:var(--text-dim);min-width:46px}#gasApp input:disabled,#ordApp input:disabled{opacity:.55;cursor:not-allowed}#gasApp .row2,#ordApp .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}#gasApp .row2 .gfield,#ordApp .row2 .gfield{margin-top:0}#gasApp .mbtn,#ordApp .mbtn{margin-top:18px;width:100%;padding:13px 14px;border:0;border-radius:10px;background:var(--accent);color:var(--accent-ink);font:inherit;font-size:1rem;font-weight:700;cursor:pointer}#gasApp .mbtn:disabled,#ordApp .mbtn:disabled{opacity:.6;cursor:wait}#gasApp .mbtn.alt,#ordApp .mbtn.alt{margin:0;width:auto;padding:10px 16px;font-size:.95rem;background:var(--soft-bg);color:var(--soft-ink)}#gasApp .msg,#ordApp .msg{margin-top:12px;padding:10px 12px;border-radius:8px;font-size:.92rem}#gasApp .msg.err,#ordApp .msg.err{background:var(--err-bg);color:var(--err-ink)}#gasApp .msg.ok,#ordApp .msg.ok{background:var(--ok-bg);color:var(--ok-ink)}#gasApp .msg.warn,#ordApp .msg.warn{background:var(--warn-bg);color:var(--warn-ink)}#gasApp .msg.info,#ordApp .msg.info{background:var(--info-bg);color:var(--info-ink)}#gasApp .tools,#ordApp .tools{display:flex;gap:12px;flex-wrap:wrap;align-items:end}#gasApp .tools > div,#ordApp .tools > div{flex:0 1 170px}#gasApp .tools.sep,#ordApp .tools.sep{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}#gasApp .result-line,#ordApp .result-line{margin:14px 0 10px;color:var(--text-dim);font-size:.92rem}#gasApp .result-line strong,#ordApp .result-line strong{color:var(--text)}#gasApp .table-scroll,#ordApp .table-scroll{overflow:auto;border:1px solid var(--border);border-radius:8px;max-height:calc(100vh - 340px);min-height:160px}#gasApp table,#ordApp table{border-collapse:collapse;width:100%;font-size:.88rem}#gasApp th,#ordApp th,#gasApp td,#ordApp td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}#gasApp th,#ordApp th{background:var(--head);position:sticky;top:0;font-weight:600}#gasApp tbody tr:nth-child(even),#ordApp tbody tr:nth-child(even){background:var(--zebra)}#gasApp tr:last-child td,#ordApp tr:last-child td{border-bottom:0}#gasApp td.num,#ordApp td.num{text-align:right}#gasApp .pill,#ordApp .pill{display:inline-block;padding:1px 10px;border-radius:999px;font-size:.8rem;font-weight:600;background:var(--soft-bg);color:var(--soft-ink)} 
 
 /* nút ↺ nhỏ gọn + ngày/thứ gọn một hàng */
 #monApp .mon-date .mbtn,#calApp .mon-date .mbtn{margin:0;width:36px;height:36px;padding:0;flex:none;font-size:16px;line-height:1;border-radius:8px}
@@ -311,11 +311,11 @@ body.link-view #calApp,body.link-view #gasApp{display:none!important}
 .he-f{margin-bottom:12px}
 .he-f textarea{min-height:70px;resize:vertical}
 .he-err{color:var(--danger);font-size:13px;min-height:18px;margin-top:4px}
-@media print{#gasApp .he-act,#gasApp th:last-child{display:none}}
+@media print{#gasApp .he-act,#ordApp .he-act,#gasApp th:last-child,#ordApp th:last-child{display:none}}
 
 /* sửa bảng lịch sử: không đè chữ, thống kê theo thiết bị */
-#monApp table,#calApp table,#gasApp table{table-layout:auto}
-#monApp td,#calApp td,#gasApp td{word-break:normal}
+#monApp table,#calApp table,#gasApp table,#ordApp table{table-layout:auto}
+#monApp td,#calApp td,#gasApp td,#ordApp td{word-break:normal}
 #monApp td.note{word-break:break-word}
 #monApp td[rowspan]{vertical-align:top;font-weight:600}
 #monApp tbody tr.g0{background:transparent}
@@ -334,7 +334,7 @@ body{transition:background-color .25s,color .25s}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 @keyframes popIn{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
 @keyframes toastIn{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
-#homeApp,.app-main,#maintApp,#monApp,#calApp,#gasApp{animation:fadeUp .38s cubic-bezier(.2,.7,.2,1) both}
+#homeApp,.app-main,#maintApp,#monApp,#calApp,#gasApp,#ordApp{animation:fadeUp .38s cubic-bezier(.2,.7,.2,1) both}
 .tile{animation:fadeUp .5s cubic-bezier(.2,.7,.2,1) both;transition:transform .2s,border-color .2s,box-shadow .2s,background-color .25s,color .25s}
 .tile:nth-child(2){animation-delay:.06s}.tile:nth-child(3){animation-delay:.12s}.tile:nth-child(4){animation-delay:.18s}.tile:nth-child(5){animation-delay:.24s}
 .tile:hover{box-shadow:0 14px 30px rgba(0,0,0,.14)}
@@ -372,22 +372,22 @@ tbody tr,.history-row{transition:background-color .15s}
   .mtab{flex:1;padding:11px 8px;border:1.5px solid var(--border-strong);background:var(--surface);color:var(--text-dim);border-radius:10px;font:inherit;font-weight:600;cursor:pointer;transition:background-color .15s,border-color .15s,color .15s,transform .1s}
   .mtab:active{transform:scale(.97)}
   .mtab.active{background:var(--accent);border-color:var(--accent);color:var(--bg)}
-  #monApp[data-mtab="history"] .form-panel,#calApp[data-mtab="history"] .form-panel,#gasApp[data-mtab="history"] .form-panel{display:none}
-  #monApp[data-mtab="form"] .mgrid>.panel:not(.form-panel),#calApp[data-mtab="form"] .mgrid>.panel:not(.form-panel),#gasApp[data-mtab="form"] .mgrid>.panel:not(.form-panel){display:none}
+  #monApp[data-mtab="history"] .form-panel,#calApp[data-mtab="history"] .form-panel,#gasApp[data-mtab="history"] .form-panel,#ordApp[data-mtab="history"] .form-panel{display:none}
+  #monApp[data-mtab="form"] .mgrid>.panel:not(.form-panel),#calApp[data-mtab="form"] .mgrid>.panel:not(.form-panel),#gasApp[data-mtab="form"] .mgrid>.panel:not(.form-panel),#ordApp[data-mtab="form"] .mgrid>.panel:not(.form-panel){display:none}
 }
 @media(max-width:640px){
-  #monApp .wrap,#calApp .wrap,#gasApp .wrap{padding-left:0;padding-right:0}
-  #monApp .table-scroll,#calApp .table-scroll,#gasApp .table-scroll,#monApp .day .table-scroll{max-height:none;overflow:visible;border:0}
-  #monApp thead,#calApp thead,#gasApp thead{display:none}
-  #monApp table,#monApp tbody,#monApp tr,#monApp td,#calApp table,#calApp tbody,#calApp tr,#calApp td,#gasApp table,#gasApp tbody,#gasApp tr,#gasApp td{display:block;width:100%}
-  #monApp tr,#calApp tr,#gasApp tr{padding:10px 14px;border-bottom:1px solid var(--border)}
+  #monApp .wrap,#calApp .wrap,#gasApp .wrap,#ordApp .wrap{padding-left:0;padding-right:0}
+  #monApp .table-scroll,#calApp .table-scroll,#gasApp .table-scroll,#ordApp .table-scroll,#monApp .day .table-scroll{max-height:none;overflow:visible;border:0}
+  #monApp thead,#calApp thead,#gasApp thead,#ordApp thead{display:none}
+  #monApp table,#monApp tbody,#monApp tr,#monApp td,#calApp table,#calApp tbody,#calApp tr,#calApp td,#gasApp table,#ordApp table,#gasApp tbody,#ordApp tbody,#gasApp tr,#ordApp tr,#gasApp td,#ordApp td{display:block;width:100%}
+  #monApp tr,#calApp tr,#gasApp tr,#ordApp tr{padding:10px 14px;border-bottom:1px solid var(--border)}
   #monApp tbody tr.gs{border-top:2px solid var(--border)}
-  #monApp tbody tr.gs td,#calApp td,#gasApp td,#monApp td{border-top:0;border-bottom:0}
-  #monApp td,#calApp td,#gasApp td{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:4px 0;text-align:right;white-space:normal;word-break:break-word}
-  #monApp td::before,#calApp td::before,#gasApp td::before{content:attr(data-label);flex:none;color:var(--text-dim);font-weight:600;font-size:12px;text-align:left}
+  #monApp tbody tr.gs td,#calApp td,#gasApp td,#ordApp td,#monApp td{border-top:0;border-bottom:0}
+  #monApp td,#calApp td,#gasApp td,#ordApp td{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:4px 0;text-align:right;white-space:normal;word-break:break-word}
+  #monApp td::before,#calApp td::before,#gasApp td::before,#ordApp td::before{content:attr(data-label);flex:none;color:var(--text-dim);font-weight:600;font-size:12px;text-align:left}
   #monApp td[rowspan]{font-weight:600}
-  #monApp td.he-act,#calApp td.he-act,#gasApp td.he-act{justify-content:flex-end;padding-top:8px}
-  #monApp td.he-act::before,#calApp td.he-act::before,#gasApp td.he-act::before{content:none}
+  #monApp td.he-act,#calApp td.he-act,#gasApp td.he-act,#ordApp td.he-act{justify-content:flex-end;padding-top:8px}
+  #monApp td.he-act::before,#calApp td.he-act::before,#gasApp td.he-act::before,#ordApp td.he-act::before{content:none}
   #monApp .day > summary{padding:12px}
   #monApp .day .cov{margin-left:0}
   .history-row{flex-wrap:wrap}
@@ -395,7 +395,7 @@ tbody tr,.history-row{transition:background-color .15s}
   .history-row .icon-btn{flex:1}
   .view-toggle{border-right:0;padding-right:0}
 }
-@media print{.mtabs{display:none!important}#gasApp[data-mtab] .mgrid>.panel:not(.form-panel){display:block!important}}
+@media print{.mtabs{display:none!important}#gasApp[data-mtab] .mgrid>.panel:not(.form-panel),#ordApp[data-mtab] .mgrid>.panel:not(.form-panel){display:block!important}}
 
 /* ===== Danh sách thiết bị trên điện thoại: dạng thẻ cố định (máy tính giữ nguyên bảng kéo giãn cột) ===== */
 @media screen and (max-width:700px){
@@ -422,12 +422,12 @@ tbody tr,.history-row{transition:background-color .15s}
 }
 
 /* ===== Lịch sử: hiển thị đủ thông tin, không phải kéo ngang ===== */
-#monApp .table-scroll,#calApp .table-scroll,#gasApp .table-scroll{overflow-x:hidden}
-#monApp table,#gasApp table{table-layout:auto;width:100%}
-#monApp th,#monApp td,#gasApp th,#gasApp td{white-space:normal;word-break:break-word;padding:9px 8px}
-#gasApp .pill{white-space:normal}
-#monApp td.he-act,#gasApp td.he-act{white-space:normal;min-width:96px}
-#monApp td.he-act .icon-btn,#gasApp td.he-act .icon-btn{margin:2px 0 2px 4px}
+#monApp .table-scroll,#calApp .table-scroll,#gasApp .table-scroll,#ordApp .table-scroll{overflow-x:hidden}
+#monApp table,#gasApp table,#ordApp table{table-layout:auto;width:100%}
+#monApp th,#monApp td,#gasApp th,#ordApp th,#gasApp td,#ordApp td{white-space:normal;word-break:break-word;padding:9px 8px}
+#gasApp .pill,#ordApp .pill{white-space:normal}
+#monApp td.he-act,#gasApp td.he-act,#ordApp td.he-act{white-space:normal;min-width:96px}
+#monApp td.he-act .icon-btn,#gasApp td.he-act .icon-btn,#ordApp td.he-act .icon-btn{margin:2px 0 2px 4px}
 /* Hiệu chuẩn: mỗi bản ghi là một thẻ, chỉ hiện các thông số có dữ liệu */
 #calApp thead{display:none}
 #calApp table,#calApp tbody{display:block;width:100%}
@@ -532,28 +532,28 @@ body.link-view #auditApp{display:none!important}
 
 /* ===== Giao diện máy tính (>=981px): Thay lọc, Thông số, Hiệu chuẩn, Thay khí — điện thoại giữ nguyên ===== */
 @media screen and (min-width:981px){
-  body[data-view="filter"] .wrap,body[data-view="monitor"] .wrap,body[data-view="calib"] .wrap,body[data-view="gas"] .wrap{max-width:min(1560px,96vw)}
+  body[data-view="filter"] .wrap,body[data-view="monitor"] .wrap,body[data-view="calib"] .wrap,body[data-view="gas"] .wrap,body[data-view="order"] .wrap{max-width:min(1560px,96vw)}
 
   /* tiêu đề + thanh thông tin cùng một hàng */
-  body[data-view="monitor"] #monApp,body[data-view="calib"] #calApp,body[data-view="gas"] #gasApp{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 24px;align-items:center}
-  #monApp>*,#calApp>*,#gasApp>*{grid-column:1/-1}
-  #monApp>header.top,#calApp>header.top,#gasApp>header.top{grid-column:1;margin:0 0 14px}
-  #monApp>.mon-bar,#calApp>.mon-bar,#gasApp>.mon-bar{grid-column:2;margin:0 0 14px}
-  #monApp>header .sub,#calApp>header .sub,#gasApp>header .sub{max-width:340px}
-  #gasApp>.mon-bar{justify-self:end;padding:0;border:0;background:none}
+  body[data-view="monitor"] #monApp,body[data-view="calib"] #calApp,body[data-view="gas"] #gasApp,body[data-view="order"] #ordApp{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 24px;align-items:center}
+  #monApp>*,#calApp>*,#gasApp>*,#ordApp>*{grid-column:1/-1}
+  #monApp>header.top,#calApp>header.top,#gasApp>header.top,#ordApp>header.top{grid-column:1;margin:0 0 14px}
+  #monApp>.mon-bar,#calApp>.mon-bar,#gasApp>.mon-bar,#ordApp>.mon-bar{grid-column:2;margin:0 0 14px}
+  #monApp>header .sub,#calApp>header .sub,#gasApp>header .sub,#ordApp>header .sub{max-width:340px}
+  #gasApp>.mon-bar,#ordApp>.mon-bar{justify-self:end;padding:0;border:0;background:none}
 
   /* form cố định bên trái, lịch sử rộng bên phải */
-  #monApp .mgrid,#calApp .mgrid,#gasApp .mgrid{grid-template-columns:minmax(380px,440px) minmax(0,1fr);gap:22px;align-items:start}
-  #monApp .form-panel,#calApp .form-panel,#gasApp .form-panel{position:sticky;top:12px;max-height:calc(100vh - 24px);display:flex;flex-direction:column}
-  #monApp .form-panel>.panel-head,#calApp .form-panel>.panel-head,#gasApp .form-panel>.panel-head{flex:none}
-  #monApp .form-panel>.panel-body,#calApp .form-panel>.panel-body,#gasApp .form-panel>.panel-body{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+  #monApp .mgrid,#calApp .mgrid,#gasApp .mgrid,#ordApp .mgrid{grid-template-columns:minmax(380px,440px) minmax(0,1fr);gap:22px;align-items:start}
+  #monApp .form-panel,#calApp .form-panel,#gasApp .form-panel,#ordApp .form-panel{position:sticky;top:12px;max-height:calc(100vh - 24px);display:flex;flex-direction:column}
+  #monApp .form-panel>.panel-head,#calApp .form-panel>.panel-head,#gasApp .form-panel>.panel-head,#ordApp .form-panel>.panel-head{flex:none}
+  #monApp .form-panel>.panel-body,#calApp .form-panel>.panel-body,#gasApp .form-panel>.panel-body,#ordApp .form-panel>.panel-body{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
 
   /* lịch sử: bảng thoáng hơn, tiêu đề cột dính, rê chuột nổi dòng */
   #monApp .day > summary{padding:13px 18px}
-  #monApp th,#monApp td,#gasApp th,#gasApp td{padding:10px 12px}
+  #monApp th,#monApp td,#gasApp th,#ordApp th,#gasApp td,#ordApp td{padding:10px 12px}
   #monApp .day .table-scroll{max-height:min(560px,62vh)}
-  #gasApp .table-scroll{max-height:calc(100vh - 250px)}
-  #monApp tbody tr:hover,#gasApp tbody tr:hover{background:color-mix(in srgb,var(--accent) 9%,transparent)}
+  #gasApp .table-scroll,#ordApp .table-scroll{max-height:calc(100vh - 250px)}
+  #monApp tbody tr:hover,#gasApp tbody tr:hover,#ordApp tbody tr:hover{background:color-mix(in srgb,var(--accent) 9%,transparent)}
   #calApp tbody tr{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));padding:14px 18px}
   #calApp tbody tr:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
 
@@ -591,12 +591,12 @@ body.link-view #auditApp{display:none!important}
   #monApp td.note::before{content:"📝 ";display:inline}
   #monApp td.he-act{grid-column:1/-1;display:flex;justify-content:flex-end;padding-top:4px}
   /* Thay khí */
-  #gasApp tbody tr{display:grid;grid-template-columns:1fr 1fr;gap:5px 12px;padding:10px 14px}
-  #gasApp td{display:block;width:auto;padding:0;text-align:left}
-  #gasApp td::before{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.03em;margin-bottom:1px}
-  #gasApp td.num{text-align:left}
-  #gasApp td[data-label="Ngày thay"]{font-weight:700}
-  #gasApp td.he-act{grid-column:1/-1;display:flex;justify-content:flex-end;padding-top:2px}
+  #gasApp tbody tr,#ordApp tbody tr{display:grid;grid-template-columns:1fr 1fr;gap:5px 12px;padding:10px 14px}
+  #gasApp td,#ordApp td{display:block;width:auto;padding:0;text-align:left}
+  #gasApp td::before,#ordApp td::before{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.03em;margin-bottom:1px}
+  #gasApp td.num,#ordApp td.num{text-align:left}
+  #gasApp td[data-label="Ngày thay"],#ordApp td[data-label="Ngày thay"]{font-weight:700}
+  #gasApp td.he-act,#ordApp td.he-act{grid-column:1/-1;display:flex;justify-content:flex-end;padding-top:2px}
   /* Hiệu chuẩn */
   #calApp tbody tr{grid-template-columns:1fr 1fr;gap:4px 12px;padding:10px 12px}
   #calApp td{font-size:13px}
@@ -635,8 +635,8 @@ body.link-view #auditApp{display:none!important}
   .user-chip{flex:1;min-width:0;font-size:12px;text-align:right}
   #btnLogout{padding:8px 10px}
 
-  #monApp>header .sub,#calApp>header .sub,#gasApp>header .sub{display:none}
-  #monApp>header h1,#calApp>header h1,#gasApp>header h1{font-size:20px}
+  #monApp>header .sub,#calApp>header .sub,#gasApp>header .sub,#ordApp>header .sub{display:none}
+  #monApp>header h1,#calApp>header h1,#gasApp>header h1,#ordApp>header h1{font-size:20px}
   .mon-bar{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px 12px;padding:12px 14px;margin-bottom:12px;align-items:end}
   .mon-bar .mon-field{min-width:0;flex:none}
   .mon-bar .mon-status{grid-column:1/-1;justify-self:start}
@@ -733,6 +733,29 @@ body[data-view="home"] #appBg .fx{display:none}
     radial-gradient(130% 55% at 0% 0%,color-mix(in srgb,var(--bg-a) var(--bgp),transparent),transparent 70%),
     radial-gradient(120% 50% at 100% 100%,color-mix(in srgb,var(--bg-b) var(--bgp),transparent),transparent 70%)}
 }
+
+body[data-view="order"]{--bg-a:#0ea5e9;--bg-b:#10b981}
+.tile[data-view="order"]{--t:#0ea5e9}
+body[data-view="order"] #appBg .fx{background-image:radial-gradient(circle at 25% 60%,var(--fxc) 0 3px,transparent 4px),radial-gradient(circle at 70% 20%,var(--fxc) 0 2px,transparent 3px),radial-gradient(circle at 50% 92%,var(--fxc) 0 4px,transparent 5px);background-size:220px 220px;animation:fxIn .9s ease forwards,fxUp220 14s linear infinite}
+#ordApp .ord-tot{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+#ordApp .ord-tot .stat{border-left:4px solid var(--c);padding:10px 12px}
+#ordApp .ord-tot .n{font-size:24px}
+#ordApp .ord-tot small{font-size:12px;font-weight:500;color:var(--text-dim)}
+#ordApp .ord-item{display:grid;grid-template-columns:104px minmax(0,1fr) 38px;gap:8px;align-items:center;margin-bottom:8px}
+#ordApp .ord-item input{margin:0}
+#ordApp h3.ord-h{font-size:14px;margin:18px 0 8px}
+#ordApp td[data-label="Ngày đặt"]{font-weight:700}
+#ordApp .ord-stat{overflow-x:auto!important}
+#ordApp .ord-stat table{display:table!important;width:100%}
+#ordApp .ord-stat thead{display:table-header-group!important}
+#ordApp .ord-stat tbody{display:table-row-group!important}
+#ordApp .ord-stat tfoot{display:table-footer-group!important}
+#ordApp .ord-stat tr{display:table-row!important;padding:0!important}
+#ordApp .ord-stat td,#ordApp .ord-stat th{display:table-cell!important;width:auto!important;text-align:right!important;padding:7px 8px!important}
+#ordApp .ord-stat td::before{content:none!important}
+#ordApp .ord-stat td:first-child,#ordApp .ord-stat th:first-child{text-align:left!important}
+#ordApp .ord-stat tfoot td{font-weight:700}
+@media(max-width:640px){#ordApp .ord-tot{gap:6px}#ordApp .ord-tot .stat{padding:6px 8px}#ordApp .ord-tot .n{font-size:17px}#ordApp .ord-tot small{font-size:10px}#ordApp .ord-tot .l{font-size:10px;letter-spacing:0}}
 </style>
 <script>
 (function(){
@@ -768,6 +791,7 @@ window.dBoth=function(v,full){ var t=window.dShort(v); return t?'<span class="d-
       <button class="tile" data-view="monitor"><div class="ic">🔬</div><h2>THÔNG SỐ THIẾT BỊ</h2><p>Ghi nhận thông số vận hành hằng ngày, xem lịch sử theo ngày và xuất Excel.</p></button>
       <button class="tile" data-view="calib"><div class="ic">🌡️</div><h2>HIỆU CHUẨN TỦ NUÔI CẤY</h2><p>Ghi nhận CO2, O2, VOCs, độ bụi và hiệu chuẩn, xem lịch sử, xuất Excel.</p></button>
       <button class="tile" data-view="gas"><div class="ic">🧪</div><h2>THAY KHÍ NUÔI CẤY</h2><p>Ghi lịch thay khí N2, CO2, khí trộn (S/N), tra cứu theo tháng, in và xuất Excel.</p></button>
+      <button class="tile" data-view="order"><div class="ic">📦</div><h2>ĐẶT HÀNG KHÍ &amp; NITƠ</h2><p>Theo dõi đặt nitơ lỏng, khí N2, CO2, khí trộn, thống kê theo tháng, xuất Excel.</p></button>
       <button class="tile" data-view="audit"><div class="ic">🧾</div><h2>NHẬT KÝ HOẠT ĐỘNG</h2><p>Xem ai đã nhập, sửa, xoá dữ liệu và bằng tài khoản nào.</p></button>
     </div>
   </div>
@@ -1051,6 +1075,56 @@ window.dBoth=function(v,full){ var t=window.dShort(v); return t?'<span class="d-
               <tbody id="gas-tbody"></tbody>
             </table>
           </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  </div>
+
+  <div id="ordApp">
+    <header class="top no-print"><div><h1>📦 Đặt hàng khí &amp; nitơ lỏng</h1><div class="sub">Theo dõi đơn đặt nitơ lỏng, khí N2, CO2, khí trộn của IVF LAB (lưu trên Firebase)</div></div></header>
+    <div class="mon-bar no-print"><span class="mon-status" id="ord-status">Đang kết nối…</span></div>
+    <div class="mgrid">
+    <section class="panel form-panel">
+      <div class="panel-head"><h2>📝 Tạo đơn đặt hàng</h2></div>
+      <div class="panel-body">
+        <div class="row2">
+          <div class="gfield"><label for="ord-date">Ngày đặt</label><input type="date" id="ord-date"></div>
+          <div class="gfield"><label for="ord-st">Trạng thái</label><select id="ord-st"><option>Đã đặt</option><option>Đã nhận</option><option>Đã hủy</option></select></div>
+        </div>
+        <div class="gfield"><label for="ord-sup">Nhà cung cấp</label><input type="text" id="ord-sup" placeholder="Ví dụ: Messer, Linde..."></div>
+        <div class="gfield"><label for="ord-no">Số đơn / số phiếu</label><input type="text" id="ord-no"></div>
+        <div class="gfield"><label>Số lượng đặt (bình) — loại nào không đặt thì để trống</label><div id="ord-items"></div></div>
+        <div class="gfield"><label for="ord-user">Người thực hiện</label><input type="text" id="ord-user" placeholder="Tên nhân viên" autocomplete="name"></div>
+        <div class="gfield"><label for="ord-note">Ghi chú</label><input type="text" id="ord-note"></div>
+        <button class="mbtn" id="ord-submit" type="button">💾 LƯU ĐƠN ĐẶT HÀNG</button>
+        <div id="ord-submit-msg" role="status"></div>
+      </div>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><h2>📊 Tổng hợp &amp; lịch sử đặt hàng</h2></div>
+      <div class="panel-body">
+        <div class="ord-tot" id="ord-tot"></div>
+        <div id="ord-history-empty" class="msg info" style="margin-top:0" hidden>Chưa có dữ liệu. Hãy tạo đơn đặt hàng ở form nhập liệu.</div>
+        <div id="ord-history-body" hidden>
+          <div class="tools"><div style="flex:1 1 220px"><label for="ord-filter-month">Xem dữ liệu theo tháng</label><select id="ord-filter-month"></select></div></div>
+          <div class="tools sep">
+            <div><label for="ord-xm">Xuất Excel</label><select id="ord-xm"><option value="day">Theo một ngày</option><option value="range">Theo khoảng thời gian</option><option value="all">Toàn bộ</option></select></div>
+            <div id="ord-xd1"><label for="ord-exp-from" id="ord-xl1">Ngày</label><input type="date" id="ord-exp-from"></div>
+            <div id="ord-xd2"><label for="ord-exp-to">đến ngày</label><input type="date" id="ord-exp-to"></div>
+            <button class="mbtn alt" id="ord-export-btn" type="button">📥 Xuất Excel</button>
+            <button class="mbtn alt" id="ord-print-btn" type="button">🖨️ In</button>
+          </div>
+          <div id="ord-export-msg" role="status"></div>
+          <p class="result-line" id="ord-result-line"></p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>Ngày đặt</th><th>Nhà cung cấp</th><th>Số đơn</th><th style="text-align:right">Nitơ lỏng</th><th style="text-align:right">Khí N2</th><th style="text-align:right">Khí CO2</th><th style="text-align:right">Khí trộn</th><th>Trạng thái</th><th>Người thực hiện</th><th>Ghi chú</th><th></th></tr></thead>
+            <tbody id="ord-tbody"></tbody>
+          </table></div>
+          <h3 class="ord-h">Thống kê theo tháng</h3>
+          <div class="tools"><div style="flex:0 1 160px"><label for="ord-year">Năm</label><select id="ord-year"></select></div></div>
+          <div class="table-scroll ord-stat"><table id="ord-stat"></table></div>
+          <p class="result-line">Không tính các đơn đã hủy. Số lượng tính theo bình.</p>
         </div>
       </div>
     </section>
@@ -2475,7 +2549,7 @@ window.dBoth=function(v,full){ var t=window.dShort(v); return t?'<span class="d-
 </script>
 <script type="text/x-deferred">
 (function(){
-  var titles={home:"",devices:"Danh sách thiết bị",filter:"Thay lọc định kỳ",monitor:"Theo dõi thiết bị LABO",calib:"Đo và hiệu chuẩn tủ nuôi",gas:"Giám sát thay bình khí",audit:"Nhật ký hoạt động"};
+  var titles={home:"",devices:"Danh sách thiết bị",filter:"Thay lọc định kỳ",monitor:"Theo dõi thiết bị LABO",calib:"Đo và hiệu chuẩn tủ nuôi",gas:"Giám sát thay bình khí",order:"Đặt hàng khí & nitơ",audit:"Nhật ký hoạt động"};
   function show(v,push){
     document.body.setAttribute("data-view",v);
     document.getElementById("topTitle").textContent="";
@@ -3275,7 +3349,7 @@ function exportExcel() {
 </script>
 <script type="text/x-deferred">
 (function(){
-  ["monApp","calApp","gasApp"].forEach(function(id){
+  ["monApp","calApp","gasApp","ordApp"].forEach(function(id){
     var root=document.getElementById(id), grid=root&&root.querySelector(".mgrid");
     if(!grid) return;
     var key="lab_mtab_"+id, cur="form";
@@ -3322,9 +3396,153 @@ function exportExcel() {
 </div>
 <script type="text/x-deferred">
 (function(){
+var COL="order_requests",db=null;try{if(window.firebase&&firebase.apps.length)db=firebase.firestore();}catch(e){}
+var IT=[["Nitơ lỏng","#0ea5e9"],["Khí N2","#8b5cf6"],["Khí CO2","#16a34a"],["Khí trộn","#f59e0b"]];
+var D="Ngày Đặt",S="Trạng Thái",data=[];
+function $(i){return document.getElementById("ord-"+i)}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function p2(n){return String(n).padStart(2,"0")}
+function today(){var d=new Date();return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate())}
+function fd(s){var a=String(s).split("-");return a[2]?a[2]+"/"+a[1]+"/"+a[0]:s}
+function fm(s){var a=String(s).split("-");return a[1]+"/"+a[0]}
+function q(r,k){return Number(r[k])||0}
+function ok(r){return r[S]!=="Đã hủy"}
+function sum(l,k){return l.filter(ok).reduce(function(t,r){return t+q(r,k)},0)}
+function msg(id,t,x){$(id).innerHTML='<div class="msg '+t+'">'+esc(x)+'</div>'}
+function status(c,t){var e=$("status");e.className="mon-status "+c;e.textContent=t}
+function dash(x){return esc(x)||"–"}
+
+function submit(){
+  $("user").classList.remove("missing");
+  var user=$("user").value.trim(),it={},any=false;
+  for(var i=0;i<IT.length;i++){
+    var v=$("q"+i).value.trim(); if(v==="") continue;
+    var n=Number(v); if(!Number.isInteger(n)||n<0) return msg("submit-msg","err","❌ Số lượng "+IT[i][0]+" phải là số nguyên không âm!");
+    it[IT[i][0]]=n; if(n>0) any=true;
+  }
+  if(!any) return msg("submit-msg","err","❌ Vui lòng nhập số lượng cho ít nhất một loại hàng!");
+  if(!user){ $("user").classList.add("missing"); return msg("submit-msg","err","❌ Vui lòng nhập Người thực hiện!"); }
+  if(!db) return msg("submit-msg","err","⚠️ Chưa kết nối được Firebase nên chưa thể lưu dữ liệu.");
+  var rec={createdAt:Date.now()};
+  rec[D]=$("date").value||today(); rec["Nhà Cung Cấp"]=$("sup").value.trim(); rec["Số Đơn"]=$("no").value.trim();
+  rec[S]=$("st").value; rec["Người Thực Hiện"]=user; rec["Ghi Chú"]=$("note").value.trim();
+  IT.forEach(function(x){ rec[x[0]]=it[x[0]]||0; });
+  var b=$("submit"); b.disabled=true; msg("submit-msg","info","🔄 Đang đồng bộ lên hệ thống...");
+  db.collection(COL).add(rec).then(function(){
+    msg("submit-msg","ok","🎉 Thành công! Đã lưu đơn đặt hàng.");
+    IT.forEach(function(_,i){ $("q"+i).value=""; }); $("no").value=""; $("note").value=""; $("date").value=today(); $("st").value="Đã đặt";
+  }).catch(function(e){
+    msg("submit-msg","err","⚠️ Lỗi mạng, chưa đồng bộ! "+e.message+(e.code==="permission-denied"?' — cần cho phép ghi collection "order_requests" trong Rules của Firestore.':""));
+  }).then(function(){ b.disabled=false; });
+}
+
+function render(){
+  $("tot").innerHTML=IT.map(function(x){
+    var n=data.filter(function(r){return ok(r)&&q(r,x[0])>0}).length;
+    return '<div class="stat" style="--c:'+x[1]+'"><div class="n">'+sum(data,x[0])+' <small>bình</small></div><div class="l">'+x[0]+' · '+n+' đơn</div></div>';
+  }).join("");
+  var empty=!data.length; $("history-empty").hidden=!empty; $("history-body").hidden=empty;
+  if(empty) return;
+  var months=[]; data.forEach(function(r){var m=fm(r[D]); if(months.indexOf(m)<0) months.push(m);});
+  var sel=$("filter-month"),prev=sel.value;
+  sel.innerHTML='<option value="">Tất cả các tháng</option>'+months.map(function(m){return '<option>'+esc(m)+'</option>'}).join("");
+  sel.value=months.indexOf(prev)>=0?prev:"";
+  var ys=[String(new Date().getFullYear())]; data.forEach(function(r){var y=String(r[D]).slice(0,4); if(ys.indexOf(y)<0) ys.push(y);});
+  ys.sort().reverse(); var yp=$("year").value;
+  $("year").innerHTML=ys.map(function(y){return '<option>'+y+'</option>'}).join(""); if(ys.indexOf(yp)>=0) $("year").value=yp;
+  drawTable(); drawStat();
+}
+function drawTable(){
+  var m=$("filter-month").value,rows=m?data.filter(function(r){return fm(r[D])===m}):data;
+  $("result-line").innerHTML=(m?'Tháng <strong>'+esc(m)+'</strong>':'<strong>Tất cả</strong>')+' · <strong>'+rows.length+'</strong> đơn · '+
+    IT.map(function(x){return esc(x[0])+' <strong>'+sum(rows,x[0])+'</strong>'}).join(' · ')+' bình';
+  $("tbody").innerHTML=rows.map(function(r){
+    return '<tr><td data-label="Ngày đặt">'+dBoth(r[D],esc(fd(r[D])))+'</td><td data-label="Nhà cung cấp">'+dash(r["Nhà Cung Cấp"])+'</td><td data-label="Số đơn">'+dash(r["Số Đơn"])+'</td>'+
+    IT.map(function(x){var v=q(r,x[0]);return '<td class="num" data-label="'+x[0]+'">'+(v||"–")+'</td>'}).join("")+
+    '<td data-label="Trạng thái"><span class="pill">'+esc(r[S])+'</span></td><td data-label="Người thực hiện">'+dash(r["Người Thực Hiện"])+'</td><td data-label="Ghi chú">'+dash(r["Ghi Chú"])+'</td><td class="he-act">'+HistEdit.btns(r.id)+'</td></tr>';
+  }).join("");
+}
+function statRows(y,src){
+  var out=[]; for(var m=1;m<=12;m++){
+    var l=src.filter(function(r){return String(r[D]).indexOf(y+"-"+p2(m))===0&&ok(r)});
+    out.push({m:"Tháng "+m,n:l.length,v:IT.map(function(x){return sum(l,x[0])})});
+  } return out;
+}
+function drawStat(){
+  var y=$("year").value,rows=statRows(y,data);
+  var tot=IT.map(function(_,i){return rows.reduce(function(t,r){return t+r.v[i]},0)});
+  $("stat").innerHTML='<thead><tr><th>Tháng</th><th>Số đơn</th>'+IT.map(function(x){return '<th>'+x[0]+'</th>'}).join("")+'</tr></thead><tbody>'+
+    rows.map(function(r){return '<tr><td>'+r.m+'</td><td>'+r.n+'</td>'+r.v.map(function(v){return '<td>'+(v||"–")+'</td>'}).join("")+'</tr>'}).join("")+
+    '</tbody><tfoot><tr><td>Tổng năm '+esc(y)+'</td><td>'+rows.reduce(function(t,r){return t+r.n},0)+'</td>'+tot.map(function(v){return '<td>'+v+'</td>'}).join("")+'</tr></tfoot>';
+}
+
+function xmode(){
+  var m=$("xm").value;
+  $("xd1").style.display=m==="all"?"none":""; $("xd2").style.display=m==="range"?"":"none";
+  $("xl1").textContent=m==="range"?"Từ ngày":"Ngày";
+}
+function exportExcel(){
+  var m=$("xm").value,from=$("exp-from").value,to=m==="day"?from:$("exp-to").value;
+  function say(t,x){ msg("export-msg",t,x); }
+  if(m!=="all"){ if(!from||!to) return say("err","Vui lòng chọn ngày."); if(from>to) return say("err","Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày kết thúc."); }
+  if(typeof XLSX==="undefined") return say("err","Không tải được thư viện xuất Excel (cần kết nối mạng).");
+  var rows=data.filter(function(r){return m==="all"||(r[D]>=from&&r[D]<=to)}).sort(function(a,b){return String(a[D]).localeCompare(b[D])||(a.createdAt||0)-(b.createdAt||0)});
+  if(!rows.length) return say("warn","Không có đơn đặt hàng nào trong khoảng đã chọn.");
+  var h=[["Ngày đặt","Nhà cung cấp","Số đơn"].concat(IT.map(function(x){return x[0]+" (bình)"}),["Trạng thái","Người thực hiện","Ghi chú"])];
+  rows.forEach(function(r){h.push([fd(r[D]),r["Nhà Cung Cấp"],r["Số Đơn"]].concat(IT.map(function(x){return q(r,x[0])||""}),[r[S],r["Người Thực Hiện"],r["Ghi Chú"]]));});
+  h.push(["TỔNG (không tính đơn hủy)","",""].concat(IT.map(function(x){return sum(rows,x[0])}),["","",""]));
+  var t=[["Loại hàng","Số đơn","Tổng số lượng (bình)"]].concat(IT.map(function(x){return [x[0],rows.filter(function(r){return ok(r)&&q(r,x[0])>0}).length,sum(rows,x[0])]}));
+  var bm={}; rows.filter(ok).forEach(function(r){var k=String(r[D]).slice(0,7);(bm[k]=bm[k]||[]).push(r)});
+  var s=[["Tháng","Số đơn"].concat(IT.map(function(x){return x[0]+" (bình)"}))];
+  Object.keys(bm).sort().forEach(function(k){s.push([fm(k+"-01"),bm[k].length].concat(IT.map(function(x){return sum(bm[k],x[0])})));});
+  var wb=XLSX.utils.book_new();
+  [["Lịch sử",h,[14,22,16,14,12,12,12,12,20,28]],["Tổng hợp",t,[16,12,22]],["Theo tháng",s,[12,10,16,12,12,12]]].forEach(function(a){
+    var ws=XLSX.utils.aoa_to_sheet(a[1]); ws["!cols"]=a[2].map(function(w){return{wch:w}}); XLSX.utils.book_append_sheet(wb,ws,a[0]);
+  });
+  XLSX.writeFile(wb,"DATHANG_"+(m==="all"?"toan_bo":from+(to!==from?"_"+to:""))+".xlsx");
+  say("ok","Đã xuất "+rows.length+" đơn"+(m==="all"?".":" ("+fd(from)+(to!==from?" – "+fd(to):"")+")."));
+}
+
+(function init(){
+  $("items").innerHTML=IT.map(function(x,i){return '<div class="ord-item"><span class="pill" style="border-left:4px solid '+x[1]+'">'+x[0]+'</span><input type="number" id="ord-q'+i+'" min="0" step="1" inputmode="numeric" placeholder="0"><span>bình</span></div>'}).join("");
+  $("date").value=today(); $("exp-from").value=today(); $("exp-to").value=today();
+  try{ $("user").value=localStorage.getItem("ord_user")||""; }catch(e){}
+  $("user").addEventListener("input",function(){ $("user").classList.remove("missing"); try{localStorage.setItem("ord_user",$("user").value);}catch(e){} });
+  $("submit").addEventListener("click",submit);
+  $("filter-month").addEventListener("change",drawTable);
+  $("year").addEventListener("change",drawStat);
+  $("xm").addEventListener("change",xmode);
+  $("export-btn").addEventListener("click",exportExcel);
+  $("print-btn").addEventListener("click",function(){window.print()});
+  $("tbody").addEventListener("click",function(e){
+    var b=e.target.closest("button[data-he]"); if(!b||!db) return;
+    var rec=data.find(function(r){return r.id===b.dataset.id}); if(!rec) return;
+    var ref=db.collection(COL).doc(rec.id);
+    if(b.dataset.he==="del") return HistEdit.remove("Xoá đơn đặt hàng ngày "+fd(rec[D])+"? Không thể hoàn tác.",function(){return ref.delete()});
+    var f=[{key:D,label:"Ngày đặt",type:"date",value:rec[D],req:true},{key:"Nhà Cung Cấp",label:"Nhà cung cấp",value:rec["Nhà Cung Cấp"]},{key:"Số Đơn",label:"Số đơn / số phiếu",value:rec["Số Đơn"]},
+      {key:S,label:"Trạng thái",type:"select",options:["Đã đặt","Đã nhận","Đã hủy"],value:rec[S]}];
+    IT.forEach(function(x){ f.push({key:x[0],label:x[0]+" (bình)",type:"number",value:q(rec,x[0])}); });
+    f.push({key:"Người Thực Hiện",label:"Người thực hiện",value:rec["Người Thực Hiện"],req:true},{key:"Ghi Chú",label:"Ghi chú",value:rec["Ghi Chú"]});
+    HistEdit.edit({title:"Sửa đơn đặt hàng ngày "+fd(rec[D]),fields:f,onSave:function(v){ IT.forEach(function(x){v[x[0]]=Number(v[x[0]])||0}); return ref.set(v,{merge:true}); }});
+  });
+  xmode(); render();
+  if(!db){ status("bad","Chưa cấu hình Firebase"); return; }
+  db.collection(COL).onSnapshot(function(snap){
+    data=snap.docs.map(function(d){var v=d.data();v.id=d.id;return v}).filter(function(r){return r[D]})
+      .sort(function(a,b){return String(b[D]).localeCompare(a[D])||(b.createdAt||0)-(a.createdAt||0)});
+    status("ok","Đã kết nối Firebase"); render();
+  },function(e){
+    status("bad","Lỗi kết nối Firebase");
+    $("history-empty").hidden=false; $("history-empty").textContent="Không đọc được dữ liệu: "+e.message+(e.code==="permission-denied"?' — cần cho phép đọc/ghi collection "order_requests" trong Rules của Firestore.':"");
+  });
+})();
+})();
+</script>
+<script type="text/x-deferred">
+(function(){
   var root=document.getElementById("auditApp"); if(!root) return;
   var db=null; try{ db=firebase.firestore(); }catch(e){}
-  var MODS={devices:"Danh sách thiết bị",filters:"Thay lọc",filter_history:"Thay lọc (lịch sử)",device_logs:"Thông số thiết bị",calibration_logs:"Hiệu chuẩn tủ nuôi cấy",gas_changes:"Thay khí nuôi cấy",auth:"Tài khoản"};
+  var MODS={devices:"Danh sách thiết bị",filters:"Thay lọc",filter_history:"Thay lọc (lịch sử)",device_logs:"Thông số thiết bị",calibration_logs:"Hiệu chuẩn tủ nuôi cấy",gas_changes:"Thay khí nuôi cấy",order_requests:"Đặt hàng khí & nitơ",auth:"Tài khoản"};
   var ACTS={add:"Thêm",set:"Lưu",update:"Sửa",delete:"Xoá",login:"Đăng nhập",register:"Đăng ký"};
   var data=[];
   function $(i){ return document.getElementById("aud-"+i); }
@@ -3376,7 +3594,7 @@ function exportExcel() {
 <script type="text/x-deferred">
 (function(){
   var list=[];
-  document.querySelectorAll('#monApp input[type="date"],#calApp input[type="date"],#gasApp input[type="date"]').forEach(function(inp){
+  document.querySelectorAll('#monApp input[type="date"],#calApp input[type="date"],#gasApp input[type="date"],#ordApp input[type="date"]').forEach(function(inp){
     var w=document.createElement("span"); w.className="dwrap";
     var f=document.createElement("span"); f.className="dfmt";
     inp.parentNode.insertBefore(w,inp); w.appendChild(inp); w.appendChild(f);
