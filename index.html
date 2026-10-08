@@ -1369,7 +1369,7 @@ window.LabChart=(function(){
           <div id="ord-export-msg" role="status"></div>
           <p class="result-line" id="ord-result-line"></p>
           <div class="table-scroll ord-hist"><table>
-            <thead><tr><th>Ngày đặt</th><th>Nhà cung cấp / Số đơn</th><th class="num">NITO LỎNG</th><th class="num">KHÍ NITO</th><th class="num">KHÍ CO2</th><th class="num">KHÍ TRỘN</th><th>Trạng thái</th><th>Người thực hiện / Ghi chú</th><th></th></tr></thead>
+            <thead><tr><th>Ngày đặt</th><th>Nhà cung cấp / Số đơn</th><th class="num">Nitơ lỏng</th><th class="num">Khí N2</th><th class="num">Khí CO2</th><th class="num">Khí trộn</th><th>Trạng thái</th><th>Người thực hiện / Ghi chú</th><th></th></tr></thead>
             <tbody id="ord-tbody"></tbody>
           </table></div>
           <div class="ord-more no-print" id="ord-hmore"></div>
@@ -3820,7 +3820,7 @@ function renderStats() {
 <script type="text/x-deferred">
 (function(){
 var COL="order_requests",db=null;try{if(window.firebase&&firebase.apps.length)db=firebase.firestore();}catch(e){}
-var IT=[["NITO LỎNG","#0ea5e9"],["KHÍ NITO","#8b5cf6"],["KHÍ CO2","#16a34a"],["KHÍ TRỘN","#f59e0b"]];
+var IT=[["Nitơ lỏng","#0ea5e9"],["Khí N2","#8b5cf6"],["Khí CO2","#16a34a"],["Khí trộn","#f59e0b"]];
 var D="Ngày Đặt",S="Trạng Thái",data=[],HN=5,SN=4,allH=false,allS=false;
 function $(i){return document.getElementById("ord-"+i)}
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
