@@ -840,6 +840,38 @@ body[data-view="order"] #appBg .fx{background-image:radial-gradient(circle at 25
 .tile .tile-warn{display:none;align-self:flex-start;margin-top:10px;padding:3px 11px;border-radius:999px;font-size:12px;font-weight:700;background:var(--warn-soft);color:var(--warn)}
 .tile .tile-warn.show{display:inline-block}
 .tile .tile-warn.danger{background:var(--danger-soft);color:var(--danger)}
+
+/* ===== Giao diện máy tính (>=981px): tiêu đề trang đưa lên đầu, căn giữa, nổi bật, chữ lớn ===== */
+@media screen and (min-width:981px){
+  /* Tiêu đề từng chức năng: một hàng riêng ở đầu trang, căn giữa */
+  body header.top{
+    position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;gap:18px;margin:0 0 24px;padding:26px 32px 30px;
+    background:linear-gradient(180deg,var(--accent-soft),transparent);
+    border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:18px;
+  }
+  body header.top h1{
+    font-size:clamp(36px,3.4vw,48px);font-weight:800;line-height:1.15;letter-spacing:.02em;
+    text-transform:uppercase;color:var(--accent);text-align:center;
+  }
+  body header.top h1::after{content:"";display:block;width:84px;height:4px;border-radius:4px;background:var(--accent);margin:14px auto 0;opacity:.85}
+  body header.top .sub{font-size:17px;margin-top:2px;max-width:none;text-align:center}
+  body header.top .actions{justify-content:center}
+
+  /* Các ứng dụng dạng lưới: tiêu đề chiếm cả hàng đầu, thanh thông tin xuống dưới */
+  body #monApp>header.top,body #calApp>header.top,body #gasApp>header.top,body #ordApp>header.top,body #maintApp>header.top{grid-column:1/-1;margin:0 0 24px}
+  body #monApp>header .sub,body #calApp>header .sub,body #gasApp>header .sub,body #ordApp>header .sub{max-width:none}
+  body #monApp>.mon-bar,body #calApp>.mon-bar,body #gasApp>.mon-bar,body #ordApp>.mon-bar{grid-column:1/-1;margin:0 0 18px;justify-content:center}
+  body #gasApp>.mon-bar,body #ordApp>.mon-bar{justify-self:center}
+  body #maintApp>#statsRow{grid-column:1/-1;margin:0 0 16px;justify-content:center}
+  body #monApp>header h1,body #calApp>header h1,body #gasApp>header h1,body #ordApp>header h1{font-size:clamp(36px,3.4vw,48px)}
+
+  /* Màn hình chính */
+  .home-head{margin:14px 0 36px}
+  .home-head h1{font-size:clamp(40px,4vw,56px);font-weight:800;letter-spacing:.03em;color:var(--accent)}
+  .home-head h1::after{content:"";display:block;width:96px;height:5px;border-radius:5px;background:var(--accent);margin:16px auto 0}
+  .home-head .sub{font-size:18px;margin-top:14px}
+}
 </style>
 <script>
 (function(){
