@@ -293,7 +293,7 @@ const days=s=>{const[a,b,c]=s.split("-").map(Number);const t=new Date();return M
 let S={rooms:{},log:[],who:""};
 try{const r=localStorage.getItem(KEY);if(r)S=JSON.parse(r)}catch(e){}
 for(let c=1;c<=CABS;c++)for(let r=1;r<=ROOMS;r++){const k=c+"-"+r;if(!S.rooms[k])S.rooms[k]={st:"empty",pl:[]}}
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(window.cloudPush)window.cloudPush()};
 const roomPts=x=>x.st==="using"?(x.pl||[]):[];
 const dueList=x=>roomPts(x).filter(q=>q.ch&&days(q.ch)>=DAY&&q.snooze!==todayStr());
 const roomDay=x=>{const a=roomPts(x).filter(q=>q.ch).map(q=>days(q.ch));return a.length?Math.max(...a):null};
@@ -554,4 +554,73 @@ $("#who").value=S.who||"";$("#who2").value=S.who2||"";render();
 document.querySelectorAll("header .pill,header .acts button,header input").forEach((e,i)=>e.style.setProperty("--i",i+2));
 setTimeout(()=>{if(dueRooms(false).length)showDue(false)},500);
 setInterval(render,60000);
+
+/* ===== FIREBASE SYNC (Firestore: geri/state) ===== */
+const FB_CFG={
+  apiKey:"AIzaSyDxhuqIRND_rvKPv3rmNMfaLNwr75A6kTQ",
+  authDomain:"lab-device.firebaseapp.com",
+  projectId:"lab-device",
+  storageBucket:"lab-device.firebasestorage.app",
+  messagingSenderId:"797762508345",
+  appId:"1:797762508345:web:c24b08c517fef7f7581fe8"
+};
+(async()=>{
+  const st=document.createElement("div");
+  st.style.cssText="position:fixed;right:10px;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:50;font-size:12px;padding:3px 9px;border-radius:12px;background:var(--card);border:1px solid var(--bd);color:var(--mu);box-shadow:var(--sh)";
+  const say=(t,c)=>{st.textContent=t;st.style.color=c||"var(--mu)"};
+  document.body.appendChild(st);say("☁ Đang kết nối…");
+  let M;
+  try{
+    const B="https://www.gstatic.com/firebasejs/10.14.1/";
+    const [a,au,fs]=await Promise.all([import(B+"firebase-app.js"),import(B+"firebase-auth.js"),import(B+"firebase-firestore.js")]);
+    M={...a,...au,...fs};
+  }catch(e){say("☁ Chưa tải được Firebase (offline) – đang lưu cục bộ","var(--r)");return}
+  const app=M.initializeApp(FB_CFG),auth=M.getAuth(app),db=M.getFirestore(app),ref=M.doc(db,"geri","state");
+  let timer=null,dirty=false,unsub=null;
+
+  const clean=o=>JSON.parse(JSON.stringify(o));            // Firestore không nhận undefined
+  const payload=()=>clean({rooms:S.rooms,log:S.log,pts:S.pts,srcRows:S.srcRows||[],t:Date.now()});
+  const fillRooms=()=>{for(let c=1;c<=CABS;c++)for(let r=1;r<=ROOMS;r++){const k=c+"-"+r;if(!S.rooms[k])S.rooms[k]={st:"empty",pl:[]};if(!S.rooms[k].pl)S.rooms[k].pl=[]}};
+
+  window.cloudPush=()=>{dirty=true;clearTimeout(timer);timer=setTimeout(async()=>{
+    if(!auth.currentUser)return;
+    try{await M.setDoc(ref,payload());dirty=false;say("☁ Đã đồng bộ","var(--g)")}
+    catch(e){console.error(e);say("☁ Lỗi lưu cloud: "+(e.code||e.message),"var(--r)")}
+  },800)};
+
+  const login=()=>new Promise(res=>{
+    const o=document.createElement("div");o.className="ov show";o.style.zIndex=99;
+    o.innerHTML='<div class="modal" style="width:min(380px,100%)"><h3>🔐 Đăng nhập</h3>'
+      +'<div class="row"><input id="lgE" type="email" placeholder="Email" style="flex:1" autocomplete="username"></div>'
+      +'<div class="row"><input id="lgP" type="password" placeholder="Mật khẩu" style="flex:1" autocomplete="current-password"></div>'
+      +'<div id="lgErr" style="color:var(--r);font-size:13px;min-height:18px"></div>'
+      +'<div class="row" style="justify-content:flex-end"><button id="lgGo">Đăng nhập</button></div></div>';
+    document.body.appendChild(o);
+    const go=async()=>{try{
+      await M.signInWithEmailAndPassword(auth,o.querySelector("#lgE").value.trim(),o.querySelector("#lgP").value);
+      o.remove();res()}catch(e){o.querySelector("#lgErr").textContent="Sai email hoặc mật khẩu."}};
+    o.querySelector("#lgGo").onclick=go;
+    o.querySelector("#lgP").addEventListener("keydown",e=>{if(e.key==="Enter")go()});
+    o.querySelector("#lgE").focus();
+  });
+
+  M.onAuthStateChanged(auth,async u=>{
+    if(!u){if(unsub){unsub();unsub=null}say("☁ Chưa đăng nhập","var(--r)");await login();return}
+    say("☁ "+(u.email||"Đã đăng nhập")+" · đang tải…");
+    let first=true;
+    unsub=M.onSnapshot(ref,snap=>{
+      if(snap.metadata.hasPendingWrites)return;            // bỏ qua bản vừa tự ghi
+      if(!snap.exists()){                                  // lần đầu: đẩy dữ liệu đang có trên máy này lên cloud
+        if(first){first=false;window.cloudPush()}return}
+      first=false;
+      if(dirty)return;                                     // đang có thay đổi cục bộ chờ lưu → không ghi đè
+      const d=snap.data();
+      S.rooms=d.rooms||S.rooms;S.log=d.log||[];S.pts=d.pts||[];S.srcRows=d.srcRows||[];
+      fillRooms();
+      if(Array.isArray(S.srcRows))G=S.srcRows.map(r=>SG.map((_,j)=>String(r[j]||"")));ensureRows(10);
+      try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+      render();say("☁ Đã đồng bộ · "+(u.email||""),"var(--g)");
+    },err=>{console.error(err);say("☁ Lỗi đồng bộ: "+(err.code||err.message),"var(--r)")});
+  });
+})();
 </script></body></html>
