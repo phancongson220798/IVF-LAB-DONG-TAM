@@ -290,6 +290,7 @@ const ymd=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 const todayStr=()=>ymd(new Date());
 const dmy=s=>s?s.split("-").reverse().join("/"):"";
 const days=s=>{const[a,b,c]=s.split("-").map(Number);const t=new Date();return Math.round((new Date(t.getFullYear(),t.getMonth(),t.getDate())-new Date(a,b-1,c))/864e5)};
+window.LOCKED=true;
 let S={rooms:{},log:[],who:""};
 try{const r=localStorage.getItem(KEY);if(r)S=JSON.parse(r)}catch(e){}
 for(let c=1;c<=CABS;c++)for(let r=1;r<=ROOMS;r++){const k=c+"-"+r;if(!S.rooms[k])S.rooms[k]={st:"empty",pl:[]}}
@@ -311,6 +312,7 @@ const row=(lab,a,off,cl)=>`<tr class="${cl||""}"><th>${lab}</th>${L.map((_,i)=>c
 const h=`<table class="dt"><tr><th>Ngày phôi</th>${L.map((l,i)=>`<th class="${i>=5?"hot":""}">${l}</th>`).join("")}<th>Σ</th></tr>${row("Timelapse",tl,0)}${row("P.I",pi,N)}${row("Tổng",tot,2*N,"tt")}</table>`;
 if(h!==_dh){$("#dTab").innerHTML=h;_dh=h;_dp=flat}}
 function render(){
+if(window.LOCKED){$("#main").innerHTML="";window._lh="";$("#dTab").innerHTML="";_dh="";_dp=[];["nOk","nEm","nBad"].forEach(i=>{const e=$("#"+i);e.textContent="0";delete e.dataset.s});$("#nDue").textContent="0/0";$("#cnt").style.display="none";$("#noteBar").style.display="none";return}
 const m=$("#main"),td=todayStr();let out="",ok=0,em=0,bad=0,due=0;const notes=[];
 for(let c=1;c<=CABS;c++){
 let rh="",far=null,farCh="",cDue=0;
@@ -552,75 +554,181 @@ document.querySelectorAll("input[name=th],input[name=pal],input[name=bgs]").forE
 applyUi();
 $("#who").value=S.who||"";$("#who2").value=S.who2||"";render();
 document.querySelectorAll("header .pill,header .acts button,header input").forEach((e,i)=>e.style.setProperty("--i",i+2));
-setTimeout(()=>{if(dueRooms(false).length)showDue(false)},500);
+
 setInterval(render,60000);
 
-/* ===== FIREBASE SYNC (Firestore: geri/state) ===== */
+/* ===== FIREBASE: ĐĂNG NHẬP BẮT BUỘC → MỚI XEM / SỬA ĐƯỢC DỮ LIỆU ===== */
 const FB_CFG={
-  apiKey:"AIzaSyDxhuqIRND_rvKPv3rmNMfaLNwr75A6kTQ",
-  authDomain:"lab-device.firebaseapp.com",
-  projectId:"lab-device",
-  storageBucket:"lab-device.firebasestorage.app",
-  messagingSenderId:"797762508345",
-  appId:"1:797762508345:web:c24b08c517fef7f7581fe8"
+  apiKey:"AIzaSyB4E_TeebnJFT6bv9reSFvNe5d-W53r550",
+  authDomain:"geri-5a93b.firebaseapp.com",
+  projectId:"geri-5a93b",
+  storageBucket:"geri-5a93b.firebasestorage.app",
+  messagingSenderId:"135459487741",
+  appId:"1:135459487741:web:8c54620a1b69b32d32a394"
 };
 (async()=>{
   const st=document.createElement("div");
-  st.style.cssText="position:fixed;right:10px;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:50;font-size:12px;padding:3px 9px;border-radius:12px;background:var(--card);border:1px solid var(--bd);color:var(--mu);box-shadow:var(--sh)";
+  st.style.cssText="position:fixed;right:10px;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:50;font-size:12px;padding:3px 9px;border-radius:12px;background:var(--card);border:1px solid var(--bd);color:var(--mu);box-shadow:var(--sh);cursor:pointer";
   const say=(t,c)=>{st.textContent=t;st.style.color=c||"var(--mu)"};
-  document.body.appendChild(st);say("☁ Đang kết nối…");
-  let M;
-  try{
-    const B="https://www.gstatic.com/firebasejs/10.14.1/";
-    const [a,au,fs]=await Promise.all([import(B+"firebase-app.js"),import(B+"firebase-auth.js"),import(B+"firebase-firestore.js")]);
-    M={...a,...au,...fs};
-  }catch(e){say("☁ Chưa tải được Firebase (offline) – đang lưu cục bộ","var(--r)");return}
-  const app=M.initializeApp(FB_CFG),auth=M.getAuth(app),db=M.getFirestore(app),ref=M.doc(db,"geri","state");
-  let timer=null,dirty=false,unsub=null;
+  document.body.appendChild(st);say("🔒 Chưa đăng nhập");
+  const btn=document.createElement("button");btn.className="ghost";btn.id="bAuth";btn.textContent="👤 Tài khoản";
+  const bar=document.querySelector("header .bar.acts");if(bar)bar.appendChild(btn);
 
-  const clean=o=>JSON.parse(JSON.stringify(o));            // Firestore không nhận undefined
+  let M,auth,db,ref,user=null,denied=false,timer=null,dirty=false,unsub=null,popped=false,AV=null;
+  const OWNER="phanson6996",DOM="gmail.com";
+  const toAlias=e=>OWNER+"+"+String(e||"").trim().toLowerCase().replace(/[^a-z0-9._]/g,c=>c==="@"?"-at-":"-"+c.charCodeAt(0).toString(16).padStart(2,"0")+"-")+"@"+DOM;
+  const fromAlias=a=>{a=String(a||"");const p=OWNER+"+",q="@"+DOM;
+    return a.startsWith(p)&&a.endsWith(q)?a.slice(p.length,a.length-q.length).replace(/-(at|[0-9a-f]{2})-/g,(m,h)=>h==="at"?"@":String.fromCharCode(parseInt(h,16))):a};
+  const lab=u=>u?fromAlias(u.email):"";
+  const authorized=()=>!!user&&user.emailVerified&&!denied;
+
+  /* ---------- dữ liệu ---------- */
+  const clean=o=>JSON.parse(JSON.stringify(o));
   const payload=()=>clean({rooms:S.rooms,log:S.log,pts:S.pts,srcRows:S.srcRows||[],t:Date.now()});
   const fillRooms=()=>{for(let c=1;c<=CABS;c++)for(let r=1;r<=ROOMS;r++){const k=c+"-"+r;if(!S.rooms[k])S.rooms[k]={st:"empty",pl:[]};if(!S.rooms[k].pl)S.rooms[k].pl=[]}};
+  const applyRemote=d=>{
+    S.rooms=d.rooms||S.rooms;S.log=d.log||[];S.pts=d.pts||[];S.srcRows=d.srcRows||[];
+    fillRooms();
+    G=Array.isArray(S.srcRows)?S.srcRows.map(r=>SG.map((_,j)=>String(r[j]||""))):[];ensureRows(10);
+    try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+    render()};
+  // Xóa dữ liệu bệnh nhân khỏi bộ nhớ trình duyệt (giữ lại tên người thực hiện + giao diện)
+  const wipeLocal=()=>{S.rooms={};S.log=[];S.pts=[];S.srcRows=[];fillRooms();G=[];ensureRows(10);
+    try{localStorage.setItem(KEY,JSON.stringify({rooms:S.rooms,log:[],pts:[],ui:S.ui,who:S.who,who2:S.who2}))}catch(e){}};
 
-  window.cloudPush=()=>{dirty=true;clearTimeout(timer);timer=setTimeout(async()=>{
-    if(!auth.currentUser)return;
-    try{await M.setDoc(ref,payload());dirty=false;say("☁ Đã đồng bộ","var(--g)")}
-    catch(e){console.error(e);say("☁ Lỗi lưu cloud: "+(e.code||e.message),"var(--r)")}
+  window.cloudPush=()=>{if(!authorized())return;dirty=true;clearTimeout(timer);timer=setTimeout(async()=>{
+    if(!authorized())return;
+    try{await M.setDoc(ref,payload());dirty=false;say("☁ "+lab(user)+" · đã đồng bộ","var(--g)")}
+    catch(e){console.error(e);dirty=false;
+      if(e.code==="permission-denied"){denied=true;wipeLocal();syncLock()}
+      else say("☁ Lỗi lưu cloud: "+(e.code||e.message),"var(--r)")}
   },800)};
 
-  const login=()=>new Promise(res=>{
-    const o=document.createElement("div");o.className="ov show";o.style.zIndex=99;
-    o.innerHTML='<div class="modal" style="width:min(380px,100%)"><h3>🔐 Đăng nhập</h3>'
-      +'<div class="row"><input id="lgE" type="email" placeholder="Email" style="flex:1" autocomplete="username"></div>'
-      +'<div class="row"><input id="lgP" type="password" placeholder="Mật khẩu" style="flex:1" autocomplete="current-password"></div>'
-      +'<div id="lgErr" style="color:var(--r);font-size:13px;min-height:18px"></div>'
-      +'<div class="row" style="justify-content:flex-end"><button id="lgGo">Đăng nhập</button></div></div>';
-    document.body.appendChild(o);
-    const go=async()=>{try{
-      await M.signInWithEmailAndPassword(auth,o.querySelector("#lgE").value.trim(),o.querySelector("#lgP").value);
-      o.remove();res()}catch(e){o.querySelector("#lgErr").textContent="Sai email hoặc mật khẩu."}};
-    o.querySelector("#lgGo").onclick=go;
-    o.querySelector("#lgP").addEventListener("keydown",e=>{if(e.key==="Enter")go()});
-    o.querySelector("#lgE").focus();
-  });
-
-  M.onAuthStateChanged(auth,async u=>{
-    if(!u){if(unsub){unsub();unsub=null}say("☁ Chưa đăng nhập","var(--r)");await login();return}
-    say("☁ "+(u.email||"Đã đăng nhập")+" · đang tải…");
-    let first=true;
+  const startSync=()=>{if(unsub)return;
+    let got=false;setTimeout(()=>{if(!got&&unsub)say("☁ Chưa kết nối được Firestore (kiểm tra database / rules)","var(--r)")},12000);
     unsub=M.onSnapshot(ref,snap=>{
-      if(snap.metadata.hasPendingWrites)return;            // bỏ qua bản vừa tự ghi
-      if(!snap.exists()){                                  // lần đầu: đẩy dữ liệu đang có trên máy này lên cloud
-        if(first){first=false;window.cloudPush()}return}
-      first=false;
-      if(dirty)return;                                     // đang có thay đổi cục bộ chờ lưu → không ghi đè
-      const d=snap.data();
-      S.rooms=d.rooms||S.rooms;S.log=d.log||[];S.pts=d.pts||[];S.srcRows=d.srcRows||[];
-      fillRooms();
-      if(Array.isArray(S.srcRows))G=S.srcRows.map(r=>SG.map((_,j)=>String(r[j]||"")));ensureRows(10);
-      try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
-      render();say("☁ Đã đồng bộ · "+(u.email||""),"var(--g)");
-    },err=>{console.error(err);say("☁ Lỗi đồng bộ: "+(err.code||err.message),"var(--r)")});
-  });
+      got=true;
+      if(snap.metadata.hasPendingWrites)return;
+      if(!snap.exists()){window.cloudPush();return}          // project mới: đẩy dữ liệu đang có trên máy này lên lần đầu
+      if(dirty)return;
+      applyRemote(snap.data());
+      say("☁ "+lab(user)+" · đã đồng bộ","var(--g)");
+      if(!popped){popped=true;if(dueRooms().length)showDue(false)}
+    },err=>{console.error(err);unsub=null;
+      if(err.code==="permission-denied"){denied=true;wipeLocal();syncLock()}
+      else say("☁ Lỗi đọc dữ liệu: "+(err.code||err.message),"var(--r)")})};
+  const stopSync=()=>{if(unsub){unsub();unsub=null}};
+
+  /* ---------- màn hình đăng nhập (khóa toàn bộ app) ---------- */
+  const ERR={"auth/invalid-email":"Email không hợp lệ.","auth/invalid-credential":"Sai email hoặc mật khẩu.","auth/wrong-password":"Sai email hoặc mật khẩu.","auth/user-not-found":"Sai email hoặc mật khẩu.","auth/email-already-in-use":"Email này đã được đăng ký. Hãy đăng nhập hoặc dùng “Quên mật khẩu”.","auth/weak-password":"Mật khẩu quá yếu (tối thiểu 6 ký tự).","auth/missing-password":"Hãy nhập mật khẩu.","auth/too-many-requests":"Thao tác quá nhiều lần, hãy thử lại sau ít phút.","auth/network-request-failed":"Lỗi mạng, hãy kiểm tra kết nối.","auth/operation-not-allowed":"Chưa bật đăng nhập Email/Password trong Firebase.","auth/admin-restricted-operation":"Đăng ký tài khoản mới đang bị tắt trong Firebase.","auth/user-disabled":"Tài khoản đã bị khóa.","auth/requires-recent-login":"Hãy đăng nhập lại rồi thử lại."};
+  const RESET_OK="Đã gửi yêu cầu đặt lại mật khẩu tới chủ hệ thống (phanson6996@gmail.com). Hãy liên hệ để nhận mật khẩu mới.";
+  const closeAuth=()=>{if(AV){AV.remove();AV=null}};
+  const fld=(id,type,ph,ac)=>'<div class="row"><input id="'+id+'" type="'+type+'" placeholder="'+ph+'" autocomplete="'+ac+'" style="flex:1"></div>';
+  const pwd=(id,ph,ac)=>'<div class="row"><input id="'+id+'" type="password" placeholder="'+ph+'" autocomplete="'+ac+'" style="flex:1"><button type="button" class="ghost" data-a="eye" data-t="'+id+'" title="Hiện/ẩn mật khẩu">👁</button></div>';
+  const lnk=(v,t)=>'<button type="button" class="ghost" data-v="'+v+'" style="font-size:12.5px;padding:5px 9px">'+t+'</button>';
+  const tab=(cur,v,t)=>'<button type="button" class="'+(cur===v?"":"ghost")+'" data-v="'+v+'" style="flex:1">'+t+'</button>';
+  const sm=t=>'<div style="font-size:13px;line-height:1.5;color:var(--mu)">'+t+'</div>';
+
+  function authUI(view,note){
+    if(!AV){AV=document.createElement("div");AV.className="ov show";AV.style.cssText="z-index:99;background:var(--bg);backdrop-filter:none";document.body.appendChild(AV);
+      AV.onclick=onAuthClick;
+      AV.onkeydown=e=>{if(e.key==="Enter"&&e.target.tagName==="INPUT"){const b=AV.querySelector("[data-primary]");if(b)b.click()}}}
+    AV.dataset.view=view;
+    const msg='<div id="aMsg" style="font-size:13px;min-height:18px;margin:4px 0;'+(note?"color:var(--g)":"color:var(--r)")+'">'+(note?esc(note):"")+'</div>';
+    let h='<div style="width:min(420px,100%)"><div style="text-align:center;margin-bottom:14px"><div style="font-size:22px;font-weight:700;letter-spacing:.3px">THEO DÕI NUÔI CẤY</div><div style="font-size:13px;color:var(--mu);margin-top:3px">Tủ GERI · cần đăng nhập để xem và chỉnh sửa</div></div><div class="modal" style="width:100%">';
+    if(view==="login"||view==="register"){
+      h+='<div class="row" style="margin-top:0">'+tab(view,"login","Đăng nhập")+tab(view,"register","Đăng ký")+'</div>';
+      if(view==="login")h+='<h3>🔐 Đăng nhập</h3>'+fld("aE","email","Email","username")+pwd("aP","Mật khẩu","current-password")+msg
+        +'<div class="row" style="justify-content:space-between;margin-bottom:0">'+lnk("reset","Quên mật khẩu?")+'<button type="button" data-a="login" data-primary>Đăng nhập</button></div>';
+      else h+='<h3>📝 Tạo tài khoản</h3>'+fld("aE","email","Email","username")+pwd("aP","Mật khẩu (tối thiểu 6 ký tự)","new-password")+pwd("aP2","Nhập lại mật khẩu","new-password")+msg
+        +sm("Yêu cầu xác minh được gửi tới chủ hệ thống (phanson6996@gmail.com). Tài khoản chỉ xem và chỉnh sửa được sau khi chủ hệ thống duyệt.")
+        +'<div class="row" style="justify-content:flex-end;margin-bottom:0"><button type="button" data-a="register" data-primary>Tạo tài khoản</button></div>'}
+    else if(view==="reset"){
+      h+='<h3>🔑 Khôi phục mật khẩu</h3>'+sm("Nhập email bạn đã đăng ký. Liên kết đặt lại mật khẩu sẽ được gửi tới chủ hệ thống (phanson6996@gmail.com); hãy liên hệ chủ hệ thống để nhận mật khẩu mới.")+fld("aE","email","Email","username")+msg
+        +'<div class="row" style="justify-content:space-between;margin-bottom:0">'+lnk("login","← Quay lại đăng nhập")+'<button type="button" data-a="reset" data-primary>Gửi yêu cầu</button></div>'}
+    else if(view==="verify"){
+      h+='<h3>⏳ Chờ chủ hệ thống duyệt</h3><div style="font-size:13px;line-height:1.5">Tài khoản <b>'+esc(lab(auth.currentUser))+'</b> đang chờ chủ hệ thống (phanson6996@gmail.com) duyệt. Sau khi chủ hệ thống bấm liên kết xác minh trong email, hãy quay lại bấm “Kiểm tra lại”.</div>'+msg
+        +'<div class="row" style="margin-bottom:0"><button type="button" data-a="verified" data-primary style="flex:1">Kiểm tra lại</button></div>'
+        +'<div class="row" style="justify-content:space-between;margin-bottom:0"><button type="button" class="ghost" data-a="resend">Gửi lại yêu cầu</button><button type="button" class="ghost" data-a="out">Đăng xuất</button></div>'}
+    else if(view==="denied"){
+      h+='<h3>⛔ Chưa có quyền truy cập</h3><div style="font-size:13px;line-height:1.5">Tài khoản <b>'+esc(lab(auth.currentUser))+'</b> chưa được cấp quyền xem dữ liệu. Hãy liên hệ chủ hệ thống (phanson6996@gmail.com).</div>'+msg
+        +'<div class="row" style="justify-content:space-between;margin-bottom:0"><button type="button" data-a="retry" data-primary>Thử lại</button><button type="button" class="ghost" data-a="out">Đăng xuất</button></div>'}
+    else if(view==="fail"){
+      h+='<h3>⚠ Không kết nối được</h3>'+sm("Không tải được Firebase. Hãy kiểm tra kết nối mạng rồi tải lại trang.")+'<div class="row" style="justify-content:flex-end;margin-bottom:0"><button type="button" data-a="reload" data-primary>Tải lại</button></div>'}
+    else h+=sm("Đang kiểm tra đăng nhập…");
+    AV.innerHTML=h+'</div></div>';
+    const f=AV.querySelector("input");if(f)f.focus()}
+
+  async function onAuthClick(e){
+    const b=e.target.closest("[data-v],[data-a]");if(!b)return;
+    if(b.dataset.v){authUI(b.dataset.v);return}
+    const a=b.dataset.a,val=id=>{const i=AV.querySelector("#"+id);return i?i.value:""};
+    const msg=(t,ok)=>{const m=AV&&AV.querySelector("#aMsg");if(m){m.textContent=t;m.style.color=ok?"var(--g)":"var(--r)"}};
+    const em=val("aE").trim();
+    const okMail=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)&&!/[^\x00-\x7f]/.test(em)&&toAlias(em).split("@")[0].length<=64;
+    if(a==="eye"){const i=AV.querySelector("#"+b.dataset.t);i.type=i.type==="password"?"text":"password";return}
+    if(a==="reload"){location.reload();return}
+    b.disabled=true;
+    try{
+      if(a==="login"){
+        if(!em||!val("aP")){msg("Hãy nhập email và mật khẩu.");return}
+        if(!okMail){msg("Email không hợp lệ hoặc quá dài.");return}
+        await M.signInWithEmailAndPassword(auth,toAlias(em),val("aP"))}
+      else if(a==="register"){
+        if(!em||!okMail){msg("Hãy nhập email hợp lệ.");return}
+        if(val("aP").length<6){msg("Mật khẩu tối thiểu 6 ký tự.");return}
+        if(val("aP")!==val("aP2")){msg("Hai mật khẩu không khớp.");return}
+        await M.createUserWithEmailAndPassword(auth,toAlias(em),val("aP"));
+        try{await M.sendEmailVerification(auth.currentUser)}catch(x){}
+        authUI("verify","Đã gửi yêu cầu duyệt tới chủ hệ thống. Tài khoản "+em+" dùng được sau khi được duyệt.")}
+      else if(a==="reset"){
+        if(!em||!okMail){msg("Hãy nhập email hợp lệ.");return}
+        await M.sendPasswordResetEmail(auth,toAlias(em));
+        msg(RESET_OK,true)}
+      else if(a==="resend"){await M.sendEmailVerification(auth.currentUser);msg("Đã gửi lại yêu cầu duyệt tới chủ hệ thống.",true)}
+      else if(a==="verified"||a==="retry"){
+        const u=auth.currentUser;await u.reload();await u.getIdToken(true);user=auth.currentUser;
+        if(user.emailVerified){denied=false;syncLock()}
+        else msg("Chưa được duyệt. Hãy liên hệ chủ hệ thống rồi thử lại.")}
+      else if(a==="out"){await M.signOut(auth)}
+    }catch(x){console.error(x);if(a==="reset"&&x.code==="auth/user-not-found")msg(RESET_OK,true);else msg(ERR[x.code]||("Lỗi: "+(x.code||x.message)))}
+    finally{b.disabled=false}
+  }
+
+  /* ---------- khóa / mở khóa ---------- */
+  function syncLock(){
+    const lock=!authorized();window.LOCKED=lock;
+    if(lock){
+      stopSync();
+      document.querySelectorAll(".ov").forEach(o=>{if(o!==AV)o.classList.remove("show")});
+      ["#hBody","#ptBody","#dueList","#dueHist","#cSvg","#srcGrid"].forEach(q=>{const e=$(q);if(e)e.innerHTML=""});
+      document.querySelectorAll("#ovEdit input:not([type=radio]),#ptQ").forEach(i=>{i.value=""});
+      const want=!user?"login":!user.emailVerified?"verify":"denied",cur=AV&&AV.dataset.view;
+      if(!AV||(cur!==want&&!(want==="login"&&(cur==="register"||cur==="reset"))))authUI(want);
+    }else{closeAuth();startSync()}
+    btn.textContent=user?"👤 "+(lab(user)||"Tài khoản"):"👤 Tài khoản";
+    say(lock?"🔒 Chưa đăng nhập":"☁ "+lab(user)+" · đang đồng bộ…",lock?"":"var(--g)");
+    render()}
+
+  const account=async()=>{
+    if(!user)return;
+    if(!confirm("Đăng xuất tài khoản "+lab(user)+"?\nDữ liệu bệnh nhân sẽ được xóa khỏi bộ nhớ trình duyệt này."))return;
+    clearTimeout(timer);
+    if(dirty&&authorized()){try{await M.setDoc(ref,payload());dirty=false}catch(e){}}
+    M.signOut(auth)};
+  st.onclick=account;btn.onclick=account;
+
+  authUI("loading");
+  try{
+    const B="https://www.gstatic.com/firebasejs/10.14.1/";
+    const [x,y,z]=await Promise.all([import(B+"firebase-app.js"),import(B+"firebase-auth.js"),import(B+"firebase-firestore.js")]);
+    M={...x,...y,...z};
+  }catch(e){authUI("fail");return}
+  const app=M.initializeApp(FB_CFG);auth=M.getAuth(app);db=M.getFirestore(app,"default");ref=M.doc(db,"geri","state");
+  auth.languageCode="vi";
+  M.onAuthStateChanged(auth,u=>{
+    const was=user;user=u;denied=false;
+    if(!u&&was)wipeLocal();                                  // đăng xuất / hết phiên → xóa dữ liệu khỏi máy
+    syncLock()});
 })();
 </script></body></html>
