@@ -2,6 +2,9 @@
 <html lang="vi"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>NUÔI CẤY TIMELAPSE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
 <style>
 :root{--bg:#f3f6fa;--card:#fff;--tx:#1b2733;--mu:#6b7a8a;--bd:#dde4ec;--g:#16a34a;--gb:#dcfce7;--y:#eab308;--yb:#fef9c3;--r:#dc2626;--rb:#fee2e2;--o:#f97316;--pri:#2563eb;--sh:0 2px 10px rgba(20,40,70,.08)}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1720;--card:#18222e;--tx:#e6edf5;--mu:#8fa0b2;--bd:#2a3746;--gb:#12351f;--yb:#3a3410;--rb:#3d1717;--sh:0 2px 10px rgba(0,0,0,.4)}}
@@ -125,7 +128,7 @@ main{overflow-y:auto}
 .b4{background:var(--r)}
 .dpl{margin-top:8px;padding-top:8px;border-top:1px dashed var(--bd)}
 .dpl .t2{font-size:14px;margin-bottom:6px}.dpl .t2 small{color:var(--mu)}
-.dpl .t2 em.m{font:700 9px/1 system-ui;font-style:normal;color:#fff;background:#5b8fb9;border-radius:4px;padding:2px 5px}.dpl .t2 em.m.pi{background:#7c5cbf}
+.dpl .t2 em.m{font:700 9px/1 var(--ff);font-style:normal;color:#fff;background:#5b8fb9;border-radius:4px;padding:2px 5px}.dpl .t2 em.m.pi{background:#7c5cbf}
 .dn{color:#ea580c}.dn.ov{color:var(--r)}
 .keep{font-size:12px;color:var(--mu);margin-top:8px}
 .cab h2 button{display:block;margin:6px auto 0;font-size:11px;padding:3px 8px}.cab h2 b.nm{font-size:16px}.cab h2.bal b.nm{color:#ea580c;animation:blink 1s steps(2,start) infinite}.wt.done{color:var(--g);border-color:var(--g)}
@@ -142,23 +145,23 @@ textarea:focus{outline:2px solid var(--pri);border-color:transparent}
 .tile.ok{border-color:var(--g)}
 .tile.bad{background:var(--rb);border-color:var(--r);color:var(--tx)}
 .tile .bd{grid-row:1/3;display:flex;align-items:center;justify-content:center;padding-left:42px;font-size:12.5px}
-.tile .no{position:absolute;left:6px;top:50%;transform:translateY(-50%);z-index:2;background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:7px;padding:3px 6px;font:700 14px/1 system-ui}
+.tile .no{position:absolute;left:6px;top:50%;transform:translateY(-50%);z-index:2;background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:7px;padding:3px 6px;font:700 14px/1 var(--ff)}
 .hf{display:flex;align-items:center;gap:5px;padding:2px 8px 2px 46px;min-width:0;min-height:0}
 .hf+.hf{border-top:1px solid rgba(100,116,139,.35)}
 .hf.off{background:#fff;color:#1b2733}
 .hf.on{background:var(--gb);color:var(--tx)}
 .hf.al{background:var(--ob);color:var(--tx)}
 .hf.ov{background:var(--ob);color:var(--tx)}
-.hf .m{font:700 8.5px/1 system-ui;font-style:normal;border-radius:4px;padding:2px 4px;color:#fff;background:#5b8fb9;flex:none}
+.hf .m{font:700 8.5px/1 var(--ff);font-style:normal;border-radius:4px;padding:2px 4px;color:#fff;background:#5b8fb9;flex:none}
 .hf.pi .m{background:#7c5cbf}
 .hf .em{font-size:12px;color:#94a3b8}
 .hf .tx{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.15}
 .hf .tx b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hf .tx small{font-size:10.5px;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hf .dy{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:2px}
-.dy em.d{font:700 10px/1 system-ui;font-style:normal;border-radius:4px;padding:2px 5px;background:rgba(120,130,145,.28)}
+.dy em.d{font:700 10px/1 var(--ff);font-style:normal;border-radius:4px;padding:2px 5px;background:rgba(120,130,145,.28)}
 .dy em.d.al{background:#ea580c;color:#fff}.dy em.d.al.ov{background:var(--r)}
-.dy .at{font:700 9px/1 system-ui;color:#ff7a2f;white-space:nowrap;animation:blink 1s steps(2,start) infinite}
+.dy .at{font:700 9px/1 var(--ff);color:#ff7a2f;white-space:nowrap;animation:blink 1s steps(2,start) infinite}
 .dy .at.ov{color:#ff5a5a}
 .dy .nt{margin:0}
 @keyframes softRed{0%,100%{border-color:rgba(220,38,38,.2)}50%{border-color:#dc2626}}
@@ -195,7 +198,7 @@ header .acts button:active{transform:scale(.95);box-shadow:none}
 #who,#who2{transition:box-shadow .25s,border-color .25s,transform .25s}
 #who:focus,#who2:focus{box-shadow:0 0 0 4px rgba(37,99,235,.18);transform:translateY(-1px)}
 @media(prefers-reduced-motion:reduce){header *,.dtab,h1{animation:none!important;transition:none!important}}
-@media(max-width:1280px){.dtab{position:static;align-self:flex-start}h1{min-height:0}}
+
 /* bảng màu mới */
 :root[data-pal="rung"]{--h1:#6fa383;--h2:#8fae6f;--h3:#5f9a97;--h4:#a3a56b;--h5:#7aa8a0}
 :root[data-pal="hoa"]{--h1:#d19aa9;--h2:#c9a0c4;--h3:#e0aa95;--h4:#b99ac4;--h5:#d6a5b4}
@@ -207,12 +210,256 @@ header .acts button:active{transform:scale(.95);box-shadow:none}
 :root[data-bg="dot"] .cab[class*=" c"]{background-image:radial-gradient(color-mix(in srgb,var(--h) 38%,transparent) 1.2px,transparent 1.5px);background-size:14px 14px}
 .seg.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.seg.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .sw{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:2px;vertical-align:-1px}
+
+/* ===== BỐ CỤC MỚI: bảng ngày phôi | tiêu đề | công cụ (2 dòng) — 5 tủ chiếm phần lớn màn hình ===== */
+:root{--bg:#e9eff6;--bg2:#dfe8f3;--bg3:#f4f7fb}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1620;--bg2:#101c2a;--bg3:#0b121a}}
+:root[data-theme="dark"]{--bg:#0e1620;--bg2:#101c2a;--bg3:#0b121a}
+body{background:radial-gradient(1200px 520px at 8% -8%,color-mix(in srgb,var(--pri) 13%,transparent),transparent 62%),radial-gradient(1000px 560px at 100% 0%,color-mix(in srgb,var(--h2) 16%,transparent),transparent 60%),linear-gradient(180deg,var(--bg3) 0%,var(--bg) 46%,var(--bg2) 100%);background-attachment:fixed}
+header{display:block;position:relative;padding:8px 14px 0}
+.hrow{display:grid;grid-template-columns:auto minmax(0,auto) minmax(0,1fr);align-items:center;gap:6px 18px;background:color-mix(in srgb,var(--card) 80%,transparent);border:1px solid var(--bd);border-radius:14px;box-shadow:var(--sh);padding:7px 12px;backdrop-filter:blur(6px)}
+.dtab{position:static;grid-column:1;box-shadow:none;background:color-mix(in srgb,var(--card) 70%,transparent)}
+h1{grid-column:2;min-width:0;min-height:0;align-items:flex-start;text-align:left;font-size:22px;line-height:1.15;letter-spacing:.2px;animation:none}
+h1 .ttl{display:block;white-space:nowrap}
+h1 small{font-size:12px;margin-top:3px}
+.tools{grid-column:3;min-width:0;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.tools .bar.acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
+.tools .bar.acts button{padding:6px 10px;font-size:13px;white-space:nowrap}
+.line2{display:flex;gap:6px 14px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
+.stats{display:flex;gap:6px;flex-wrap:wrap}
+.stats .pill{padding:4px 10px;font-size:12.5px;box-shadow:none}
+.who{display:flex;gap:6px}
+.who input{width:128px;padding:6px 9px;font-size:13px}
+#noteBar{padding:2px 6px}
+main{gap:10px;padding:8px 14px 12px}
+.cab{padding:8px;gap:6px;border-radius:16px;box-shadow:0 6px 18px rgba(20,40,70,.10)}
+.cab h2{font-size:14px;letter-spacing:.3px}
+.rooms{gap:6px;grid-template-rows:repeat(6,minmax(62px,1fr))}
+.tile .bd{font-size:12px}
+@media(max-width:1500px){.hrow{grid-template-columns:auto minmax(0,1fr)}.tools{grid-column:1/-1;align-items:stretch}.tools .bar.acts,.line2{justify-content:flex-start}.who{margin-left:auto}}
+@media(max-width:900px){main{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.hrow{grid-template-columns:1fr}.dtab,h1,.tools{grid-column:1/-1}.dtab{justify-self:start}.who{margin-left:0;width:100%}.who input{flex:1;width:auto}h1 .ttl{white-space:normal;font-size:19px}}
+@media(max-width:900px){.rooms{grid-template-rows:none;grid-auto-rows:78px}}
+@media(max-width:560px){main{grid-template-columns:1fr}}
+
+/* ===== HIỆU ỨNG CẢNH BÁO MƯỢT HƠN (chậm, ease-in-out, không nhấp nháy gắt) ===== */
+@keyframes breathe{0%,100%{opacity:1}50%{opacity:.45}}
+@keyframes glowRed{0%,100%{border-color:color-mix(in srgb,var(--r) 45%,transparent);box-shadow:0 0 0 0 rgba(220,38,38,0)}50%{border-color:var(--r);box-shadow:0 0 0 5px rgba(220,38,38,.16),0 0 16px 2px rgba(220,38,38,.28)}}
+@keyframes glowOr{0%,100%{box-shadow:0 0 0 0 rgba(249,115,22,.0)}50%{box-shadow:0 0 0 6px rgba(249,115,22,.22)}}
+@keyframes ringSoft{0%,60%,100%{transform:rotate(0)}12%{transform:rotate(12deg)}24%{transform:rotate(-10deg)}36%{transform:rotate(7deg)}48%{transform:rotate(-4deg)}}
+.tile{transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s ease,border-color .35s ease,background-color .35s ease}
+.tile.due{border:3px solid var(--r);animation:glowRed 2.6s ease-in-out infinite;will-change:box-shadow,border-color}
+.dy .at{animation:breathe 2.4s ease-in-out infinite}
+.tile.due .dy .at{animation:breathe 2.4s ease-in-out infinite}
+.cab h2.bal b.nm{animation:breathe 2.4s ease-in-out infinite}
+.cnt{animation:glowOr 2.4s ease-in-out infinite}
+.cab h2 em.ca{animation:glowOr 2.4s ease-in-out infinite}
+.badge .bell{animation:ringSoft 2.8s ease-in-out infinite}
+#pDue.pend{border-color:var(--r);animation:glowRed 2.6s ease-in-out infinite}
+.hf{transition:background-color .5s ease,color .3s ease}
+@media(prefers-reduced-motion:reduce){.tile.due,.dy .at,.cab h2.bal b.nm,.cnt,.cab h2 em.ca,.badge .bell,#pDue.pend{animation:none!important}}
+
+/* ===== FONT: sans-serif không chân, không gạch chân ===== */
+:root{--ff:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+body{font-family:var(--ff);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a,u,ins,abbr{text-decoration:none}
+h1 .ttl{font-weight:700;font-size:21px;letter-spacing:.2px}
+html{scroll-behavior:smooth}
+*{scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--mu) 45%,transparent) transparent}
+
+/* ===== BỐ CỤC: đèn tình trạng nằm ngay dưới tiêu đề; công cụ bên phải ===== */
+.head{grid-column:2;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:7px}
+.head h1{margin:0}
+.tools{grid-column:3;min-width:0;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.tools .bar.acts .ib{width:36px;height:32px;padding:0;display:inline-grid;place-items:center;font-size:16px;line-height:1}
+@media(max-width:1500px){.tools{grid-column:1/-1;align-items:stretch}.tools .bar.acts,.tools .who{justify-content:flex-start}.tools .who{margin-left:0}}
+@media(max-width:700px){.head{grid-column:1/-1}.tools .who input{flex:1;width:auto}.tools .who{width:100%}}
+
+/* ===== MÀU NỀN + HIỆU ỨNG: nền động nhẹ, chuyển màu mượt khi đổi sáng/tối/bảng màu ===== */
+@property --bg{syntax:"<color>";inherits:true;initial-value:#e6edf7}
+@property --bg2{syntax:"<color>";inherits:true;initial-value:#d9e4f2}
+@property --bg3{syntax:"<color>";inherits:true;initial-value:#f6f8fc}
+@property --card{syntax:"<color>";inherits:true;initial-value:#ffffff}
+@property --tx{syntax:"<color>";inherits:true;initial-value:#1b2733}
+@property --mu{syntax:"<color>";inherits:true;initial-value:#6b7a8a}
+@property --bd{syntax:"<color>";inherits:true;initial-value:#dde4ec}
+@property --h1{syntax:"<color>";inherits:true;initial-value:#6b9ac4}
+@property --h2{syntax:"<color>";inherits:true;initial-value:#9a8fc9}
+@property --h3{syntax:"<color>";inherits:true;initial-value:#c98fa5}
+@property --h4{syntax:"<color>";inherits:true;initial-value:#c9a874}
+@property --h5{syntax:"<color>";inherits:true;initial-value:#6fb5a8}
+:root{--bg:#e6edf7;--bg2:#d9e4f2;--bg3:#f6f8fc;
+ transition:--bg .55s ease,--bg2 .55s ease,--bg3 .55s ease,--card .55s ease,--tx .45s ease,--mu .45s ease,--bd .55s ease,--h1 .7s ease,--h2 .7s ease,--h3 .7s ease,--h4 .7s ease,--h5 .7s ease}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1520;--bg2:#101d2c;--bg3:#0a1018}}
+:root[data-theme="dark"]{--bg:#0d1520;--bg2:#101d2c;--bg3:#0a1018}
+body{background:linear-gradient(180deg,var(--bg3) 0%,var(--bg) 48%,var(--bg2) 100%);background-attachment:fixed}
+body::before{content:"";position:fixed;inset:-25%;z-index:-1;pointer-events:none;
+ background:
+  radial-gradient(34% 38% at 16% 20%,color-mix(in srgb,var(--h1) 36%,transparent),transparent 70%),
+  radial-gradient(30% 36% at 84% 16%,color-mix(in srgb,var(--h3) 30%,transparent),transparent 70%),
+  radial-gradient(38% 42% at 66% 88%,color-mix(in srgb,var(--h5) 32%,transparent),transparent 70%),
+  radial-gradient(30% 34% at 6% 90%,color-mix(in srgb,var(--pri) 20%,transparent),transparent 70%);
+ animation:drift 56s ease-in-out infinite alternate;will-change:transform}
+@keyframes drift{from{transform:translate3d(-1.5%,-1%,0) rotate(0deg) scale(1)}to{transform:translate3d(2%,1.5%,0) rotate(5deg) scale(1.07)}}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) body::before{opacity:.5}}
+:root[data-theme="dark"] body::before{opacity:.5}
+header,main{position:relative;z-index:1}
+
+/* ===== THAO TÁC MƯỢT: nút, thẻ tủ, cửa sổ bật lên ===== */
+button{transition:transform .22s cubic-bezier(.2,.8,.2,1),box-shadow .25s ease,background-color .25s ease,border-color .25s ease,filter .2s ease}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--pri);outline-offset:2px}
+.cab{transition:background-color .5s ease,border-color .5s ease,box-shadow .35s ease,transform .35s cubic-bezier(.2,.8,.2,1)}
+.cab:hover{box-shadow:0 12px 28px rgba(20,40,70,.15)}
+.ov{display:flex;opacity:0;visibility:hidden;pointer-events:none;background:rgba(10,20,35,0);backdrop-filter:blur(0px);
+ transition:opacity .28s ease,background-color .28s ease,backdrop-filter .28s ease,visibility 0s linear .28s}
+.ov.show{opacity:1;visibility:visible;pointer-events:auto;background:rgba(10,20,35,.5);backdrop-filter:blur(4px);animation:none;
+ transition:opacity .28s ease,background-color .28s ease,backdrop-filter .28s ease,visibility 0s}
+.ov .modal{opacity:0;transform:translateY(14px) scale(.97);animation:none;
+ transition:transform .36s cubic-bezier(.2,.8,.2,1),opacity .26s ease}
+.ov.show .modal{opacity:1;transform:none}
+.due-item{transition:opacity .3s ease,transform .3s ease}
+@media(prefers-reduced-motion:reduce){:root{transition:none!important}body::before{animation:none!important}.ov,.ov .modal,.cab,button{transition:none!important}html{scroll-behavior:auto}}
+
+/* ===== NÚT CẢNH BÁO: nền gradient cam → đỏ ===== */
+:root{--warn1:#ea580c;--warn2:#dc2626}
+#bDue{background:linear-gradient(135deg,var(--warn1),var(--warn2));color:#fff;border:0;box-shadow:0 3px 10px rgba(220,38,38,.28)}
+#bDue:hover{filter:brightness(1.06);box-shadow:0 8px 18px rgba(234,88,12,.38)}
+#bDue .cnt{background:#fff;color:var(--warn2);animation:none}
+
+/* ===== BUỒNG QUÁ HẠN: ánh sáng gradient tỏa mạnh, không vẽ viền rõ nét ===== */
+.tile.due{border:2px solid color-mix(in srgb,var(--r) 20%,var(--bd));z-index:2;
+ animation:dueGlow 2.8s ease-in-out infinite;will-change:box-shadow}
+.tile.due::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:1;
+ background:linear-gradient(135deg,rgba(239,68,68,.22) 0%,rgba(249,115,22,.08) 48%,rgba(236,72,153,.20) 100%);
+ box-shadow:inset 0 0 22px 4px rgba(239,68,68,.32);
+ animation:dueWash 2.8s ease-in-out infinite}
+@keyframes dueGlow{
+ 0%,100%{box-shadow:0 0 10px 1px rgba(239,68,68,.34),0 0 24px 5px rgba(249,115,22,.22),0 0 42px 10px rgba(236,72,153,.12)}
+ 50%{box-shadow:0 0 18px 4px rgba(239,68,68,.66),0 0 40px 12px rgba(249,115,22,.44),0 0 64px 22px rgba(236,72,153,.26)}}
+@keyframes dueWash{0%,100%{opacity:.5}50%{opacity:1}}
+#pDue.pend{border-color:color-mix(in srgb,var(--r) 30%,var(--bd));animation:pillGlow 2.8s ease-in-out infinite}
+@keyframes pillGlow{
+ 0%,100%{box-shadow:0 0 8px 0 rgba(239,68,68,.28),0 0 18px 3px rgba(249,115,22,.16)}
+ 50%{box-shadow:0 0 14px 3px rgba(239,68,68,.55),0 0 30px 8px rgba(249,115,22,.34)}}
+@media(prefers-reduced-motion:reduce){
+ .tile.due{box-shadow:0 0 18px 4px rgba(239,68,68,.5),0 0 36px 10px rgba(249,115,22,.3)!important}
+ .tile.due::after{opacity:.85;animation:none!important}
+ #pDue.pend{box-shadow:0 0 14px 3px rgba(239,68,68,.45)!important}}
+
+/* ===== NÚT BẤM MỚI: bo mềm, bóng nổi, hiệu ứng gợn sóng khi bấm ===== */
+button{position:relative;overflow:hidden;border-radius:11px;font-weight:600;letter-spacing:.1px;
+ background:linear-gradient(180deg,color-mix(in srgb,var(--pri) 80%,#fff) 0%,var(--pri) 100%);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 3px 9px color-mix(in srgb,var(--pri) 30%,transparent)}
+button:hover{filter:none;transform:translateY(-2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.32),0 9px 20px color-mix(in srgb,var(--pri) 38%,transparent)}
+button:active{transform:translateY(0) scale(.97);transition-duration:.08s;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 2px 5px color-mix(in srgb,var(--pri) 30%,transparent)}
+button.ghost{font-weight:500;background:color-mix(in srgb,var(--card) 90%,transparent);color:var(--tx);border:1px solid var(--bd);box-shadow:0 1px 2px rgba(20,40,70,.06)}
+button.ghost:hover{border-color:color-mix(in srgb,var(--pri) 55%,var(--bd));background:color-mix(in srgb,var(--pri) 8%,var(--card));box-shadow:0 7px 16px rgba(20,40,70,.12)}
+button.ghost:active{box-shadow:0 1px 2px rgba(20,40,70,.1)}
+.rip{position:absolute;border-radius:50%;pointer-events:none;background:rgba(255,255,255,.5);transform:scale(0);animation:rip .65s ease-out forwards}
+button.ghost .rip{background:color-mix(in srgb,var(--pri) 28%,transparent)}
+@keyframes rip{to{transform:scale(1);opacity:0}}
+.vsep{display:inline-block;width:1px;height:20px;background:var(--bd);margin:0 4px;flex:none}
+#bDue{background:linear-gradient(135deg,var(--warn1),var(--warn2))}
+
+/* nút xử lý cảnh báo: nền nhạt theo màu, rê chuột thì đổ màu đặc */
+.due-item .btns{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.due-item .btns button{--c:var(--pri);display:flex;align-items:center;justify-content:center;gap:6px;flex:initial;isolation:isolate;
+ padding:10px 6px;font-size:13px;font-weight:600;letter-spacing:0;border-radius:12px;
+ color:color-mix(in srgb,var(--c) 76%,var(--tx));
+ background:color-mix(in srgb,var(--c) 11%,var(--card));
+ border:1.5px solid color-mix(in srgb,var(--c) 30%,transparent);box-shadow:none;
+ transition:transform .22s cubic-bezier(.2,.8,.2,1),box-shadow .25s ease,color .2s ease,border-color .25s ease}
+.due-item .btns .b1{--c:var(--g)}.due-item .btns .b2{--c:var(--o)}.due-item .btns .b3{--c:var(--pri)}.due-item .btns .b4{--c:var(--r)}
+.due-item .btns button::before{content:"";position:absolute;inset:0;z-index:-1;opacity:0;transition:opacity .25s ease;
+ background:linear-gradient(135deg,color-mix(in srgb,var(--c) 92%,#fff),color-mix(in srgb,var(--c) 74%,#000))}
+.due-item .btns button:hover{color:#fff;border-color:transparent;transform:translateY(-2px);box-shadow:0 9px 20px color-mix(in srgb,var(--c) 45%,transparent)}
+.due-item .btns button:hover::before{opacity:1}
+.due-item .btns button .ic{display:inline-block;transition:transform .3s cubic-bezier(.2,.9,.3,1.4)}
+.due-item .btns button:hover .ic{transform:scale(1.25) rotate(-10deg)}
+.due-item .btns .rip{background:rgba(255,255,255,.55)}
+@media(max-width:560px){.due-item .btns{grid-template-columns:1fr 1fr}}
+
+/* ===== NGÀY THÁNG GỌN: chỉ rê chuột mới hiện đầy đủ ===== */
+.ds{cursor:help;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* ===== HIỆU ỨNG TỪNG TỦ GERI ===== */
+.cab{position:relative}
+.cab::before{content:"";position:absolute;left:16px;right:16px;top:0;height:3px;border-radius:0 0 5px 5px;pointer-events:none;
+ background:linear-gradient(90deg,transparent,var(--h,var(--pri)),transparent);opacity:.9;transition:opacity .3s ease,height .3s ease}
+.cab:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--h,var(--pri)) 60%,var(--bd));
+ box-shadow:0 16px 34px color-mix(in srgb,var(--h,var(--pri)) 34%,transparent),0 4px 10px rgba(20,40,70,.08)}
+.cab:hover::before{height:4px}
+.cab:has(h2.bal){border-color:color-mix(in srgb,var(--r) 38%,var(--bd))}
+.cab:has(h2.bal)::before{background:linear-gradient(90deg,transparent,#ef4444,#f97316,#ef4444,transparent);animation:topPulse 2.6s ease-in-out infinite}
+@keyframes topPulse{0%,100%{opacity:.55}50%{opacity:1}}
+.cab h2{position:relative;overflow:hidden;border-radius:10px;padding:6px 8px 7px;
+ background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--h,var(--pri)) 22%,transparent),transparent)}
+.cab h2::after{content:"";position:absolute;inset:0;pointer-events:none;transform:translateX(-135%);
+ background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.55) 50%,transparent 62%)}
+.cab:hover h2::after{transform:translateX(135%);transition:transform .95s ease}
+.cdots{display:flex;gap:6px;justify-content:center;margin-top:6px}
+.cdots i{display:block;width:9px;height:9px;border-radius:50%;background:color-mix(in srgb,var(--mu) 30%,transparent);
+ transition:background-color .4s ease,box-shadow .4s ease,transform .3s ease}
+.cdots i:hover{transform:scale(1.35)}
+.cdots i.ok{background:var(--g);box-shadow:0 0 0 3px color-mix(in srgb,var(--g) 22%,transparent);animation:dotBreath 3.2s ease-in-out infinite}
+.cdots i.bad{background:var(--r)}
+.cdots i.due{background:var(--o);animation:dotAlert 2s ease-in-out infinite}
+.cdots i:nth-child(2){animation-delay:.2s}.cdots i:nth-child(3){animation-delay:.4s}.cdots i:nth-child(4){animation-delay:.6s}.cdots i:nth-child(5){animation-delay:.8s}.cdots i:nth-child(6){animation-delay:1s}
+@keyframes dotBreath{0%,100%{box-shadow:0 0 0 2px color-mix(in srgb,var(--g) 18%,transparent)}50%{box-shadow:0 0 0 5px color-mix(in srgb,var(--g) 8%,transparent)}}
+@keyframes dotAlert{0%,100%{box-shadow:0 0 0 2px rgba(249,115,22,.3);transform:scale(1)}50%{box-shadow:0 0 0 6px rgba(249,115,22,.1);transform:scale(1.25)}}
+/* lần mở đầu tiên sau khi đăng nhập: 5 tủ lần lượt hiện ra */
+.rev .cab{animation:cabIn .8s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc((var(--n) - 1)*90ms)}
+@keyframes cabIn{from{opacity:0;transform:translateY(24px) scale(.97)}}
+@media(prefers-reduced-motion:reduce){.rip{display:none}.rev .cab,.cdots i,.cab::before{animation:none!important}.cab:hover{transform:none}.cab h2::after{display:none}}
+
+/* ===== TIÊU ĐỀ: gọn, một màu hợp giao diện ===== */
+h1 .ttl{font-size:22px;font-weight:700;letter-spacing:.5px;line-height:1.2;color:color-mix(in srgb,var(--pri) 55%,var(--tx))}
+h1 small{margin-top:3px;font-size:12px;font-weight:400}
+@media(max-width:1500px){h1 .ttl{font-size:20px}}
+@media(max-width:700px){h1 .ttl{font-size:17px}}
+
+/* ===== TỦ GERI: đơn sắc, phẳng, không hiệu ứng kính ===== */
+.cab[class*=" c"]{background:color-mix(in srgb,var(--h) 13%,var(--card));background-image:none;border:1px solid color-mix(in srgb,var(--h) 34%,var(--bd));box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+.cab[class*=" c"]:hover{transform:none;box-shadow:none;border-color:color-mix(in srgb,var(--h) 60%,var(--bd))}
+.cab::before{display:none}
+.cab h2{background:color-mix(in srgb,var(--h,var(--pri)) 24%,var(--card));border:0;border-radius:10px}
+.cab h2::after{display:none}
+.cab .rooms{padding:0;background:none;box-shadow:none;border-radius:0}
+
+/* ===== GIÃN DÒNG TRONG Ô BUỒNG (giữ nguyên nội dung) ===== */
+.rooms{grid-template-rows:repeat(6,minmax(84px,1fr))}
+.hf{padding-top:4px;padding-bottom:4px}
+.hf .tx{line-height:1.4;gap:3px}
+.hf .tx b{font-size:13.5px;line-height:1.35}
+.hf .tx small{font-size:11px;line-height:1.4}
+.hf .dy{gap:5px}
+@media(max-width:900px){.rooms{grid-template-rows:none;grid-auto-rows:92px}}
+
+/* ===== Ô TRẠNG THÁI: mỗi trạng thái một màu ===== */
+.seg label:has(input[name="st"][value="ok"]),.seg label:has(input[name^="u"][value="1"]){border-color:color-mix(in srgb,var(--g) 40%,var(--bd));background:color-mix(in srgb,var(--g) 7%,var(--card))}
+.seg label:has(input[name="st"][value="bad"]){border-color:color-mix(in srgb,var(--r) 40%,var(--bd));background:color-mix(in srgb,var(--r) 7%,var(--card))}
+.seg label:has(input[name^="u"][value="0"]){border-color:color-mix(in srgb,var(--o) 45%,var(--bd));background:color-mix(in srgb,var(--o) 8%,var(--card))}
+.seg label:has(input[name="st"][value="ok"]:checked),.seg label:has(input[name^="u"][value="1"]:checked){border-color:var(--g);background:color-mix(in srgb,var(--g) 24%,var(--card));color:color-mix(in srgb,var(--g) 72%,var(--tx))}
+.seg label:has(input[name="st"][value="bad"]:checked){border-color:var(--r);background:color-mix(in srgb,var(--r) 22%,var(--card));color:color-mix(in srgb,var(--r) 75%,var(--tx))}
+.seg label:has(input[name^="u"][value="0"]:checked){border-color:var(--o);background:color-mix(in srgb,var(--o) 24%,var(--card));color:color-mix(in srgb,var(--o) 70%,var(--tx))}
 </style></head><body>
 <header>
-<div class="dtab" id="dTab"></div>
-<h1>THEO DÕI TRẠNG THÁI NUÔI CẤY<small><span id="today"></span></small></h1>
-<div class="bar"><div class="g"><span class="pill"><i class="dot" style="background:var(--g)"></i>Đang nuôi cấy <b id="nOk">0</b></span><span class="pill"><i class="dot" style="background:#fff;border:1px solid #94a3b8"></i>Trống <b id="nEm">0</b></span><span class="pill"><i class="dot" style="background:var(--r)"></i>Hỏng <b id="nBad">0</b></span><span class="pill" id="pDue" style="cursor:pointer" title="Bấm để xem các buồng cảnh báo và lịch sử xử lý"><i class="dot" style="background:var(--o)"></i>Cảnh báo <b id="nDue">0</b></span></div><div class="g"><input id="who" placeholder="Người thực hiện 1" style="width:150px"><input id="who2" placeholder="Người thực hiện 2" style="width:150px"></div></div>
-<div class="bar acts"><button id="bDue">🔔 Cảnh báo <span class="cnt" id="cnt">0</span></button><button class="ghost" id="bHist">📋 Lịch sử</button><button class="ghost" id="bSrc">📥 Nhập thông tin</button><button class="ghost" id="bPt">🧑‍⚕️ Danh sách bệnh nhân</button><button class="ghost" id="bCh">📈 Biểu đồ</button><button class="ghost" id="bXl">📊 Xuất Excel</button><button class="ghost" id="bUi">🎨 Giao diện</button></div>
+<div class="hrow">
+  <div class="dtab" id="dTab"></div>
+  <div class="head">
+    <h1><span class="ttl">THEO DÕI TRẠNG THÁI NUÔI CẤY</span><small><span id="today"></span></small></h1>
+    <div class="stats">
+    <span class="pill"><i class="dot" style="background:var(--g)"></i>Đang nuôi cấy <b id="nOk">0</b></span>
+    <span class="pill"><i class="dot" style="background:#fff;border:1px solid #94a3b8"></i>Trống <b id="nEm">0</b></span>
+    <span class="pill"><i class="dot" style="background:var(--r)"></i>Hỏng <b id="nBad">0</b></span>
+    <span class="pill" id="pDue" style="cursor:pointer" title="Bấm để xem các buồng cảnh báo và lịch sử xử lý"><i class="dot" style="background:var(--o)"></i>Cảnh báo <b id="nDue">0</b></span>
+  </div>
+  </div>
+  <div class="tools">
+    <div class="bar acts"><button id="bDue">Cảnh báo <span class="cnt" id="cnt">0</span></button><button class="ghost" id="bHist">📋 Lịch sử</button><button class="ghost" id="bSrc">📥 Nhập thông tin</button><button class="ghost" id="bPt">🧑‍⚕️ Bệnh nhân</button><i class="vsep"></i><button class="ghost ib" id="bCh" title="Biểu đồ" aria-label="Biểu đồ">📈</button><button class="ghost ib" id="bXl" title="Xuất Excel" aria-label="Xuất Excel">📊</button><button class="ghost ib" id="bUi" title="Giao diện" aria-label="Giao diện">🎨</button></div>
+    <div class="who"><input id="who" placeholder="Người thực hiện 1"><input id="who2" placeholder="Người thực hiện 2"></div>
+  </div>
+</div>
 <div id="noteBar"></div>
 </header>
 <main id="main"></main>
@@ -250,6 +497,14 @@ header .acts button:active{transform:scale(.95);box-shadow:none}
 <div class="tblw" id="ptBody"></div>
 <div class="row" style="justify-content:flex-end"><button class="ghost" data-close>Đóng</button></div>
 </div></div>
+<div class="ov" id="ovPtE"><div class="modal" style="width:min(560px,100%)">
+<h3>✏️ Sửa thông tin bệnh nhân</h3>
+<div class="row"><label class="fl" style="flex:1;min-width:120px"><span>MHS</span><input id="peHs"></label><label class="fl" style="width:110px"><span>STT chọc</span><input id="peStt"></label></div>
+<div class="row"><label class="fl" style="flex:1;min-width:150px"><span>Tên</span><input id="peTen"></label><label class="fl" style="width:110px"><span>Năm sinh</span><input id="peNs" inputmode="numeric" maxlength="4"></label></div>
+<div class="row"><label class="fl" style="flex:1"><span>Ngày CH</span><input type="date" id="peCh"></label><label class="fl" style="flex:1"><span>Loại nuôi cấy</span><select id="peMode"><option value="TL">Timelapse</option><option value="PI">P.I</option></select></label><label class="fl" style="flex:1"><span>Buồng</span><select id="peRoom"></select></label></div>
+<div id="peErr" style="color:var(--r);font-size:13px;min-height:18px"></div>
+<div class="row" style="justify-content:flex-end"><button class="ghost" data-close>Hủy</button><button id="peSave">Lưu</button></div>
+</div></div>
 <div class="ov" id="ovCh"><div class="modal" style="width:min(880px,100%)">
 <h3>📈 Biểu đồ</h3>
 <div class="row"><select id="cMode"><option value="day">Theo ngày (30 ngày gần nhất)</option><option value="month">Theo tháng (12 tháng gần nhất)</option><option value="year">Theo năm (5 năm gần nhất)</option><option value="custom">Thời gian chỉ định</option></select>
@@ -273,7 +528,7 @@ header .acts button:active{transform:scale(.95);box-shadow:none}
 <div>Bảng màu nền các tủ</div>
 <div class="row seg g2"><label><input type="radio" name="pal" value="diu"><span><i class=sw style=background:#6b9ac4></i><i class=sw style=background:#9a8fc9></i><i class=sw style=background:#c98fa5></i>Dịu</span></label><label><input type="radio" name="pal" value="dat"><span><i class=sw style=background:#c08a5a></i><i class=sw style=background:#8aa05a></i><i class=sw style=background:#b0707a></i>Đất</span></label><label><input type="radio" name="pal" value="bien"><span><i class=sw style=background:#5b8fb9></i><i class=sw style=background:#4fa3a5></i><i class=sw style=background:#7b8cc4></i>Biển</span></label><label><input type="radio" name="pal" value="rung"><span><i class=sw style=background:#6fa383></i><i class=sw style=background:#8fae6f></i><i class=sw style=background:#5f9a97></i>Rừng</span></label><label><input type="radio" name="pal" value="hoa"><span><i class=sw style=background:#d19aa9></i><i class=sw style=background:#c9a0c4></i><i class=sw style=background:#e0aa95></i>Hoa đào</span></label><label><input type="radio" name="pal" value="tim"><span><i class=sw style=background:#9b8fd0></i><i class=sw style=background:#8aa1d6></i><i class=sw style=background:#b58fcb></i>Tím nhạt</span></label><label><input type="radio" name="pal" value="nang"><span><i class=sw style=background:#d9a35f></i><i class=sw style=background:#d98a6a></i><i class=sw style=background:#cfb25e></i>Nắng</span></label><label><input type="radio" name="pal" value="than"><span><i class=sw style=background:#7f8c9b></i><i class=sw style=background:#8d98a5></i><i class=sw style=background:#76828f></i>Than</span></label></div>
 <div>Kiểu nền ô tủ</div>
-<div class="row seg g3"><label><input type="radio" name="bgs" value="flat"><span>Phẳng</span></label><label><input type="radio" name="bgs" value="grad"><span>Chuyển sắc</span></label><label><input type="radio" name="bgs" value="dot"><span>Chấm nhỏ</span></label></div>
+<div class="row seg g3"><label><input type="radio" name="bgs" value="flat"><span>Mặc định</span></label><label><input type="radio" name="bgs" value="grad"><span>Chuyển sắc</span></label><label><input type="radio" name="bgs" value="dot"><span>Chấm nhỏ</span></label></div>
 <div class="row" style="justify-content:flex-end"><button class="ghost" data-close>Đóng</button></div>
 </div></div>
 <div class="ov" id="ovSrc"><div class="modal" style="width:min(1000px,100%)">
@@ -289,6 +544,10 @@ const pad=n=>String(n).padStart(2,"0");
 const ymd=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 const todayStr=()=>ymd(new Date());
 const dmy=s=>s?s.split("-").reverse().join("/"):"";
+const dshort=t=>{const d=new Date(t);return pad(d.getDate())+"."+pad(d.getMonth()+1)+"."+String(d.getFullYear()).slice(2)};
+const dspan=t=>t?`<span class="ds" title="${new Date(t).toLocaleString("vi-VN")}">${dshort(t)}</span>`:"";
+const dmys=s=>{if(!s)return"";const a=String(s).split("-");return a.length===3?a[2]+"."+a[1]+"."+a[0].slice(2):s};
+const dsd=s=>s?`<span class="ds" title="${dmy(s)}">${dmys(s)}</span>`:"";
 const days=s=>{const[a,b,c]=s.split("-").map(Number);const t=new Date();return Math.round((new Date(t.getFullYear(),t.getMonth(),t.getDate())-new Date(a,b-1,c))/864e5)};
 window.LOCKED=true;
 let S={rooms:{},log:[],who:""};
@@ -307,31 +566,31 @@ let _dh="",_dp=[];
 function drawDays(){const N=7,tl=Array(N).fill(0),pi=Array(N).fill(0);
 Object.values(S.rooms).forEach(x=>roomPts(x).forEach(q=>{if(!q.ch)return;const d=days(q.ch);if(d<0)return;(q.mode==="PI"?pi:tl)[Math.min(d,N-1)]++}));
 const L=["N0","N1","N2","N3","N4","N5","N6+"],tot=tl.map((v,i)=>v+pi[i]),sum=a=>a.reduce((p,v)=>p+v,0),flat=[...tl,...pi,...tot];
-const cell=(a,i,off)=>`<td class="${a[i]?"nz":"z"}${_dp.length&&_dp[off+i]!==a[i]?" chg":""}" title="${L[i]}: ${tot[i]} bệnh nhân (Timelapse ${tl[i]} · P.I ${pi[i]})">${a[i]}</td>`;
+const cell=(a,i,off)=>`<td class="${a[i]?"nz":"z"}${_dp.length&&_dp[off+i]!==a[i]?" chg":""}" title="${L[i]}: ${tot[i]} bệnh nhân (TL ${tl[i]} · P.I ${pi[i]})">${a[i]}</td>`;
 const row=(lab,a,off,cl)=>`<tr class="${cl||""}"><th>${lab}</th>${L.map((_,i)=>cell(a,i,off)).join("")}<td class="sm">${sum(a)}</td></tr>`;
-const h=`<table class="dt"><tr><th>Ngày phôi</th>${L.map((l,i)=>`<th class="${i>=5?"hot":""}">${l}</th>`).join("")}<th>Σ</th></tr>${row("Timelapse",tl,0)}${row("P.I",pi,N)}${row("Tổng",tot,2*N,"tt")}</table>`;
+const h=`<table class="dt"><tr><th>Ngày phôi</th>${L.map((l,i)=>`<th class="${i>=5?"hot":""}">${l}</th>`).join("")}<th>Σ</th></tr>${row("TL",tl,0)}${row("P.I",pi,N)}${row("Tổng",tot,2*N,"tt")}</table>`;
 if(h!==_dh){$("#dTab").innerHTML=h;_dh=h;_dp=flat}}
 function render(){
-if(window.LOCKED){$("#main").innerHTML="";window._lh="";$("#dTab").innerHTML="";_dh="";_dp=[];["nOk","nEm","nBad"].forEach(i=>{const e=$("#"+i);e.textContent="0";delete e.dataset.s});$("#nDue").textContent="0/0";$("#cnt").style.display="none";$("#noteBar").style.display="none";return}
+if(window.LOCKED){$("#main").innerHTML="";window._lh="";window._revDone=false;window._revWant=false;$("#dTab").innerHTML="";_dh="";_dp=[];["nOk","nEm","nBad"].forEach(i=>{const e=$("#"+i);e.textContent="0";delete e.dataset.s});$("#nDue").textContent="0/0";$("#cnt").style.display="none";$("#noteBar").style.display="none";return}
 const m=$("#main"),td=todayStr();let out="",ok=0,em=0,bad=0,due=0;const notes=[];
 for(let c=1;c<=CABS;c++){
-let rh="",far=null,farCh="",cDue=0;
+let rh="",far=null,farCh="",cDue=0,dots="",cOk=0;
 for(let r=1;r<=ROOMS;r++){const k=c+"-"+r,x=S.rooms[k],no=`<div class="no">${c}.${r}</div>`;
-if(x.st==="bad"){bad++;rh+=`<div class="tile bad" data-k="${k}">${no}<div class="bd">Sửa chữa / chưa dùng</div></div>`;continue}
+if(x.st==="bad"){bad++;dots+='<i class="bad"></i>';rh+=`<div class="tile bad" data-k="${k}">${no}<div class="bd">Sửa chữa / chưa dùng</div></div>`;continue}
 const pl=roomPts(x),act=dueList(x);
 const half=mo=>{const q=pl.find(z=>z.mode===mo),cl=mo==="PI"?"pi":"tl",lab=mo==="PI"?"P.I":"TL";
 if(!q)return `<div class="hf off ${cl}"><em class="m">${lab}</em><span class="em">Trống</span></div>`;
 const dd=q.ch?days(q.ch):null,al=act.includes(q),nt=q.sa==="Nuôi tiếp"&&q.snooze===td&&dd!==null&&dd>=DAY;
-return `<div class="hf ${al?"al":"on"} ${cl}" title="${esc(ptFull(q))}"><em class="m">${lab}</em><div class="tx"><b>${esc(q.ten||q.hs||"—")}</b><small>${esc([q.hs&&q.ten?q.hs:"",q.ns,q.ch?"CH "+dmy(q.ch).slice(0,5):"",q.stt?"#"+q.stt:""].filter(Boolean).join(" · "))}</small></div><div class="dy">${dd!==null?`<em class="d${al?" al":""}">N${dd}</em>`:`<span class="at">Thiếu CH</span>`}${al?`<span class="at">🔔 ĐẾN HẠN</span>`:nt?`<span class="nt">↪ Nuôi tiếp</span>`:""}</div></div>`};
-if(pl.length)ok++;else em++;
+return `<div class="hf ${al?"al":"on"} ${cl}" title="${esc(ptFull(q))}"><em class="m">${lab}</em><div class="tx"><b>${esc(q.ten||q.hs||"—")}</b><small>${esc([q.hs&&q.ten?q.hs:"",q.ns,q.ch?"CH "+dmy(q.ch).slice(0,5):"",q.stt?"#"+q.stt:""].filter(Boolean).join(" · "))}</small></div><div class="dy">${dd!==null?`<em class="d${al?" al":""}">N${dd}</em>`:`<span class="at">Thiếu CH</span>`}${al?`<span class="at">🔔 THAY NƯỚC</span>`:nt?`<span class="nt">↪ Nuôi tiếp</span>`:""}</div></div>`};
+if(pl.length){ok++;cOk++}else em++;
 if(act.length){due++;cDue++}
 pl.forEach(q=>{if(q.ch){const dd=days(q.ch);if(far===null||dd<far){far=dd;farCh=q.ch}}});
 const nt=pl.filter(q=>q.sa==="Nuôi tiếp"&&q.snooze===td&&q.ch&&days(q.ch)>=DAY);
 if(nt.length)notes.push(`${c}.${r} (ngày ${Math.max(...nt.map(q=>days(q.ch)))})`);
-rh+=`<div class="tile ${pl.length?"ok":"empty"}${act.length?" due":""}" data-k="${k}">${no}${half("TL")}${half("PI")}</div>`}
+dots+=`<i class="${act.length?"due":pl.length?"ok":"em"}"></i>`;rh+=`<div class="tile ${pl.length?"ok":"empty"}${act.length?" due":""}" data-k="${k}">${no}${half("TL")}${half("PI")}</div>`}
 const bAl=cDue>0;
-out+=`<div class="cab c${c}"><h2 class="${bAl?"bal":""}"><b class="nm">${bAl?"🔔 ":""}GERI ${c}</b></h2><div class="rooms">${rh}</div></div>`}
-if(out!==window._lh){m.innerHTML=out;window._lh=out}
+out+=`<div class="cab c${c}" style="--n:${c}"><h2 class="${bAl?"bal":""}"><b class="nm">${bAl?"🔔 ":""}GERI ${c}</b><div class="cdots" title="${cOk}/${ROOMS} buồng đang nuôi">${dots}</div></h2><div class="rooms">${rh}</div></div>`}
+if(out!==window._lh){if(window._revWant){window._revWant=false;m.classList.add("rev");clearTimeout(window._revT);window._revT=setTimeout(()=>m.classList.remove("rev"),1500)}m.innerHTML=out;window._lh=out}
 {const nb=$("#noteBar");nb.style.display=notes.length?"block":"none";nb.textContent=notes.length?"↪ Đã chọn nuôi tiếp hôm nay: "+notes.join(" · "):""}
 setNum("nOk",ok);setNum("nEm",em);setNum("nBad",bad);{const st=alertStat();setNum("nDue",st.done.length+"/"+st.total);$("#pDue").classList.toggle("pend",due>0)}drawDays();$("#cnt").textContent=due;$("#cnt").style.display=due?"inline-block":"none";
 $("#today").textContent="Hôm nay: "+new Date().toLocaleDateString("vi-VN",{weekday:"long",day:"2-digit",month:"2-digit",year:"numeric"})}
@@ -353,6 +612,8 @@ if(a.some(q=>q.ns&&!/^\d{4}$/.test(q.ns)))return fail("⚠ Năm sinh gồm 4 ch�
 if(a.some(q=>!(q.hs||q.stt||q.ten||q.ns)))return fail("⚠ Nhập thông tin bệnh nhân đang nuôi.");
 if(a.some(q=>!q.ch))return fail("⚠ Cần nhập ngày chọc hút (CH).");
 if(a.some(q=>q.ch>todayStr()))return fail("⚠ Ngày CH không được lớn hơn hôm nay.")}
+{const en=roomPts(x).filter(q=>sv==="bad"||!a.some(n=>n.mode===q.mode));
+if(en.length&&!confirm(`⚠ Xác nhận kết thúc nuôi cấy tại buồng ${cur.replace("-",".")}?\n${en.map(q=>(q.mode==="PI"?"P.I":"Timelapse")+": "+(ptTxt(q)||"—")).join("\n")}\nBệnh nhân sẽ được ghi nhận kết thúc nuôi và không thể sửa thông tin nữa.`))return}
 const nst=sv==="bad"?"bad":a.length?"using":"empty";x.st=nst;delete x.date;
 const note=$("#eNote").value;
 if(nst!==was||note)addLog(cur,{using:"Đặt trạng thái Đang nuôi",empty:"Đặt trạng thái Trống",bad:"Đặt trạng thái Sửa chữa"}[nst],p,note);
@@ -365,11 +626,11 @@ return{pend,done:[...done].sort(),total:pend.length+done.size}}
 function dueExtra(){const st=alertStat(),keys=new Set([...st.pend,...st.done]);
 $("#dueSum").innerHTML=`<div class="dsum${st.total&&st.done.length===st.total?" ok":""}">Đã xử lý <b>${st.done.length}/${st.total}</b> cảnh báo hôm nay${st.pend.length?` · còn ${st.pend.length} buồng chờ xử lý`:""}</div>`;
 const all=S.log.filter(x=>x.r>0&&HANDLE(x.a)&&keys.has(x.c+"-"+x.r)),l=all.slice(0,dueN);
-$("#dueHist").innerHTML=l.length?`<table><tr><th>Thời gian</th><th>Buồng</th><th>Hành động</th><th>NTH 1</th><th>NTH 2</th><th>Ghi chú</th></tr>${l.map(x=>`<tr><td>${new Date(x.t).toLocaleString("vi-VN")}</td><td>${x.c}.${x.r}</td><td>${esc(actOf(x.a))}</td><td>${esc(x.p)}</td><td>${esc(x.p2||"")}</td><td>${esc(noteOf(x))}</td></tr>`).join("")}</table>`+moreBtn("dueMore",all.length-l.length):'<div class="empty-msg">Chưa có lịch sử xử lý.</div>'}
+$("#dueHist").innerHTML=l.length?`<table><tr><th>Ngày</th><th>Buồng</th><th>Hành động</th><th>NTH 1</th><th>NTH 2</th><th>Ghi chú</th></tr>${l.map(x=>`<tr><td>${dspan(x.t)}</td><td>${x.c}.${x.r}</td><td>${esc(actOf(x.a))}</td><td>${esc(x.p)}</td><td>${esc(x.p2||"")}</td><td>${esc(noteOf(x))}</td></tr>`).join("")}</table>`+moreBtn("dueMore",all.length-l.length):'<div class="empty-msg">Chưa có lịch sử xử lý.</div>'}
 function dueRooms(){return Object.keys(S.rooms).filter(k=>dueList(S.rooms[k]).length>0).sort()}
 function showDue(){dueN=7;const l=dueRooms(),box=$("#dueList");
 if(!l.length){box.innerHTML='<div class="empty-msg">✅ Không còn buồng nào chờ xử lý.</div>'}
-else box.innerHTML=l.map((k,i)=>{const[c,r]=k.split("-"),x=S.rooms[k],tg=dueList(x);return `<div class="due-item" style="animation-delay:${i*50}ms"><div class="t">Buồng ${c}.${r} <small>— ngày ${roomDay(x)} · ${esc(tg.map(q=>(q.mode==="PI"?"P.I: ":"TL: ")+(q.ten||q.hs||"—")+" (ngày "+days(q.ch)+")").join(" & "))}</small></div><div class="btns"><button class="b1" data-a="Thay nước" data-k="${k}">THAY NƯỚC</button><button class="b3" data-a="Đã kiểm tra" data-k="${k}">ĐÃ KIỂM TRA</button><button class="b2" data-a="Nuôi tiếp" data-k="${k}">NUÔI TIẾP</button><button class="b4" data-a="Thay mới" data-k="${k}">THAY MỚI</button></div></div>`}).join("");
+else box.innerHTML=l.map((k,i)=>{const[c,r]=k.split("-"),x=S.rooms[k],tg=dueList(x);return `<div class="due-item" style="animation-delay:${i*50}ms"><div class="t">Buồng ${c}.${r} <small>— ngày ${roomDay(x)} · ${esc(tg.map(q=>(q.mode==="PI"?"P.I: ":"TL: ")+(q.ten||q.hs||"—")+" (ngày "+days(q.ch)+")").join(" & "))}</small></div><div class="btns"><button class="b1" data-a="Thay nước" data-k="${k}"><span class="ic">💧</span>Thay nước</button><button class="b3" data-a="Đã kiểm tra" data-k="${k}"><span class="ic">✅</span>Đã kiểm tra</button><button class="b2" data-a="Nuôi tiếp" data-k="${k}"><span class="ic">⏭️</span>Nuôi tiếp</button><button class="b4" data-a="Thay mới" data-k="${k}"><span class="ic">🔄</span>Thay mới</button></div></div>`}).join("");
 dueExtra();open("#ovDue")}
 $("#dueList").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const p=who();if(!p)return;
 const k=b.dataset.k,a=b.dataset.a,x=S.rooms[k],tg=dueList(x);if(!tg.length)return;
@@ -384,7 +645,7 @@ const actOf=a=>String(a).startsWith("Thay mới")?"Thay mới":a;
 const noteOf=x=>(x.a==="Thay nước"||x.a==="Đã kiểm tra"||String(x.a).startsWith("Thay mới"))?"":(x.n||"");
 const moreBtn=(id,left)=>left>0?`<div class="row" style="justify-content:center"><button class="ghost" id="${id}">Xem thêm (${left} dòng nữa)</button></div>`:"";
 function hist(){const f=$("#hCab").value,all=S.log.filter(x=>!f||x.c==f),l=all.slice(0,histN);
-$("#hBody").innerHTML=l.length?`<table><tr><th>Thời gian</th><th>Vị trí</th><th>Hành động</th><th>NTH 1</th><th>NTH 2</th><th>Ghi chú</th></tr>${l.map(x=>`<tr><td>${new Date(x.t).toLocaleString("vi-VN")}</td><td>${x.r?"Buồng "+x.c+"."+x.r:"Tủ "+x.c}</td><td>${esc(actOf(x.a))}</td><td>${esc(x.p)}</td><td>${esc(x.p2||"")}</td><td>${esc(noteOf(x))}</td></tr>`).join("")}</table>`+moreBtn("hMore",all.length-l.length):'<div class="empty-msg">Chưa có lịch sử.</div>'}
+$("#hBody").innerHTML=l.length?`<table><tr><th>Ngày</th><th>Vị trí</th><th>Hành động</th><th>NTH 1</th><th>NTH 2</th><th>Ghi chú</th></tr>${l.map(x=>`<tr><td>${dspan(x.t)}</td><td>${x.r?"Buồng "+x.c+"."+x.r:"Tủ "+x.c}</td><td>${esc(actOf(x.a))}</td><td>${esc(x.p)}</td><td>${esc(x.p2||"")}</td><td>${esc(noteOf(x))}</td></tr>`).join("")}</table>`+moreBtn("hMore",all.length-l.length):'<div class="empty-msg">Chưa có lịch sử.</div>'}
 $("#hBody").addEventListener("click",e=>{if(e.target.id==="hMore"){histN+=20;hist()}});
 $("#dueHist").addEventListener("click",e=>{if(e.target.id==="dueMore"){dueN+=20;dueExtra()}});
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -476,12 +737,12 @@ res.push(startPt(k,np,p))});
 old.forEach((q,i)=>{if(!used.has(i))endPt(k,q,"Kết thúc nuôi bệnh nhân",p)});
 x.pl=res};
 let ptSort={k:"start",d:-1};
-const PTC=[["hs","Mã hồ sơ"],["stt","STT chọc"],["ten","Tên"],["ns","Năm sinh"],["mode","PP"],["ch","Ngày CH"],["room","Buồng"],["start","Vào"],["end","Ra"]];
+const PTC=[["hs","Mã hồ sơ"],["ten","Tên"],["ns","Năm sinh"],["mode","PP"],["ch","Ngày CH"],["stt","STT"],["room","Buồng"],["start","Vào"],["end","Ra"]];
 const ptVal=(r,k)=>k==="room"?r.c*10+r.r:k==="end"?(r.end||"9999"):k==="start"?r.start:String(r[k]||"");
 function getPt(){const q=$("#ptQ").value.trim().toLowerCase(),{k,d}=ptSort;
 return S.pts.filter(r=>!q||[r.hs,r.ten,r.stt,r.ns].join(" ").toLowerCase().includes(q)).sort((a,b)=>{const x=ptVal(a,k),y=ptVal(b,k);return d*(typeof x==="number"?x-y:String(x).localeCompare(String(y),"vi",{numeric:true}))})}
 function drawPt(){const l=getPt();
-$("#ptBody").innerHTML=l.length?`<table><tr>${PTC.map(([k,n])=>`<th data-s="${k}">${n}${ptSort.k===k?(ptSort.d>0?" ▲":" ▼"):""}</th>`).join("")}</tr>${l.map(r=>`<tr><td>${esc(r.hs)}</td><td>${esc(r.stt)}</td><td>${esc(r.ten)}</td><td>${esc(r.ns)}</td><td>${r.mode==="PI"?"P.I":"Timelapse"}</td><td>${r.ch?dmy(r.ch):""}</td><td>${r.c}.${r.r}</td><td>${fmtDT(r.start)}</td><td>${r.end?fmtDT(r.end):'<b style="color:var(--g)">Đang nuôi</b>'}</td></tr>`).join("")}</table>`:'<div class="empty-msg">Chưa có dữ liệu bệnh nhân.</div>'}
+$("#ptBody").innerHTML=l.length?`<table><tr>${PTC.map(([k,n])=>`<th data-s="${k}">${n}${ptSort.k===k?(ptSort.d>0?" ▲":" ▼"):""}</th>`).join("")}<th></th></tr>${l.map(r=>`<tr><td>${esc(r.hs)}</td><td>${esc(r.ten)}</td><td>${esc(r.ns)}</td><td>${r.mode==="PI"?"P.I":"TL"}</td><td>${dsd(r.ch)}</td><td>${esc(r.stt)}</td><td>${r.c}.${r.r}</td><td>${dspan(r.start)}</td><td>${r.end?dspan(r.end):'<b style="color:var(--g)">Đang nuôi</b>'}</td><td>${r.end?"":`<button class="ghost" data-e="${r.id}" title="Sửa" style="padding:3px 9px;font-size:12px">✏️ Sửa</button>`}</td></tr>`).join("")}</table>`:'<div class="empty-msg">Chưa có dữ liệu bệnh nhân.</div>'}
 $("#ptBody").addEventListener("click",e=>{const th=e.target.closest("th[data-s]");if(!th)return;const k=th.dataset.s;ptSort=ptSort.k===k?{k,d:-ptSort.d}:{k,d:1};drawPt()});
 $("#ptXl").onclick=async()=>{const l=getPt();if(!l.length)return;if(typeof XLSX==="undefined"){alert("Chưa tải được thư viện Excel (cần kết nối mạng).");return}
 const nd=r=>r.ch?Math.round((Date.parse(r.end?ymd(new Date(r.end)):todayStr())-Date.parse(r.ch))/864e5):"";
@@ -490,6 +751,30 @@ ws["!cols"]=[{wch:14},{wch:10},{wch:24},{wch:10},{wch:12},{wch:12},{wch:8},{wch:
 const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Bệnh nhân");
 await saveFile(`benh_nhan_${todayStr().replace(/-/g,"")}.xlsx`,XLSX.write(wb,{type:"array",bookType:"xlsx"}))};
 $("#ptQ").oninput=drawPt;$("#bPt").onclick=()=>{drawPt();open("#ovPt")};
+{const sel=$("#peRoom");let h="";for(let c=1;c<=CABS;c++)for(let r=1;r<=ROOMS;r++)h+=`<option value="${c}-${r}">${c}.${r}</option>`;sel.innerHTML=h}
+let peId=null;
+$("#ptBody").addEventListener("click",e=>{const b=e.target.closest("button[data-e]");if(!b)return;const r=S.pts.find(z=>z.id===b.dataset.e);if(!r||r.end)return;peId=r.id;
+$("#peHs").value=r.hs||"";$("#peStt").value=r.stt||"";$("#peTen").value=r.ten||"";$("#peNs").value=r.ns||"";$("#peCh").value=r.ch||"";$("#peMode").value=r.mode||"TL";$("#peRoom").value=r.c+"-"+r.r;$("#peRoom").disabled=!!r.end;$("#peErr").textContent="";open("#ovPtE")});
+$("#peSave").onclick=()=>{const r=S.pts.find(z=>z.id===peId);if(!r||r.end)return;const err=$("#peErr"),fail=t=>{err.textContent=t;err.classList.remove("shake");void err.offsetWidth;err.classList.add("shake")};
+const np={hs:$("#peHs").value.trim(),stt:$("#peStt").value.trim(),ten:$("#peTen").value.trim(),ns:$("#peNs").value.trim(),ch:$("#peCh").value,mode:$("#peMode").value};
+if(np.ns&&!/^\d{4}$/.test(np.ns))return fail("⚠ Năm sinh gồm 4 chữ số.");
+if(!(np.hs||np.stt||np.ten||np.ns))return fail("⚠ Nhập thông tin bệnh nhân.");
+if(!np.ch)return fail("⚠ Cần nhập ngày CH.");
+if(np.ch>todayStr())return fail("⚠ Ngày CH không được lớn hơn hôm nay.");
+const p=who();if(!p)return;
+const active=!r.end,ok=r.c+"-"+r.r,nk=active?$("#peRoom").value:ok,lab=k=>k.replace("-","."),tn=m=>m==="PI"?"P.I":"Timelapse";
+if(active){const x2=S.rooms[nk];if(x2.st==="bad")return fail("⚠ Buồng "+lab(nk)+" đang sửa chữa.");
+const dup=roomPts(x2).find(q=>q.pid!==r.id&&q.mode===np.mode);if(dup)return fail(`⚠ Buồng ${lab(nk)} đã có bệnh nhân ${tn(np.mode)} (${dup.ten||dup.hs||"—"}).`);
+if(nk!==ok){const oth=roomPts(x2).find(q=>q.pid!==r.id);if(!confirm(`⚠ Chuyển bệnh nhân ${ptTxt(np)||"—"} từ buồng ${lab(ok)} sang buồng ${lab(nk)}?\n${oth?"Buồng "+lab(nk)+" đang nuôi "+tn(oth.mode)+" ("+(oth.ten||oth.hs||"—")+").\n":""}Thông tin nuôi cấy sẽ được cập nhật sang buồng mới.`))return}}
+const xo=S.rooms[ok],q=(xo.pl||[]).find(z=>z.pid===r.id);
+if(q&&q.ch!==np.ch)q.snooze="";
+Object.assign(r,np);if(q)Object.assign(q,np);
+if(active&&nk!==ok){r.c=+nk.split("-")[0];r.r=+nk.split("-")[1];
+const qq=q||{...np,pid:r.id};xo.pl=(xo.pl||[]).filter(z=>z!==q);if(!xo.pl.length&&xo.st==="using")xo.st="empty";
+const xn=S.rooms[nk];if(xn.st!=="using"){xn.st="using";xn.pl=[]}xn.pl=xn.pl||[];xn.pl.push(qq);
+addLog(ok,"Chuyển bệnh nhân đi: "+ptTxt(np),p,"→ buồng "+lab(nk));addLog(nk,"Chuyển bệnh nhân đến: "+ptTxt(np),p,"từ buồng "+lab(ok))}
+else addLog(ok,"Sửa thông tin bệnh nhân: "+ptTxt(np),p);
+save();render();drawPt();close($("#ovPtE"))};
 const norm=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/gi,"d").toLowerCase().trim();
 function parseDate(v){v=String(v||"").trim();if(!v)return"";
 if(/^\d{5}$/.test(v))return new Date(Date.UTC(1899,11,30)+ +v*864e5).toISOString().slice(0,10);
@@ -514,19 +799,23 @@ else if(d===""||d===null)w.err=d===null?"Ngày CH sai định dạng":"Thiếu n
 else if(d>todayStr())w.err="Ngày CH lớn hơn hôm nay";
 return w}
 function applyRow(k,np,p){const x=S.rooms[k];if(x.st==="bad")return{err:"Buồng đang sửa chữa"};
+const cur=x.st==="using"?(x.pl||[]):[],same=cur.find(q=>q.mode===np.mode),other=cur.find(q=>q.mode!==np.mode);
+if(same){if(PF.every(f=>same[f]===np[f]))return{res:"Không đổi"};return{err:"Trùng buồng và loại nuôi cấy – không nhập"}}
 if(x.st!=="using"){x.st="using";x.pl=[];addLog(k,"Đặt trạng thái Đang nuôi",p,"Source")}x.pl=x.pl||[];
-const i=x.pl.findIndex(q=>q.mode===np.mode);
-if(i<0){x.pl.push(startPt(k,np,p));return{res:"Thêm mới"}}
-const q=x.pl[i];if(PF.every(f=>q[f]===np[f]))return{res:"Không đổi"};
-if((q.hs&&np.hs&&q.hs===np.hs)||(!q.hs&&!np.hs&&q.ten===np.ten)){const r=S.pts.find(z=>z.id===q.pid);if(q.ch!==np.ch)q.snooze="";Object.assign(q,np);if(r)Object.assign(r,np);addLog(k,"Sửa thông tin bệnh nhân: "+ptTxt(np),p,"Source");return{res:"Cập nhật"}}
-endPt(k,q,"Kết thúc nuôi bệnh nhân",p);x.pl[i]=startPt(k,np,p);return{res:"Thay bệnh nhân"}}
+x.pl.push(startPt(k,np,p));
+return other?{res:"⚠ Buồng đang nuôi "+(other.mode==="PI"?"P.I":"Timelapse")+" ("+(other.ten||other.hs||"—")+") – đã thêm",warn:1}:{res:"Thêm mới"}}
 function buildGrid(){$("#srcGrid").innerHTML=`<table class="sg"><tr><th>#</th>${SG.map(h=>`<th>${h}</th>`).join("")}<th>Kết quả</th></tr>${G.map((r,i)=>`<tr><td>${i+1}</td>${r.map((v,j)=>`<td><input data-i="${i}" data-j="${j}" value="${esc(v)}" autocomplete="off"></td>`).join("")}<td class="sres" id="sr${i}"></td></tr>`).join("")}</table>`}
-function syncGrid(){S.srcRows=G;const p=$("#who").value.trim()||"Source",seen=new Set();let n=0,e=0;
+const SR={};
+function syncGrid(){S.srcRows=G;const p=$("#who").value.trim()||"Source",seen=new Set();let n=0,e=0,ww=0;
 G.forEach((r,i)=>{const cell=$("#sr"+i);if(!r.some(v=>v.trim())){if(cell)cell.textContent="";return}
 const w=gridRow(i,r);
-if(!w.err){const key=w.c+"-"+w.r+"-"+w.np.mode;if(seen.has(key))w.err="Trùng buồng + loại nuôi cấy";else{seen.add(key);const a=applyRow(w.c+"-"+w.r,w.np,p);if(a.err)w.err=a.err;else w.res=a.res}}
-n++;if(w.err)e++;if(cell){cell.textContent=w.err||w.res;cell.style.color=w.err?"var(--r)":"var(--g)"}});
-$("#srcSum").textContent=n?`${n} dòng · ${n-e} hợp lệ${e?" · "+e+" lỗi":""}`:"";save();render()}
+if(!w.err){const key=w.c+"-"+w.r+"-"+w.np.mode;if(seen.has(key))w.err="Trùng buồng + loại nuôi cấy";else{seen.add(key);const a=applyRow(w.c+"-"+w.r,w.np,p),sig=JSON.stringify(r);
+if(a.err){w.err=a.err;delete SR[i]}
+else if(a.warn){w.res=a.res;w.warn=1;SR[i]={sig,res:a.res}}
+else if(a.res==="Không đổi"&&SR[i]&&SR[i].sig===sig){w.res=SR[i].res;w.warn=1}
+else{w.res=a.res;delete SR[i]}}}
+n++;if(w.err)e++;if(w.warn)ww++;if(cell){cell.textContent=w.err||w.res;cell.style.color=(w.err||w.warn)?"var(--r)":"var(--g)"}});
+$("#srcSum").textContent=n?`${n} dòng · ${n-e} hợp lệ${ww?" · "+ww+" cảnh báo":""}${e?" · "+e+" lỗi":""}`:"";save();render()}
 $("#srcGrid").addEventListener("paste",e=>{const t=e.target;if(t.dataset.i===undefined)return;
 const txt=(e.clipboardData||window.clipboardData).getData("text").replace(/\r?\n$/,"");if(!/[\t\n]/.test(txt))return;
 e.preventDefault();let rows=txt.split(/\r?\n/).map(l=>l.split("\t").map(v=>v.trim().replace(/^"([\s\S]*)"$/,"$1").trim()));
@@ -557,6 +846,12 @@ document.querySelectorAll("header .pill,header .acts button,header input").forEa
 
 setInterval(render,60000);
 
+/* hiệu ứng gợn sóng khi bấm nút */
+document.addEventListener("pointerdown",e=>{const b=e.target.closest&&e.target.closest("button");if(!b||b.disabled)return;
+  const r=b.getBoundingClientRect(),d=Math.max(r.width,r.height)*2,sp=document.createElement("span");
+  sp.className="rip";sp.style.cssText="width:"+d+"px;height:"+d+"px;left:"+(e.clientX-r.left-d/2)+"px;top:"+(e.clientY-r.top-d/2)+"px";
+  b.appendChild(sp);setTimeout(()=>sp.remove(),700)},true);
+
 /* ===== FIREBASE: ĐĂNG NHẬP BẮT BUỘC → MỚI XEM / SỬA ĐƯỢC DỮ LIỆU ===== */
 const FB_CFG={
   apiKey:"AIzaSyB4E_TeebnJFT6bv9reSFvNe5d-W53r550",
@@ -571,7 +866,7 @@ const FB_CFG={
   st.style.cssText="position:fixed;right:10px;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:50;font-size:12px;padding:3px 9px;border-radius:12px;background:var(--card);border:1px solid var(--bd);color:var(--mu);box-shadow:var(--sh);cursor:pointer";
   const say=(t,c)=>{st.textContent=t;st.style.color=c||"var(--mu)"};
   document.body.appendChild(st);say("🔒 Chưa đăng nhập");
-  const btn=document.createElement("button");btn.className="ghost";btn.id="bAuth";btn.textContent="👤 Tài khoản";
+  const btn=document.createElement("button");btn.className="ghost ib";btn.id="bAuth";btn.textContent="👤";btn.title="Đăng nhập";btn.setAttribute("aria-label","Tài khoản");
   const bar=document.querySelector("header .bar.acts");if(bar)bar.appendChild(btn);
 
   let M,auth,db,ref,user=null,denied=false,timer=null,dirty=false,unsub=null,popped=false,AV=null;
@@ -591,6 +886,7 @@ const FB_CFG={
     fillRooms();
     G=Array.isArray(S.srcRows)?S.srcRows.map(r=>SG.map((_,j)=>String(r[j]||""))):[];ensureRows(10);
     try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+    if(!window._revDone){window._revDone=true;window._revWant=true}
     render()};
   // Xóa dữ liệu bệnh nhân khỏi bộ nhớ trình duyệt (giữ lại tên người thực hiện + giao diện)
   const wipeLocal=()=>{S.rooms={};S.log=[];S.pts=[];S.srcRows=[];fillRooms();G=[];ensureRows(10);
@@ -706,7 +1002,7 @@ const FB_CFG={
       const want=!user?"login":!user.emailVerified?"verify":"denied",cur=AV&&AV.dataset.view;
       if(!AV||(cur!==want&&!(want==="login"&&(cur==="register"||cur==="reset"))))authUI(want);
     }else{closeAuth();startSync()}
-    btn.textContent=user?"👤 "+(lab(user)||"Tài khoản"):"👤 Tài khoản";
+    btn.title=user?"Tài khoản: "+lab(user)+" (bấm để đăng xuất)":"Đăng nhập";btn.setAttribute("aria-label",btn.title);
     say(lock?"🔒 Chưa đăng nhập":"☁ "+lab(user)+" · đang đồng bộ…",lock?"":"var(--g)");
     render()}
 
