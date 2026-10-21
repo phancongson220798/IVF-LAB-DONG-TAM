@@ -11,7 +11,7 @@
 <link id="manifestLink" rel="manifest" href="">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
@@ -1043,27 +1043,29 @@ window.LabChart=(function(){
       <div class="acct-menu" id="acctMenu" role="menu">
         <div class="am-head"><span class="avatar lg" id="acctAv2">?</span><div><b id="acctNm2">Khách</b><small id="acctMail">Chưa đăng nhập</small></div><span class="user-chip" id="userChip" hidden style="display:none"></span></div>
         <button type="button" class="am-item" data-go="audit" role="menuitem"><i class="i i-audit"></i>Nhật ký hoạt động</button>
+        <button type="button" class="am-item" id="btnExportAll" role="menuitem"><i class="i i-download"></i>Xuất Excel</button>
         <div class="am-item am-theme"><i class="i i-sun"></i>Giao diện sáng / tối<button class="btn" id="btnTheme" type="button" title="Đổi giao diện sáng/tối">Đổi</button></div>
         <button class="am-item danger" id="btnLogout" type="button" hidden role="menuitem"><i class="i i-logout"></i>Đăng xuất</button>
       </div>
     </div>
   </div>
   <div id="homeApp">
+    <div class="hx-hero"><span class="hx-pill">Lab Đồng Tâm</span><h1>Quản lý chất lượng</h1><p>Chọn một chức năng để bắt đầu.</p></div>
     <div class="hx">
       <section class="hx-group" aria-label="Vận hành">
         <h2 class="hx-label">Vận hành</h2>
         <div class="hx-tiles">
-          <button type="button" class="hx-tile" data-open="monitor" style="--t:#7c3aed"><span class="hx-ic"><i class="i i-monitor"></i></span><b>Thông số thiết bị</b><small>Ghi nhận hằng ngày, lịch sử, xuất Excel</small></button>
-          <button type="button" class="hx-tile" data-open="calib" style="--t:#d97706"><span class="hx-ic"><i class="i i-calib"></i></span><b>Hiệu chuẩn tủ nuôi cấy</b><small>CO2, O2, VOCs, độ bụi</small></button>
-          <button type="button" class="hx-tile" data-open="filter" style="--t:#2563eb"><span class="hx-ic"><i class="i i-filter"></i></span><span class="hx-badges"><span class="hx-cnt" id="countFilter">0</span><span class="tile-warn" id="filterTileWarn"></span></span><b>Thay lọc</b><small>Hạn thay lọc, cảnh báo quá hạn</small></button>
-          <button type="button" class="hx-tile" data-open="gas" style="--t:#ea580c"><span class="hx-ic"><i class="i i-gas"></i></span><b>Thay khí nuôi cấy</b><small>N2, CO2, khí trộn (S/N)</small></button>
+          <button type="button" class="hx-tile" data-open="monitor" style="--t:#533afd"><span class="hx-ic"><i class="i i-monitor"></i></span><b>Thông số thiết bị</b><small>Ghi nhận hằng ngày, lịch sử, xuất Excel</small></button>
+          <button type="button" class="hx-tile" data-open="calib" style="--t:#ea2261"><span class="hx-ic"><i class="i i-calib"></i></span><b>Hiệu chuẩn tủ nuôi cấy</b><small>CO2, O2, VOCs, độ bụi</small></button>
+          <button type="button" class="hx-tile hx-feat" data-open="filter" style="--t:#665efd"><span class="hx-ic"><i class="i i-filter"></i></span><span class="hx-badges"><span class="hx-cnt" id="countFilter">0</span><span class="tile-warn" id="filterTileWarn"></span></span><b>Thay lọc</b><small>Hạn thay lọc, cảnh báo quá hạn</small></button>
+          <button type="button" class="hx-tile" data-open="gas" style="--t:#d9702a"><span class="hx-ic"><i class="i i-gas"></i></span><b>Thay khí nuôi cấy</b><small>N2, CO2, khí trộn (S/N)</small></button>
         </div>
       </section>
       <section class="hx-group" aria-label="Quản lý">
         <h2 class="hx-label">Quản lý</h2>
         <div class="hx-tiles hx-col">
-          <button type="button" class="hx-tile" data-open="devices" style="--t:#0d9488"><span class="hx-ic"><i class="i i-devices"></i></span><span class="hx-badges"><span class="hx-cnt" id="navCountDev">0</span></span><b>Danh sách thiết bị</b><small>Lý lịch, hiệu chuẩn, mã QR, in phiếu</small></button>
-          <button type="button" class="hx-tile" data-open="order" style="--t:#0284c7"><span class="hx-ic"><i class="i i-order"></i></span><b>Theo dõi đặt hàng</b><small>Nitơ lỏng, N2, CO2, khí trộn</small></button>
+          <button type="button" class="hx-tile" data-open="devices" style="--t:#003770"><span class="hx-ic"><i class="i i-devices"></i></span><span class="hx-badges"><span class="hx-cnt" id="navCountDev">0</span></span><b>Danh sách thiết bị</b><small>Lý lịch, hiệu chuẩn, mã QR, in phiếu</small></button>
+          <button type="button" class="hx-tile" data-open="order" style="--t:#b83fae"><span class="hx-ic"><i class="i i-order"></i></span><b>Theo dõi đặt hàng</b><small>Nitơ lỏng, N2, CO2, khí trộn</small></button>
         </div>
       </section>
     </div>
@@ -1080,20 +1082,33 @@ window.LabChart=(function(){
         <div class="sub">Lý lịch, lịch hiệu chuẩn và phiếu thông tin</div>
       </div>
       <div class="actions">
-        <button class="btn" id="btnExportExcel"><i class="i i-download"></i>Xuất Excel</button>
+        <select id="sort">
+          <option value="next">Xếp theo hạn hiệu chuẩn</option>
+          <option value="name">Xếp theo tên (A–Z)</option>
+          <option value="install">Xếp theo ngày lắp đặt</option>
+        </select>
+        <div class="colpick-wrap">
+          <button class="btn" id="btnColPick" type="button"><i class="i i-columns"></i>Cột hiển thị</button>
+          <div class="colpick-panel" id="colpickPanel"></div>
+        </div>
+        <button class="btn" id="btnExportExcel" hidden><i class="i i-download"></i>Xuất Excel</button>
         <button class="btn" id="btnPrintList"><i class="i i-print"></i>In danh sách</button>
         <button class="btn primary" id="btnAdd">+ Thêm thiết bị</button>
       </div>
     </header>
 
-    <div class="stats no-print">
-      <div class="stat"><div class="n" id="sTotal">0</div><div class="l">Tổng thiết bị</div></div>
-      <div class="stat o"><div class="n" id="sOk">0</div><div class="l">Còn hiệu lực</div></div>
-      <div class="stat w"><div class="n" id="sWarn">0</div><div class="l">Sắp đến hạn (≤30 ngày)</div></div>
-      <div class="stat d"><div class="n" id="sDue">0</div><div class="l">Quá hạn hiệu chuẩn</div></div>
-      <div class="stat o"><div class="n" id="sUsing">0</div><div class="l">Đang sử dụng</div></div>
-      <div class="stat w"><div class="n" id="sIdle">0</div><div class="l">Chưa sử dụng</div></div>
-      <div class="stat d"><div class="n" id="sBroken">0</div><div class="l">Hỏng</div></div>
+    <div class="lamps no-print" id="lamps">
+      <button type="button" class="lamp lamp-all" data-k="all"><i class="led"></i><span class="n" id="sTotal">0</span><span class="l">Tổng thiết bị</span></button>
+      <div class="lamp-group"><span class="lamp-gl">Hiệu chuẩn</span>
+        <button type="button" class="lamp ok" data-k="ok"><i class="led"></i><span class="n" id="sOk">0</span><span class="l">Còn hiệu lực</span></button>
+        <button type="button" class="lamp warn" data-k="warn" title="Còn ≤ 30 ngày"><i class="led"></i><span class="n" id="sWarn">0</span><span class="l">Sắp đến hạn</span></button>
+        <button type="button" class="lamp due" data-k="due"><i class="led"></i><span class="n" id="sDue">0</span><span class="l">Quá hạn</span></button>
+      </div>
+      <div class="lamp-group"><span class="lamp-gl">Tình trạng</span>
+        <button type="button" class="lamp ok" data-k="using"><i class="led"></i><span class="n" id="sUsing">0</span><span class="l">Đang sử dụng</span></button>
+        <button type="button" class="lamp warn" data-k="idle"><i class="led"></i><span class="n" id="sIdle">0</span><span class="l">Chưa sử dụng</span></button>
+        <button type="button" class="lamp due" data-k="broken"><i class="led"></i><span class="n" id="sBroken">0</span><span class="l">Hỏng</span></button>
+      </div>
     </div>
 
     <div class="toolbar no-print">
@@ -1121,15 +1136,6 @@ window.LabChart=(function(){
         <option value="warn">Sắp đến hạn (≤30 ngày)</option>
         <option value="ok">Còn hiệu lực</option>
       </select>
-      <select id="sort">
-        <option value="next">Xếp theo hạn hiệu chuẩn</option>
-        <option value="name">Xếp theo tên (A–Z)</option>
-        <option value="install">Xếp theo ngày lắp đặt</option>
-      </select>
-      <div class="colpick-wrap">
-        <button class="btn" id="btnColPick" type="button"><i class="i i-columns"></i>Cột hiển thị</button>
-        <div class="colpick-panel" id="colpickPanel"></div>
-      </div>
     </div>
 
     <div class="print-head">
@@ -1187,7 +1193,7 @@ window.LabChart=(function(){
       <button class="filter-btn" data-filter="ok">Còn hạn</button>
     </div>
     <div class="spacer"></div>
-    <button class="btn" id="exportFilterBtn"><i class="i i-download"></i>Xuất Excel</button>
+    <button class="btn" id="exportFilterBtn" hidden><i class="i i-download"></i>Xuất Excel</button>
     <button class="btn primary" id="addBtn">+ Thêm mục</button>
   </div>
 
@@ -1236,7 +1242,7 @@ window.LabChart=(function(){
             </div>
           </div>
           <div class="tools">
-            <div><label for="mon-exp-from">Xuất Excel từ ngày</label><input type="date" id="mon-exp-from"></div>
+            <div><label for="mon-exp-from">Từ ngày</label><input type="date" id="mon-exp-from"></div>
             <div><label for="mon-exp-to">đến ngày</label><input type="date" id="mon-exp-to"></div>
             <button class="mbtn alt" id="mon-export-btn" type="button"><i class="i i-download"></i>Xuất Excel</button>
           </div>
@@ -1285,7 +1291,7 @@ window.LabChart=(function(){
             <div style="flex:1 1 220px"><label for="cal-filter-hm">Xem theo hạng mục</label><select id="cal-filter-hm"></select></div>
           </div>
           <div class="tools">
-            <div><label for="cal-exp-from">Xuất Excel từ ngày</label><input type="date" id="cal-exp-from"></div>
+            <div><label for="cal-exp-from">Từ ngày</label><input type="date" id="cal-exp-from"></div>
             <div><label for="cal-exp-to">đến ngày</label><input type="date" id="cal-exp-to"></div>
             <button class="mbtn" id="cal-export-btn" type="button"><i class="i i-download"></i>Xuất Excel</button>
           </div>
@@ -1362,7 +1368,7 @@ window.LabChart=(function(){
             <div style="flex:1 1 220px"><label for="gas-filter-month">Xem dữ liệu theo tháng</label><select id="gas-filter-month"></select></div>
           </div>
           <div class="tools sep">
-            <div><label for="gas-exp-from">Xuất Excel từ ngày</label><input type="date" id="gas-exp-from"></div>
+            <div><label for="gas-exp-from">Từ ngày</label><input type="date" id="gas-exp-from"></div>
             <div><label for="gas-exp-to">đến ngày</label><input type="date" id="gas-exp-to"></div>
             <button class="mbtn alt" id="gas-export-btn" type="button"><i class="i i-download"></i>Xuất Excel</button>
             <button class="mbtn alt" id="gas-print-btn" type="button"><i class="i i-print"></i>In</button>
@@ -1423,7 +1429,7 @@ window.LabChart=(function(){
         <div id="ord-history-body" hidden>
           <div class="tools"><div style="flex:1 1 220px"><label for="ord-filter-month">Xem dữ liệu theo tháng</label><select id="ord-filter-month"></select></div></div>
           <div class="tools sep">
-            <div><label for="ord-xm">Xuất Excel</label><select id="ord-xm"><option value="day">Theo một ngày</option><option value="range">Theo khoảng thời gian</option><option value="all">Toàn bộ</option></select></div>
+            <div><label for="ord-xm">Cách xuất</label><select id="ord-xm"><option value="day">Theo một ngày</option><option value="range">Theo khoảng thời gian</option><option value="all">Toàn bộ</option></select></div>
             <div id="ord-xd1"><label for="ord-exp-from" id="ord-xl1">Ngày</label><input type="date" id="ord-exp-from"></div>
             <div id="ord-xd2"><label for="ord-exp-to">đến ngày</label><input type="date" id="ord-exp-to"></div>
             <button class="mbtn alt" id="ord-export-btn" type="button"><i class="i i-download"></i>Xuất Excel</button>
@@ -2010,7 +2016,41 @@ window.LabChart=(function(){
     $("sUsing").textContent = using;
     $("sIdle").textContent = idle;
     $("sBroken").textContent = broken;
+    document.querySelectorAll("#lamps .lamp").forEach(function(b){ b.classList.toggle("zero", b.querySelector(".n").textContent === "0"); });
   }
+
+  /* ---------- danh sách thiết bị theo đèn cảnh báo ---------- */
+  var LAMP_TITLE = { all:"Tất cả thiết bị", ok:"Còn hiệu lực", warn:"Sắp đến hạn (≤ 30 ngày)", due:"Quá hạn hiệu chuẩn", using:"Đang sử dụng", idle:"Chưa sử dụng", broken:"Hỏng" };
+  function lampMatch(d, k){
+    if(k === "all") return true;
+    if(k === "ok" || k === "warn" || k === "due") return statusOf(d).key === k;
+    return (d.usage || "using") === k;
+  }
+  function fdate(v){ var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(v || ""); return m ? m[3] + "/" + m[2] + "/" + m[1] : "—"; }
+  var lampOv = document.createElement("div");
+  lampOv.className = "overlay"; lampOv.id = "lampOverlay";
+  lampOv.innerHTML = '<div class="modal lampmodal" role="dialog" aria-modal="true"><div class="lamp-head"><h2 id="lampTitle"></h2><button type="button" class="btn ghost" id="lampClose" aria-label="Đóng" title="Đóng"><i class="i i-x"></i></button></div><div id="lampList" class="lamp-list"></div></div>';
+  document.body.appendChild(lampOv);
+  function closeLamp(){ lampOv.classList.remove("open"); }
+  $("lampClose").addEventListener("click", closeLamp);
+  lampOv.addEventListener("click", function(e){ if(e.target === lampOv) closeLamp(); });
+  document.addEventListener("keydown", function(e){ if(e.key === "Escape") closeLamp(); });
+  function openLamp(k){
+    var list = devices.filter(function(d){ return lampMatch(d, k); });
+    $("lampTitle").textContent = LAMP_TITLE[k] + " (" + list.length + ")";
+    $("lampList").innerHTML = list.length ? list.map(function(d){
+      var st = statusOf(d), us = usageOf(d);
+      return '<button type="button" class="lamp-row" data-id="' + esc(d.id) + '"><span class="lr-main"><b>' + esc(d.name || "—") + '</b><small>' + esc((d.area || "Chưa phân khu") + (d.sn ? " · S/N " + d.sn : "")) + '</small></span><span class="lr-meta"><span class="badge ' + st.cls + '">' + st.text + '</span><small>Hạn: ' + fdate(d.nextCal) + ' · ' + us.text + '</small></span></button>';
+    }).join("") : '<div class="lamp-empty">Không có thiết bị.</div>';
+    $("lampList").querySelectorAll(".lamp-row").forEach(function(r){
+      r.addEventListener("click", function(){
+        var d = devices.filter(function(x){ return x.id === r.getAttribute("data-id"); })[0];
+        closeLamp(); if(d) openModal(d);
+      });
+    });
+    lampOv.classList.add("open");
+  }
+  document.querySelectorAll("#lamps .lamp").forEach(function(b){ b.addEventListener("click", function(){ openLamp(b.getAttribute("data-k")); }); });
 
   /* ---------- biểu mẫu ---------- */
   function openModal(d){
@@ -2322,7 +2362,7 @@ window.LabChart=(function(){
     filter:      { label:'Thay lọc định kỳ', typeLabel:'Loại lọc', dateLabel:'Ngày thay lọc gần nhất', addLabel:'+ Thêm lịch thay lọc' }
   };
 
-  var CABINETS = [{id:'BT37', label:'Tủ BT37'}, {id:'GERI', label:'Tủ GERI'}];
+  var CABINETS = [{id:'BT37', label:'Tủ BT37', color:'#d9702a'}, {id:'GERI', label:'Tủ GERI', color:'#533afd'}];
   var PARTS = [{id:'humidifier', label:'Bình ẩm', icon:''}, {id:'filter', label:'Lọc', icon:''}];
   function cabLabel(id){ var c = CABINETS.filter(function(x){ return x.id === id; })[0]; return c ? c.label : (id || '—'); }
   function partLabel(id){ var p = PARTS.filter(function(x){ return x.id === id; })[0]; return p ? p.label : (id || '—'); }
@@ -2521,7 +2561,7 @@ window.LabChart=(function(){
     }
     wrap.innerHTML = '<div class="cab-grid">' + CABINETS.map(function(cb){
       var inCab = filtered.filter(function(c){ return c.cabinet === cb.id; });
-      return '<section class="cab"><header class="cab-h"><h3>'+cb.label+'</h3><span class="cab-n">'+inCab.length+' mục</span></header>' +
+      return '<section class="cab" data-cab="'+cb.id+'" style="--cab:'+cb.color+'"><header class="cab-h"><h3>'+cb.label+'</h3><span class="cab-n">'+inCab.length+' mục</span></header>' +
         PARTS.map(function(pt){
           var arr = inCab.filter(function(c){ return c.part === pt.id; });
           return '<div class="cab-part"><div class="cab-part-h"><b>'+pt.icon+' '+pt.label+'</b>' +
@@ -4289,7 +4329,7 @@ body .tile:hover .ic{transform:rotate(-8deg) scale(1.12)}
 body .tile h2{font-size:16px;font-weight:800;letter-spacing:-.005em;text-transform:none;margin:0}
 body .tile p{font-size:13px;color:var(--text-dim);margin:2px 0 0;line-height:1.45}
 body .tile .cnt{position:absolute;right:16px;top:18px;min-width:30px;height:26px;display:grid;place-items:center;padding:0 9px;border-radius:13px;font-weight:800;font-size:13px}
-.tile[data-view="devices"]{--t:#0f9d8a}.tile[data-view="monitor"]{--t:#7c3aed}.tile[data-view="calib"]{--t:#d97706}.tile[data-view="filter"]{--t:#2563eb}.tile[data-view="gas"]{--t:#ea580c}.tile[data-view="order"]{--t:#0284c7}
+.tile[data-view="devices"]{--t:#0f9d8a}.tile[data-view="monitor"]{--t:#533afd}.tile[data-view="calib"]{--t:#ea2261}.tile[data-view="filter"]{--t:#2563eb}.tile[data-view="gas"]{--t:#d9702a}.tile[data-view="order"]{--t:#b83fae}
 .tile .tile-warn{margin-top:6px}
 /* ---------- thẻ, bảng, form, nút ---------- */
 .stat,.panel,.mon-bar,.card,.aud-wrap,.table-scroll{transition:box-shadow .3s,transform .3s var(--ease),border-color .3s}
@@ -4751,6 +4791,269 @@ body.vt .stat,body.vt .panel,body.vt .mon-bar,body.vt .tile,body.vt .hero,body.v
 .auth-logo{font-size:22px;font-weight:800;letter-spacing:.5px}
 .auth-f{padding-left:14px}
 .field input[type=search],.field input[type=text],.toolbar .field input{padding-left:14px!important}
+</style>
+<div class="overlay" id="xOverlay">
+  <div class="modal xmodal" role="dialog" aria-modal="true" aria-labelledby="xTitle">
+    <h2 id="xTitle">Xuất Excel</h2>
+    <div class="mf"><label for="xSel">Dữ liệu cần xuất</label>
+      <select class="inp" id="xSel">
+        <option value="dev">Danh sách thiết bị</option>
+        <option value="mon">Thông số thiết bị</option>
+        <option value="cal">Hiệu chuẩn tủ nuôi cấy</option>
+        <option value="filter">Thay lọc</option>
+        <option value="gas">Thay khí nuôi cấy</option>
+        <option value="ord">Theo dõi đặt hàng</option>
+        <option value="aud">Nhật ký hoạt động</option>
+      </select>
+    </div>
+    <div class="xpane" data-x="dev"><p class="xhint">Xuất danh sách thiết bị.</p><div class="xtools"></div></div>
+    <div class="xpane" data-x="mon" hidden><p class="xhint">Theo thiết bị đang chọn ở mục Thông số thiết bị.</p><div class="xtools"></div></div>
+    <div class="xpane" data-x="cal" hidden><p class="xhint">Theo hạng mục đang chọn ở mục Hiệu chuẩn.</p><div class="xtools"></div></div>
+    <div class="xpane" data-x="filter" hidden><p class="xhint">Xuất lịch thay lọc và lịch sử.</p><div class="xtools"></div></div>
+    <div class="xpane" data-x="gas" hidden><p class="xhint">Theo tháng đang chọn ở mục Thay khí.</p><div class="xtools"></div></div>
+    <div class="xpane" data-x="ord" hidden><p class="xhint">Chọn cách xuất: một ngày, khoảng thời gian hoặc toàn bộ.</p><div class="xtools"></div></div>
+    <div class="xpane" data-x="aud" hidden><p class="xhint">Theo bộ lọc đang chọn ở mục Nhật ký.</p><div class="xtools"></div></div>
+    <div class="modal-actions"><button type="button" class="btn" id="xClose">Đóng</button></div>
+  </div>
+</div>
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)};
+  /* Gom các nút xuất Excel: ẩn ở từng trang, chuyển vào hộp thoại chung khi mở lần đầu */
+  var MAP={
+    dev:["btnExportExcel"],
+    mon:[["mon-exp-from",1],["mon-exp-to",1],"mon-export-btn","mon-export-msg"],
+    cal:[["cal-exp-from",1],["cal-exp-to",1],"cal-export-btn","cal-export-msg"],
+    filter:["exportFilterBtn"],
+    gas:[["gas-exp-from",1],["gas-exp-to",1],"gas-export-btn","gas-export-msg"],
+    ord:[["ord-xm",1],"ord-xd1","ord-xd2","ord-export-btn","ord-export-msg"],
+    aud:["aud-export"]
+  };
+  var VIEW={devices:"dev",monitor:"mon",calib:"cal",filter:"filter",gas:"gas",order:"ord",audit:"aud"};
+  var nodes={};
+  Object.keys(MAP).forEach(function(k){
+    nodes[k]=MAP[k].map(function(it){
+      var id=Array.isArray(it)?it[0]:it, el=$(id); if(!el) return null;
+      if(Array.isArray(it)) el=el.closest("div")||el;
+      el.setAttribute("data-xh","1"); el.removeAttribute("hidden"); return el;
+    }).filter(Boolean);
+  });
+  /* ẩn khung trống còn lại và chú thích cũ */
+  document.querySelectorAll(".tools").forEach(function(t){
+    var kids=Array.prototype.slice.call(t.children);
+    if(kids.length && kids.every(function(c){return c.hasAttribute("data-xh")})) t.setAttribute("data-xh","1");
+  });
+  document.querySelectorAll(".caption,#monApp div,#calApp div").forEach(function(e){
+    var tx=(e.textContent||"").trim();
+    if(e.children.length===0 && (tx==="Xuất theo thiết bị đang chọn."||tx==="Xuất theo hạng mục đang chọn.")) e.setAttribute("data-xh","1");
+  });
+  var moved=false, ov=$("xOverlay"), sel=$("xSel");
+  function moveAll(){
+    if(moved) return; moved=true;
+    Object.keys(nodes).forEach(function(k){
+      var box=ov.querySelector('.xpane[data-x="'+k+'"] .xtools');
+      nodes[k].forEach(function(el){ el.removeAttribute("data-xh"); box.appendChild(el); });
+    });
+  }
+  function showPane(){
+    ov.querySelectorAll(".xpane").forEach(function(p){ p.hidden = p.getAttribute("data-x")!==sel.value; });
+  }
+  sel.addEventListener("change",showPane);
+  function openX(){
+    moveAll();
+    var v=VIEW[document.body.getAttribute("data-view")]; if(v) sel.value=v;
+    showPane(); ov.classList.add("open");
+    var a=$("acct"); if(a){ a.classList.remove("open"); var b=$("acctBtn"); if(b) b.setAttribute("aria-expanded","false"); }
+  }
+  function closeX(){ ov.classList.remove("open"); }
+  $("btnExportAll").addEventListener("click",openX);
+  $("xClose").addEventListener("click",closeX);
+  ov.addEventListener("click",function(e){ if(e.target===ov) closeX(); });
+  document.addEventListener("keydown",function(e){ if(e.key==="Escape") closeX(); });
+})();
+</script>
+<style id="v6">
+/* ===== Tiêu đề chính in hoa ===== */
+.hx-tile b,.hx-label,header.top h1,.cab-h h3,.panel-head h2{text-transform:uppercase;letter-spacing:.02em}
+header.top h1{letter-spacing:.01em}
+/* ===== Đèn cảnh báo ===== */
+.lamps{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 14px}
+.lamp{--lc:var(--accent);display:inline-flex;align-items:center;gap:9px;padding:8px 14px;border-radius:14px;border:1px solid var(--border);background:var(--surface);color:var(--text);font:inherit;cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s,background .15s}
+.lamp:hover,.lamp:focus-visible{border-color:var(--lc);background:color-mix(in srgb,var(--lc) 7%,var(--surface))}
+.lamp .led{flex:none;width:14px;height:14px;border-radius:50%;background:var(--lc);box-shadow:0 0 0 4px color-mix(in srgb,var(--lc) 22%,transparent),0 0 12px var(--lc)}
+.lamp.zero .led{background:var(--border-strong);box-shadow:none}
+.lamp .n{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;min-width:1ch}
+.lamp .l{font-size:12.5px;color:var(--text-dim);font-weight:700;white-space:nowrap}
+.lamp.ok{--lc:#16a34a}.lamp.warn{--lc:#f59e0b}.lamp.due{--lc:#dc2626}
+.lamp-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:6px 8px 6px 14px;border:1px dashed var(--border-strong);border-radius:18px}
+.lamp-gl{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim)}
+.lampmodal{max-width:620px;width:94vw;max-height:84vh;display:flex;flex-direction:column}
+.lamp-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.lamp-head h2{margin:0;font-size:18px}
+.lamp-list{overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+.lamp-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text);font:inherit;text-align:left;cursor:pointer}
+.lamp-row:hover{border-color:var(--accent);background:var(--accent-soft)}
+.lr-main,.lr-meta{display:flex;flex-direction:column;gap:3px;min-width:0}
+.lr-meta{align-items:flex-end;text-align:right}
+.lamp-row small{color:var(--text-dim);font-size:12px}
+.lamp-empty{padding:24px;text-align:center;color:var(--text-dim)}
+/* ===== Danh sách thiết bị: lọc 1 hàng, thao tác 1 dòng ===== */
+[data-xh]{display:none!important}
+.app-main .toolbar{display:flex;flex-wrap:nowrap;align-items:center;gap:10px}
+.app-main .toolbar .field{flex:1 1 260px;min-width:140px}
+.app-main .toolbar select{flex:0 1 190px;min-width:110px}
+header.top .actions{display:flex;flex-wrap:nowrap;align-items:center;gap:8px}
+header.top .actions select{height:38px}
+header.top .actions .btn,header.top .actions select{white-space:nowrap}
+@media(max-width:700px){header.top .actions{flex-wrap:wrap}.app-main .toolbar{overflow-x:auto}}
+@media(min-width:700px){
+  .app-main table th,.app-main table td{white-space:nowrap}
+  .app-main table{table-layout:auto!important}
+  .app-main .card{overflow-x:auto}
+}
+.row-actions{flex-wrap:nowrap;white-space:nowrap}
+#maintApp .toolbar{flex-wrap:nowrap;overflow-x:auto}
+#maintApp .toolbar .filter-btn,#maintApp .toolbar .btn{white-space:nowrap;flex:none}
+/* ===== Hai loại tủ ===== */
+.cab{padding:0!important;overflow:hidden;border:2px solid color-mix(in srgb,var(--cab) 50%,var(--border))!important;background:color-mix(in srgb,var(--cab) 5%,var(--surface))!important}
+.cab-h{margin:0!important;padding:16px 20px!important;border:0!important;background:linear-gradient(135deg,var(--cab),color-mix(in srgb,var(--cab) 58%,#0f172a));color:#fff}
+.cab-h h3{margin:0;font-size:clamp(20px,2vw,26px);letter-spacing:.06em;color:#fff}
+.cab-n{color:rgba(255,255,255,.88)!important}
+.cab>.cab-part{margin:0;padding:16px 18px}
+.cab>.cab-part+.cab-part{border-top:1px dashed color-mix(in srgb,var(--cab) 40%,var(--border))}
+.cab-part-h b{color:var(--cab)}
+.cab-part-h .icon-btn{border-color:var(--cab);color:var(--cab)}
+.cab-part-h .icon-btn:hover{background:var(--cab);color:#fff}
+.cab .card-actions .icon-btn[data-act=done]{border-color:var(--cab);color:var(--cab)}
+/* ===== Hộp thoại xuất Excel ===== */
+.xmodal{max-width:560px;width:94vw}
+.xmodal .xhint{margin:8px 0 12px;color:var(--text-dim);font-size:13.5px}
+.xtools{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px}
+.xtools label{display:block;font-size:12.5px;font-weight:700;color:var(--text-dim);margin-bottom:4px}
+.xtools input,.xtools select{font:inherit;padding:9px 10px;border:1.5px solid var(--border-strong);border-radius:10px;background:var(--surface);color:var(--text)}
+.xtools .dwrap{position:relative;display:inline-block}
+.xtools [id$="export-msg"]{flex:1 1 100%}
+.xmodal{padding:20px 22px!important}
+.xmodal h2{margin:0 0 14px;font-size:18px;text-transform:uppercase;letter-spacing:.02em}
+.xmodal .mf{margin-bottom:6px}
+.xmodal .mf label{display:block;font-size:12.5px;font-weight:700;color:var(--text-dim);margin-bottom:4px}
+.xmodal .mf select{width:100%}
+.xtools .mbtn,.xtools .btn{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:12px;border:0;background:var(--accent);color:#fff;font:inherit;font-weight:700;cursor:pointer;white-space:nowrap}
+.xtools .mbtn .i,.xtools .btn .i{margin:0}
+.xmodal .modal-actions{display:flex;justify-content:flex-end;margin-top:16px}
+.app-main .toolbar select{flex:0 1 215px}
+</style>
+<style id="stripe">
+/* ================= Phong cách Stripe (theo DESIGN.md) ================= */
+:root{
+  --bg:#f6f9fc;--surface:#ffffff;--surface-2:#f6f9fc;--border:#e3e8ee;--border-strong:#c9d6e6;
+  --text:#0d253d;--text-dim:#64748d;--accent:#533afd;--accent-soft:#efedff;
+  --danger:#ea2261;--danger-soft:#fde8ef;--warn:#9b6829;--warn-soft:#f8eddb;--ok:#0e7a3a;--ok-soft:#e3f5ea;
+  --shadow:0 1px 3px rgba(0,55,112,.08);--shadow-2:0 8px 24px rgba(0,55,112,.08),0 2px 6px rgba(0,55,112,.04);
+  --radius:12px;--sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--mono:'Inter',system-ui,sans-serif;
+  --p-deep:#4434d4;--p-press:#2e2b8c;--navy:#1c1e54;--hair-in:#a8c3de;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#071a2e;--surface:#0d253d;--surface-2:#12304d;--border:#1f3d5c;--border-strong:#2c5078;
+  --text:#e8eef6;--text-dim:#8fa5bf;--accent:#8f86ff;--accent-soft:#25235c;
+  --danger:#ff6f9a;--danger-soft:#3b1727;--warn:#e8b86a;--warn-soft:#3a2d15;--ok:#5ed29a;--ok-soft:#123424;
+  --shadow:0 1px 3px rgba(0,0,0,.4);--shadow-2:0 8px 24px rgba(0,0,0,.4);--hair-in:#2c5078}}
+:root[data-theme="dark"]{
+  --bg:#071a2e;--surface:#0d253d;--surface-2:#12304d;--border:#1f3d5c;--border-strong:#2c5078;
+  --text:#e8eef6;--text-dim:#8fa5bf;--accent:#8f86ff;--accent-soft:#25235c;
+  --danger:#ff6f9a;--danger-soft:#3b1727;--warn:#e8b86a;--warn-soft:#3a2d15;--ok:#5ed29a;--ok-soft:#123424;
+  --shadow:0 1px 3px rgba(0,0,0,.4);--shadow-2:0 8px 24px rgba(0,0,0,.4);--hair-in:#2c5078}
+/* một màu chủ đạo cho mọi mục */
+body,body[data-view]{--a-l:#533afd;--as-l:#efedff;--a-d:#8f86ff;--as-d:#25235c}
+body{font-family:var(--sans);font-weight:400;font-feature-settings:"ss01","tnum";font-variant-numeric:tabular-nums;color:var(--text);background:var(--bg)}
+/* nền gradient mesh phía trên */
+#appBg{display:none!important}
+body::before{content:"";position:fixed;left:0;right:0;top:0;height:min(52vh,460px);z-index:0;pointer-events:none;opacity:.5;
+  background:
+   radial-gradient(520px 280px at 6% -4%,#f5e9d4 0%,transparent 70%),
+   radial-gradient(520px 300px at 26% -8%,#ffc49b 0%,transparent 70%),
+   radial-gradient(560px 320px at 50% -4%,#b9b9f9 0%,transparent 70%),
+   radial-gradient(520px 300px at 74% -8%,#665efd 0%,transparent 72%),
+   radial-gradient(560px 320px at 98% -4%,#f96bee 0%,#ea2261 38%,transparent 74%);
+  -webkit-mask-image:linear-gradient(#000 35%,transparent);mask-image:linear-gradient(#000 35%,transparent)}
+:root[data-theme="dark"] body::before{opacity:.22}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) body::before{opacity:.22}}
+/* chữ: tiêu đề mảnh, tracking âm */
+h1,h2,h3,.top h1,.hx-label+*{font-weight:300}
+header.top h1{font-weight:300;font-size:clamp(26px,2.6vw,34px);letter-spacing:.01em;line-height:1.1}
+header.top .sub{color:var(--text-dim);font-weight:400}
+.panel-head h2,.cab-h h3{font-weight:300}
+/* nút: viên thuốc */
+.btn,.mbtn,.icon-btn,.filter-btn,.sec-btn{border-radius:9999px}
+.btn,.mbtn.alt,.icon-btn{background:var(--surface);color:var(--accent);border:1px solid var(--accent);font-weight:400;padding:8px 16px;box-shadow:none}
+.btn:hover,.mbtn.alt:hover,.icon-btn:hover{background:var(--accent-soft)}
+.btn.primary,.mbtn:not(.alt),.auth-go{background:var(--accent);color:#fff;border:1px solid var(--accent);font-weight:400}
+.btn.primary:hover,.mbtn:not(.alt):hover,.auth-go:hover{background:var(--p-deep);border-color:var(--p-deep)}
+.btn.primary:active,.mbtn:not(.alt):active{background:var(--p-press)}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--text-dim);padding:7px 10px}
+.btn.ghost:hover{background:var(--accent-soft);color:var(--accent)}
+.btn.ghost.danger:hover,.btn.danger:hover,.icon-btn.danger:hover{background:var(--danger-soft);color:var(--danger);border-color:var(--danger)}
+.btn.danger,.icon-btn.danger{color:var(--danger);border-color:var(--danger)}
+.filter-btn{font-weight:400;color:var(--text-dim);border-color:var(--border-strong)}
+.filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+/* ô nhập */
+input,select,textarea,.inp{border-radius:6px!important;border:1px solid var(--hair-in)!important;background:var(--surface);color:var(--text);font-weight:400}
+input:focus,select:focus,textarea:focus,.inp:focus{outline:0;border-color:var(--accent)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
+input[type=checkbox],input[type=radio]{border:0!important;box-shadow:none}
+/* thẻ, bảng, hộp thoại */
+.card,.panel,.cab,.lamp,.lamp-row,.stat-chip,.mon-bar,.modal,.am-menu,.colpick-panel{border-radius:12px}
+.card,.panel,.stat-chip,.mon-bar{border:1px solid var(--border);box-shadow:var(--shadow)}
+.modal,.am-menu,.colpick-panel{box-shadow:var(--shadow-2)}
+.modal{border-radius:16px}
+thead th,.print-head,th{color:var(--text-dim);font-weight:500;letter-spacing:.06em}
+.badge{border-radius:9999px;font-weight:500}
+.stat .n,.stat-chip .n,.lamp .n{font-weight:300}
+.lamp .n{font-size:24px}
+/* thanh trên cùng */
+.mainnav,.opsnav{border:1px solid var(--border);box-shadow:var(--shadow-2);background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(8px)}
+.mainnav button,.opsnav button{border-radius:9999px;font-weight:400}
+.brand-logo{background:linear-gradient(135deg,var(--accent),var(--navy))!important;border-radius:10px}
+/* ===== Trang chủ ===== */
+.hx-hero{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin:6px 0 22px}
+.hx-pill{padding:4px 10px;border-radius:9999px;background:#b9b9f9;color:var(--p-deep);font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase}
+:root[data-theme="dark"] .hx-pill{background:var(--accent-soft);color:var(--accent)}
+.hx-hero h1{margin:0;font-size:clamp(32px,4vw,52px);font-weight:300;letter-spacing:-.03em;line-height:1.05;text-transform:none}
+.hx-hero p{margin:0;color:var(--text-dim);font-size:16px}
+#homeApp .hx{min-height:max(420px,calc(100vh - 330px))}
+.hx-label{font-size:10px;font-weight:500;letter-spacing:.14em;color:var(--text-dim)}
+.hx-tile{background:var(--surface)!important;color:var(--text);border:1px solid var(--border);box-shadow:var(--shadow);border-top:1px solid var(--border);border-radius:12px;padding:clamp(20px,2.2vw,32px);filter:none!important}
+.hx-tile::after{display:none}
+.hx-tile:hover,.hx-tile:focus-visible{transform:translateY(-2px);box-shadow:var(--shadow-2);border-color:color-mix(in srgb,var(--t) 45%,var(--border))}
+.hx-ic{background:color-mix(in srgb,var(--t) 12%,transparent);color:var(--t);border-radius:12px;width:clamp(44px,3.6vw,56px);height:clamp(44px,3.6vw,56px)}
+.hx-tile b{font-weight:300;font-size:clamp(18px,1.9vw,26px);letter-spacing:.02em;color:var(--text)}
+.hx-tile small{color:var(--text-dim);opacity:1;font-weight:400}
+.hx-cnt{background:#b9b9f9;color:var(--p-deep);font-weight:500;font-size:13px;min-width:30px;padding:3px 10px}
+:root[data-theme="dark"] .hx-cnt{background:var(--accent-soft);color:var(--accent)}
+#filterTileWarn{background:var(--danger-soft);color:var(--danger);font-weight:500}
+#filterTileWarn.danger{color:var(--danger)}
+/* thẻ nổi bật: nền xanh navy như thẻ Pricing featured của Stripe */
+.hx-feat{background:var(--navy)!important;border-color:var(--navy);color:#fff;
+  background-image:radial-gradient(360px 220px at 100% 0%,rgba(249,107,238,.45),transparent 70%),radial-gradient(300px 200px at 70% -10%,rgba(102,94,253,.7),transparent 70%)!important}
+.hx-feat b{color:#fff}.hx-feat small{color:rgba(255,255,255,.78)}
+.hx-feat .hx-ic{background:rgba(255,255,255,.14);color:#fff}
+.hx-feat .hx-cnt{background:rgba(255,255,255,.18);color:#fff}
+.hx-feat #filterTileWarn{background:#fff;color:var(--danger)}
+/* đèn cảnh báo */
+.lamp.ok{--lc:#15be53}.lamp.warn{--lc:#e8933a}.lamp.due{--lc:#ea2261}
+.lamp{box-shadow:var(--shadow);font-weight:400}
+.lamp .l{font-weight:400}
+.lamp-group{border-color:var(--border-strong)}
+/* hai tủ */
+.cab{border-width:1px!important}
+.cab-h h3{font-weight:300;letter-spacing:.08em}
+.sec-btn{font-weight:400}
+.sec-btn.active{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+.xtools .mbtn,.xtools .btn{background:var(--accent);color:#fff;border:1px solid var(--accent)}
+.btn.ghost.danger{border-color:transparent;background:transparent;color:var(--text-dim)}
+.btn.ghost.danger:hover{background:var(--danger-soft);color:var(--danger)}
+:root[data-theme="dark"] .hx-ic{color:color-mix(in srgb,var(--t) 45%,#fff);background:color-mix(in srgb,var(--t) 28%,transparent)}
+:root[data-theme="dark"] .brand-logo{color:#fff!important}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .hx-ic{color:color-mix(in srgb,var(--t) 45%,#fff);background:color-mix(in srgb,var(--t) 28%,transparent)}:root:not([data-theme="light"]) .brand-logo{color:#fff!important}}
 </style>
 </body>
 </html>
