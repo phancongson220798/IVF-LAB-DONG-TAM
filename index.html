@@ -2581,11 +2581,11 @@ window.LabChart=(function(){
       var ch = (c.chambers||[]).length
         ? '<span class="mi-ch"><span class="mi-bl">Buồng</span>' + c.chambers.map(function(n){ return '<span class="ch-num">'+n+'</span>'; }).join('') + '</span>'
         : '';
-      var dtxt = c.daysLeft < 0 ? 'quá ' + Math.abs(c.daysLeft) + ' ngày' : (c.daysLeft === 0 ? 'hôm nay' : 'còn ' + c.daysLeft + ' ngày');
+      var dtxt = c.daysLeft < 0 ? 'quá <b>' + Math.abs(c.daysLeft) + '</b> ngày' : (c.daysLeft === 0 ? '<b>Hôm nay</b>' : 'còn <b>' + c.daysLeft + '</b> ngày');
       return '<div class="mi '+c.status+'">' +
         '<div class="mi-main">' + ch + '<span class="part-pill part-'+c.part+'">'+escapeHtml(partLabel(c.part))+'</span></div>' +
-        '<div class="mi-due"><div><b class="mono">'+fmtD(c.nextDue)+'</b> <span class="mi-days '+c.status+'">'+dtxt+'</span></div>' +
-        '<small>Gần nhất '+fmtD(c.lastDate)+' · '+intervalText(c.intervalVal, c.intervalUnit)+'</small></div>' +
+        '<div class="mi-due"><div class="mi-date mono">'+fmtD(c.nextDue)+'</div><span class="mi-days '+c.status+'">'+dtxt+'</span></div>' +
+        '<div class="mi-last"><div>'+fmtD(c.lastDate)+'</div><small>Chu kỳ '+intervalText(c.intervalVal, c.intervalUnit)+'</small></div>' +
         '<div class="mi-act">' +
           '<button class="icon-btn" data-act="done" data-id="'+c.id+'" title="Đã làm hôm nay" aria-label="Đã làm hôm nay"><i class="i i-check"></i></button>' +
           '<button class="icon-btn" data-act="edit" data-id="'+c.id+'" title="Sửa" aria-label="Sửa"><i class="i i-edit"></i></button>' +
@@ -2606,7 +2606,7 @@ window.LabChart=(function(){
       }
       return '<section class="cab" data-cab="'+fam.id+'" style="--cab:'+fam.color+'"><header class="cab-h"><h3>'+fam.label+'</h3><span class="cab-n">'+inFam.length+' mục</span>' +
         '<button class="icon-btn" data-add-cab="'+fam.id+'">+ Thêm</button></header>' +
-        '<div class="cab-part">'+rows+'</div></section>';
+        '<div class="cab-part"><div class="uhead"><span>Buồng / Bộ phận</span><span>Hạn tiếp theo</span><span>Lần gần nhất</span></div>'+rows+'</div></section>';
     }).join('') + '</div>';
   }
 
@@ -5147,6 +5147,24 @@ thead th,.print-head,th{color:var(--text-dim);font-weight:500;letter-spacing:.06
 .mi-act .icon-btn{padding:4px 7px}
 .mi-act .icon-btn[data-act=done]{border-color:var(--cab);color:var(--cab)}
 @media(max-width:620px){.ulab{flex-basis:62px;font-size:13px}.mi{flex-basis:100%}}
+/* ===== Thẳng cột + nhấn mạnh số ngày còn lại ===== */
+.cab{--mi-cols:178px 128px minmax(0,1fr) 98px}
+.uitems{flex-direction:column;flex-wrap:nowrap;gap:5px}
+.mi{flex:none;display:grid;grid-template-columns:var(--mi-cols);column-gap:10px;align-items:center;padding:6px 8px 6px 10px}
+.mi-main{align-items:flex-start}
+.ch-num{width:21px;height:21px;font-size:12px}
+.mi-due{display:flex;flex-direction:column;align-items:flex-start;gap:3px;font-size:inherit}
+.mi-date{font-weight:700;font-size:13.5px;line-height:1.1}
+.mi-days{display:inline-block;padding:2px 10px;border-radius:8px;font-size:13px;font-weight:700;line-height:1.35;white-space:nowrap}
+.mi-days b{font-size:19px;font-weight:800;line-height:1;margin:0 1px}
+.mi-days.ok{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}
+.mi-days.soon{background:color-mix(in srgb,var(--warn) 24%,transparent);color:var(--warn)}
+.mi-days.overdue{background:var(--danger);color:#fff}
+.mi-last{font-size:12.5px;line-height:1.35;min-width:0}
+.mi-last small{display:block;font-size:11px;color:var(--text-dim)}
+.mi-act{justify-content:flex-end}
+.uhead{display:grid;grid-template-columns:var(--mi-cols);column-gap:10px;margin-left:82px;padding:0 8px 0 16px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-dim)}
+@media(max-width:620px){.uhead{display:none}.mi{grid-template-columns:1fr 1fr;row-gap:6px}.mi-act{grid-column:1/-1;justify-content:flex-start}}
 </style>
 </body>
 </html>
