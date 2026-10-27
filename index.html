@@ -1578,9 +1578,16 @@ window.LabChart=(function(){
       <label>Nhóm</label>
       <select class="inp" id="fGroup"><option value="incubator">Tủ nuôi cấy</option><option value="periodic">Lọc định kỳ</option></select>
     </div>
-    <div class="row2" id="fCabWrap">
-      <div class="mf"><label>Tủ</label><select class="inp" id="fCabinet"><option value="BT37">Tủ BT37</option><option value="GERI">Tủ GERI</option></select></div>
-      <div class="mf"><label>Bộ phận</label><select class="inp" id="fPart"><option value="humidifier">Bình ẩm</option><option value="filter">Lọc</option></select></div>
+    <div id="fCabWrap">
+      <div class="row2">
+        <div class="mf"><label>Tủ</label><select class="inp" id="fCabinet"><option value="">— Chọn tủ —</option><optgroup label="Tủ GERI"><option value="GERI-1">GERI 1</option><option value="GERI-2">GERI 2</option><option value="GERI-3">GERI 3</option><option value="GERI-4">GERI 4</option><option value="GERI-5">GERI 5</option></optgroup><optgroup label="BT37"><option value="BT37-1">BT37 1</option><option value="BT37-2">BT37 2</option><option value="BT37-3">BT37 3</option><option value="BT37-4">BT37 4</option><option value="BT37-5">BT37 5</option></optgroup></select></div>
+        <div class="mf"><label>Bộ phận</label><select class="inp" id="fPart"><option value="humidifier">Bình ẩm</option><option value="filter">Lọc</option><option value="both">Bình ẩm + Lọc</option></select></div>
+      </div>
+      <div class="mf" id="fChamberWrap">
+        <label>Buồng <span class="chb-tools"><a href="#" id="fChAll">Chọn tất cả</a> · <a href="#" id="fChNone">Bỏ chọn</a></span></label>
+        <div class="chb-grid" id="fChambers"><label class="chb"><input type="checkbox" value="1"><span>Buồng 1</span></label><label class="chb"><input type="checkbox" value="2"><span>Buồng 2</span></label><label class="chb"><input type="checkbox" value="3"><span>Buồng 3</span></label><label class="chb"><input type="checkbox" value="4"><span>Buồng 4</span></label><label class="chb"><input type="checkbox" value="5"><span>Buồng 5</span></label><label class="chb"><input type="checkbox" value="6"><span>Buồng 6</span></label></div>
+        <div class="hint">Có thể chọn nhiều buồng trong cùng một tủ.</div>
+      </div>
     </div>
     <div class="mf" id="fNameWrap">
       <label>Tên thiết bị</label>
@@ -1590,7 +1597,7 @@ window.LabChart=(function(){
       <label>Vị trí</label>
       <input class="inp" type="text" id="fLocation">
     </div>
-    <div class="mf">
+    <div class="mf" id="fTypeWrap">
       <label id="fTypeLabel">Hạng mục bảo trì</label>
       <input class="inp" type="text" id="fType">
     </div>
@@ -2362,20 +2369,33 @@ window.LabChart=(function(){
     filter:      { label:'Thay lọc định kỳ', typeLabel:'Loại lọc', dateLabel:'Ngày thay lọc gần nhất', addLabel:'+ Thêm lịch thay lọc' }
   };
 
-  var CABINETS = [{id:'BT37', label:'Tủ BT37', color:'#d9702a'}, {id:'GERI', label:'Tủ GERI', color:'#533afd'}];
-  var PARTS = [{id:'humidifier', label:'Bình ẩm', icon:''}, {id:'filter', label:'Lọc', icon:''}];
-  function cabLabel(id){ var c = CABINETS.filter(function(x){ return x.id === id; })[0]; return c ? c.label : (id || '—'); }
+  var FAMILIES = [{id:'GERI', label:'GERI', short:'GERI', color:'#533afd', chambers:6, units:5}, {id:'BT37', label:'BT37', short:'BT37', color:'#d9702a', chambers:0, units:5}];
+  var PARTS = [{id:'humidifier', label:'Bình ẩm', icon:''}, {id:'filter', label:'Lọc', icon:''}, {id:'both', label:'Bình ẩm + Lọc', icon:''}];
+  function cabFamily(id){ return String(id||'').split('-')[0]; }
+  function cabNum(id){ var n = parseInt(String(id||'').split('-')[1], 10); return isNaN(n) ? 0 : n; }
+  function famOf(id){ return FAMILIES.filter(function(f){ return f.id === cabFamily(id); })[0]; }
+  function cabLabel(id){
+    var f = famOf(id); if(!f) return id || '—';
+    var n = cabNum(id);
+    return n ? f.label + ' ' + n : f.label + ' (chưa chọn tủ)';
+  }
   function partLabel(id){ var p = PARTS.filter(function(x){ return x.id === id; })[0]; return p ? p.label : (id || '—'); }
-  // Xác định nhóm / tủ / bộ phận. Dữ liệu cũ chưa có các trường này thì suy ra từ tên.
+  function chambersText(ch){ ch = (ch||[]).slice().sort(function(a,b){ return a-b; }); return ch.length ? 'Buồng ' + ch.join(', ') : ''; }
+  function autoName(cabinet, chambers, part){
+    var t = cabLabel(cabinet), c = chambersText(chambers);
+    return t + (c ? ' · ' + c : '') + ' · ' + partLabel(part);
+  }
+  // Xác định nhóm / tủ / buồng / bộ phận. Dữ liệu cũ (tủ "GERI"/"BT37" chưa chọn số tủ) vẫn hiển thị, chờ người dùng sửa để chọn tủ.
   function classify(o){
     var txt = (String(o.type||'') + ' ' + String(o.name||'')).normalize('NFC').toLowerCase();
-    var group = o.group, cabinet = o.cabinet, part = o.part;
+    var group = o.group, cabinet = o.cabinet, part = o.part, chambers = [];
     if(!group) group = /bt37|geri|c4g4/.test(txt) ? 'incubator' : 'periodic';
     if(group === 'incubator'){
       if(!cabinet) cabinet = /bt37/.test(txt) ? 'BT37' : 'GERI';
       if(!part) part = /ẩm/.test(txt) ? 'humidifier' : 'filter';
+      chambers = Array.isArray(o.chambers) ? o.chambers.map(Number).filter(function(n){ return n > 0; }).sort(function(a,b){ return a-b; }) : [];
     } else { cabinet = ''; part = ''; }
-    return { group: group, cabinet: cabinet, part: part };
+    return { group: group, cabinet: cabinet, part: part, chambers: chambers, family: cabFamily(cabinet) };
   }
   function updateAddLabel(){
     var b = document.getElementById('addBtn');
@@ -2536,13 +2556,10 @@ window.LabChart=(function(){
       '<div class="card '+c.status+'">' +
         '<div class="gauge" style="--pct:'+c.pct+'; --gcolor:'+statusColor[c.status]+';">' + daysLabel + '</div>' +
         '<div class="card-body">' +
-          '<div class="card-top">' +
-            '<div><p class="card-name">'+escapeHtml(c.name)+'</p><p class="card-loc">'+escapeHtml(c.group==='incubator' ? (cabLabel(c.cabinet) + ' · ' + partLabel(c.part)) : CATEGORY_INFO.filter.label)+'</p></div>' +
-            '<span class="badge '+c.status+'">'+statusLabel[c.status]+'</span>' +
-          '</div>' +
+          '<div class="card-top"><div><p class="card-name">'+escapeHtml(c.name)+'</p><p class="card-loc">'+escapeHtml(CATEGORY_INFO.filter.label)+'</p></div>' +
+          '<span class="badge '+c.status+'">'+statusLabel[c.status]+'</span></div>' +
           '<div class="card-meta">' +
             '<div><span class="lbl">'+CATEGORY_INFO[c.category].typeLabel+':</span> <b>'+escapeHtml(c.type||c.name||'—')+'</b></div>' +
-            (c.category==='filter' ? '' : '<div><span class="lbl">Vị trí:</span> '+escapeHtml(c.location||'—')+'</div>') +
             '<div><span class="lbl">Chu kỳ:</span> '+intervalText(c.intervalVal, c.intervalUnit)+'</div>' +
             '<div><span class="lbl">Lần gần nhất:</span> '+fmtD(c.lastDate)+'</div>' +
             '<div><span class="lbl">Hạn tiếp theo:</span> <b class="mono">'+fmtD(c.nextDue)+'</b></div>' +
@@ -2559,16 +2576,37 @@ window.LabChart=(function(){
       wrap.innerHTML = '<div class="grid">' + filtered.map(cardFn).join('') + '</div>';
       return;
     }
-    wrap.innerHTML = '<div class="cab-grid">' + CABINETS.map(function(cb){
-      var inCab = filtered.filter(function(c){ return c.cabinet === cb.id; });
-      return '<section class="cab" data-cab="'+cb.id+'" style="--cab:'+cb.color+'"><header class="cab-h"><h3>'+cb.label+'</h3><span class="cab-n">'+inCab.length+' mục</span></header>' +
-        PARTS.map(function(pt){
-          var arr = inCab.filter(function(c){ return c.part === pt.id; });
-          return '<div class="cab-part"><div class="cab-part-h"><b>'+pt.icon+' '+pt.label+'</b>' +
-            '<button class="icon-btn" data-add-cab="'+cb.id+'" data-add-part="'+pt.id+'">+ Thêm</button></div>' +
-            (arr.length ? '<div class="grid">' + arr.map(cardFn).join('') + '</div>' : '<div class="cab-empty">'+(tabItems.length ? 'Không có mục nào ở bộ lọc này' : 'Chưa có mục nào')+'</div>') +
-            '</div>';
-        }).join('') + '</section>';
+    // Tủ nuôi cấy: mỗi tủ là 1 hàng gọn; GERI và BT37 đặt cạnh nhau để vừa 1 màn hình
+    var miFn = function(c){
+      var ch = (c.chambers||[]).length
+        ? '<span class="mi-ch"><span class="mi-bl">Buồng</span>' + c.chambers.map(function(n){ return '<span class="ch-num">'+n+'</span>'; }).join('') + '</span>'
+        : '';
+      var dtxt = c.daysLeft < 0 ? 'quá ' + Math.abs(c.daysLeft) + ' ngày' : (c.daysLeft === 0 ? 'hôm nay' : 'còn ' + c.daysLeft + ' ngày');
+      return '<div class="mi '+c.status+'">' +
+        '<div class="mi-main">' + ch + '<span class="part-pill part-'+c.part+'">'+escapeHtml(partLabel(c.part))+'</span></div>' +
+        '<div class="mi-due"><div><b class="mono">'+fmtD(c.nextDue)+'</b> <span class="mi-days '+c.status+'">'+dtxt+'</span></div>' +
+        '<small>Gần nhất '+fmtD(c.lastDate)+' · '+intervalText(c.intervalVal, c.intervalUnit)+'</small></div>' +
+        '<div class="mi-act">' +
+          '<button class="icon-btn" data-act="done" data-id="'+c.id+'" title="Đã làm hôm nay" aria-label="Đã làm hôm nay"><i class="i i-check"></i></button>' +
+          '<button class="icon-btn" data-act="edit" data-id="'+c.id+'" title="Sửa" aria-label="Sửa"><i class="i i-edit"></i></button>' +
+          '<button class="icon-btn danger" data-act="del" data-id="'+c.id+'" title="Xoá" aria-label="Xoá"><i class="i i-trash"></i></button>' +
+        '</div></div>';
+    };
+    wrap.innerHTML = '<div class="cab-grid">' + FAMILIES.map(function(fam){
+      var inFam = filtered.filter(function(c){ return c.family === fam.id; });
+      var units = {};
+      inFam.forEach(function(c){ var n = cabNum(c.cabinet); (units[n] = units[n] || []).push(c); });
+      var rows = '';
+      if(units[0]) rows += '<div class="urow legacy"><div class="ulab">Chưa chọn tủ<small>bấm Sửa để chọn</small></div><div class="uitems">' + units[0].map(miFn).join('') + '</div></div>';
+      for(var n = 1; n <= fam.units; n++){
+        var arr = (units[n] || []).sort(function(a,b){ return a.daysLeft - b.daysLeft; });
+        rows += '<div class="urow"><div class="ulab">'+escapeHtml(fam.label+' '+n)+'</div>' +
+          '<div class="uitems">' + (arr.length ? arr.map(miFn).join('') : '<span class="u-empty">Trống</span>') + '</div>' +
+          '<button class="icon-btn u-add" data-add-cab="'+fam.id+'-'+n+'" title="Thêm vào '+escapeHtml(fam.label+' '+n)+'" aria-label="Thêm">+</button></div>';
+      }
+      return '<section class="cab" data-cab="'+fam.id+'" style="--cab:'+fam.color+'"><header class="cab-h"><h3>'+fam.label+'</h3><span class="cab-n">'+inFam.length+' mục</span>' +
+        '<button class="icon-btn" data-add-cab="'+fam.id+'">+ Thêm</button></header>' +
+        '<div class="cab-part">'+rows+'</div></section>';
     }).join('') + '</div>';
   }
 
@@ -2588,7 +2626,7 @@ window.LabChart=(function(){
       var title = h.category === 'filter' ? h.type : h.name;
       var subParts = [];
       if(h.category !== 'filter' && h.location) subParts.push(h.location);
-      var hc = classify(h); if(hc.group === 'incubator') subParts.push(cabLabel(hc.cabinet) + ' · ' + partLabel(hc.part));
+      var hc = classify(h); if(hc.group === 'incubator' && !hc.chambers.length && h.type !== autoName(hc.cabinet, hc.chambers, hc.part)) subParts.push(cabLabel(hc.cabinet) + ' · ' + partLabel(hc.part));
       if(h.notes) subParts.push(h.notes);
       return '' +
       '<div class="history-row">' +
@@ -2623,7 +2661,7 @@ window.LabChart=(function(){
     state.history.unshift({
       id: uid(),
       category: item.category,
-      group: classify(item).group, cabinet: classify(item).cabinet, part: classify(item).part,
+      group: classify(item).group, cabinet: classify(item).cabinet, part: classify(item).part, chambers: classify(item).chambers,
       itemId: item.id,
       name: item.name,
       type: item.type || '',
@@ -2727,10 +2765,11 @@ window.LabChart=(function(){
     document.getElementById('fName').value = item ? (item.name||'') : '';
     document.getElementById('fLocation').value = item ? (item.location||'') : '';
     document.getElementById('fPerformedBy').value = item ? (item.performedBy||'') : '';
-    var cl = item ? classify(item) : { group: preset.group || state.section, cabinet: preset.cabinet || 'BT37', part: preset.part || 'humidifier' };
+    var cl = item ? classify(item) : { group: preset.group || state.section, cabinet: preset.cabinet || '', part: preset.part || 'humidifier', chambers: [] };
     document.getElementById('fGroup').value = cl.group;
-    document.getElementById('fCabinet').value = cl.cabinet || 'BT37';
+    document.getElementById('fCabinet').value = cabNum(cl.cabinet) ? cl.cabinet : '';
     document.getElementById('fPart').value = cl.part || 'humidifier';
+    document.querySelectorAll('#fChambers input').forEach(function(cb){ cb.checked = (cl.chambers||[]).indexOf(Number(cb.value)) > -1; });
     syncGroupFields();
     document.getElementById('fType').value = item ? item.type : '';
     document.getElementById('fLastDate').value = item ? item.lastDate : new Date().toISOString().slice(0,10);
@@ -2739,14 +2778,20 @@ window.LabChart=(function(){
     document.getElementById('fNotes').value = item ? (item.notes||'') : '';
     overlay.classList.add('show');
     document.body.classList.add('modal-open');
-    (cat === 'filter' ? document.getElementById('fType') : document.getElementById('fName')).focus();
+    (cl.group === 'incubator' ? document.getElementById('fCabinet') : document.getElementById('fType')).focus();
   }
   function syncGroupFields(){
     var inc = document.getElementById('fGroup').value === 'incubator';
     document.getElementById('fCabWrap').style.display = inc ? '' : 'none';
-    document.getElementById('fTypeLabel').textContent = inc ? 'Tên mục (bình ẩm / lọc)' : CATEGORY_INFO.filter.typeLabel;
+    document.getElementById('fTypeWrap').style.display = inc ? 'none' : '';
+    var fam = famOf(document.getElementById('fCabinet').value);
+    document.getElementById('fChamberWrap').style.display = (inc && fam && fam.chambers) ? '' : 'none';
+    document.getElementById('fTypeLabel').textContent = CATEGORY_INFO.filter.typeLabel;
   }
   document.getElementById('fGroup').onchange = syncGroupFields;
+  document.getElementById('fCabinet').onchange = syncGroupFields;
+  document.getElementById('fChAll').onclick = function(e){ e.preventDefault(); document.querySelectorAll('#fChambers input').forEach(function(c){ c.checked = true; }); };
+  document.getElementById('fChNone').onclick = function(e){ e.preventDefault(); document.querySelectorAll('#fChambers input').forEach(function(c){ c.checked = false; }); };
   function closeModal(){ overlay.classList.remove('show'); document.body.classList.remove('modal-open'); }
 
   document.getElementById('addBtn').onclick = function(){ openModal(null); };
@@ -2755,15 +2800,25 @@ window.LabChart=(function(){
 
   document.getElementById('saveBtn').onclick = function(){
     var category = document.getElementById('fCategory').value;
-    var name = document.getElementById('fName').value.trim();
+    var group = document.getElementById('fGroup').value;
+    var inc = group === 'incubator';
     var type = document.getElementById('fType').value.trim();
     var lastDate = document.getElementById('fLastDate').value;
     var intervalVal = Number(document.getElementById('fIntervalVal').value);
+    var cabinet = '', part = '', chambers = [], name = type;
 
-    if(category === 'filter'){
-      if(!type){ toast('Nhập loại lọc', 'err'); return; }
-    } else if(!name){
-      toast('Nhập tên thiết bị', 'err'); return;
+    if(inc){
+      cabinet = document.getElementById('fCabinet').value;
+      part = document.getElementById('fPart').value;
+      if(!cabinet){ toast('Chọn tủ', 'err'); return; }
+      var fam = famOf(cabinet);
+      if(fam && fam.chambers){
+        chambers = Array.prototype.slice.call(document.querySelectorAll('#fChambers input:checked')).map(function(c){ return Number(c.value); }).sort(function(a,b){ return a-b; });
+        if(!chambers.length){ toast('Chọn ít nhất 1 buồng', 'err'); return; }
+      }
+      name = type = autoName(cabinet, chambers, part);
+    } else if(!type){
+      toast('Nhập loại lọc', 'err'); return;
     }
     if(!lastDate){ toast('Chọn ngày gần nhất', 'err'); return; }
     if(!intervalVal || intervalVal <= 0){ toast('Chu kỳ phải lớn hơn 0', 'err'); return; }
@@ -2773,12 +2828,13 @@ window.LabChart=(function(){
     var data = {
       id: id || uid(),
       category: category,
-      name: category === 'filter' ? type : name,
-      location: category === 'filter' ? '' : document.getElementById('fLocation').value.trim(),
+      name: name,
+      location: '',
       performedBy: document.getElementById('fPerformedBy').value.trim(),
-      group: document.getElementById('fGroup').value,
-      cabinet: document.getElementById('fGroup').value === 'incubator' ? document.getElementById('fCabinet').value : '',
-      part: document.getElementById('fGroup').value === 'incubator' ? document.getElementById('fPart').value : '',
+      group: group,
+      cabinet: cabinet,
+      part: part,
+      chambers: chambers,
       type: type,
       lastDate: lastDate,
       intervalVal: intervalVal,
@@ -2801,7 +2857,7 @@ window.LabChart=(function(){
 
   document.getElementById('listWrap').addEventListener('click', function(e){
     var addCab = e.target.closest('button[data-add-cab]');
-    if(addCab){ openModal(null, { group:'incubator', cabinet:addCab.getAttribute('data-add-cab'), part:addCab.getAttribute('data-add-part') }); return; }
+    if(addCab){ openModal(null, { group:'incubator', cabinet:(function(v){ return v.indexOf('-') > -1 ? v : v + '-1'; })(addCab.getAttribute('data-add-cab')), part:'humidifier' }); return; }
     var histEditBtn = e.target.closest('button[data-hist-edit]');
     if(histEditBtn){
       var eid = histEditBtn.getAttribute('data-hist-edit');
@@ -2811,7 +2867,7 @@ window.LabChart=(function(){
           title: 'Sửa lịch sử thay lọc',
           fields: [
             {key:'date', label:'Ngày thay', type:'date', value:he.date, req:true},
-            {key:'type', label:'Loại lọc', value:he.type},
+            {key:'type', label:'Hạng mục', value:he.type},
             {key:'performedBy', label:'Người thực hiện', value:he.performedBy},
             {key:'notes', label:'Ghi chú', type:'textarea', value:he.notes}
           ],
@@ -2883,17 +2939,17 @@ window.LabChart=(function(){
     if(!state.items.length){ toast('Chưa có dữ liệu để xuất', 'err'); return; }
     var list = state.items.map(function(it){ return Object.assign({}, it, computeItem(it), classify(it)); })
       .sort(function(a,b){ return a.daysLeft - b.daysLeft; });
-    var rows = [['TT','Nhóm','Tủ','Bộ phận','Loại lọc','Người thực hiện','Chu kỳ','Lần gần nhất','Hạn tiếp theo','Còn lại (ngày)','Trạng thái','Ghi chú']]
+    var rows = [['TT','Nhóm','Tủ','Buồng','Bộ phận','Hạng mục / Loại lọc','Người thực hiện','Chu kỳ','Lần gần nhất','Hạn tiếp theo','Còn lại (ngày)','Trạng thái','Ghi chú']]
       .concat(list.map(function(c,i){
-        return [i+1, c.group==='incubator' ? 'Tủ nuôi cấy' : 'Lọc định kỳ', c.group==='incubator' ? cabLabel(c.cabinet) : '', c.group==='incubator' ? partLabel(c.part) : '', c.type||c.name||'', c.performedBy||'', intervalText(c.intervalVal,c.intervalUnit), fmt(c.lastDate), fmt(c.nextDue), c.daysLeft, statusLabel[c.status], c.notes||''];
+        return [i+1, c.group==='incubator' ? 'Tủ nuôi cấy' : 'Lọc định kỳ', c.group==='incubator' ? cabLabel(c.cabinet) : '', c.group==='incubator' ? chambersText(c.chambers) : '', c.group==='incubator' ? partLabel(c.part) : '', c.type||c.name||'', c.performedBy||'', intervalText(c.intervalVal,c.intervalUnit), fmt(c.lastDate), fmt(c.nextDue), c.daysLeft, statusLabel[c.status], c.notes||''];
       }));
     var ws = XLSX.utils.aoa_to_sheet(rows);
-    ws['!cols'] = [6,14,10,12,26,20,12,14,14,14,14,30].map(function(w){ return {wch:w}; });
+    ws['!cols'] = [6,14,18,18,14,40,20,12,14,14,14,14,30].map(function(w){ return {wch:w}; });
     var wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Thay lọc định kỳ');
     var hist = state.history.slice().sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); });
     if(hist.length){
-      var hr = [['Ngày','Loại lọc','Người thực hiện','Ghi chú']].concat(hist.map(function(h){
+      var hr = [['Ngày','Hạng mục / Loại lọc','Người thực hiện','Ghi chú']].concat(hist.map(function(h){
         return [fmt(h.date), h.type||h.name||'', h.performedBy||'', h.notes||''];
       }));
       var ws2 = XLSX.utils.aoa_to_sheet(hr);
@@ -5054,6 +5110,43 @@ thead th,.print-head,th{color:var(--text-dim);font-weight:500;letter-spacing:.06
 :root[data-theme="dark"] .hx-ic{color:color-mix(in srgb,var(--t) 45%,#fff);background:color-mix(in srgb,var(--t) 28%,transparent)}
 :root[data-theme="dark"] .brand-logo{color:#fff!important}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .hx-ic{color:color-mix(in srgb,var(--t) 45%,#fff);background:color-mix(in srgb,var(--t) 28%,transparent)}:root:not([data-theme="light"]) .brand-logo{color:#fff!important}}
+/* ===== Chọn tủ / buồng ===== */
+.chb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.chb{display:flex!important;align-items:center;gap:8px;margin:0!important;padding:9px 10px;border:1.5px solid var(--border-strong);border-radius:10px;cursor:pointer;color:var(--text)!important;font-size:13.5px!important;background:var(--surface)}
+.chb input{width:auto!important;flex:none;margin:0;padding:0;accent-color:#533afd}
+.chb:has(input:checked){border-color:#533afd;background:color-mix(in srgb,#533afd 12%,var(--surface));font-weight:700}
+.chb-tools{float:right;font-weight:500}.chb-tools a{color:#533afd;text-decoration:none}
+@media(max-width:520px){.chb-grid{grid-template-columns:repeat(2,1fr)}}
+/* ===== Mỗi tủ 1 hàng, gọn trong 1 màn hình ===== */
+.cab .cab-h{padding:9px 14px!important;gap:10px}
+.cab .cab-h h3{font-size:18px}
+.cab-h .icon-btn{margin-left:auto;background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.65);font-weight:700;padding:4px 10px}
+.cab-h .icon-btn:hover{background:#fff;color:var(--cab)}
+.cab>.cab-part{padding:8px 10px!important;display:flex;flex-direction:column;gap:6px}
+.urow{display:flex;align-items:stretch;gap:8px;min-height:58px}
+.ulab{flex:0 0 74px;display:flex;flex-direction:column;justify-content:center;padding:4px 8px;border-radius:10px;background:var(--cab);color:#fff;font-weight:800;font-size:15px;line-height:1.15;letter-spacing:.03em;text-transform:uppercase}
+.ulab small{font-size:9.5px;font-weight:500;text-transform:none;letter-spacing:0;opacity:.9;margin-top:2px}
+.urow.legacy .ulab{background:var(--warn,#c98a00)}
+.uitems{flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:6px;align-items:stretch}
+.u-empty{align-self:center;color:var(--text-dim);font-size:12.5px;padding-left:6px}
+.u-add{flex:none;align-self:center;width:28px;height:28px;padding:0!important;border-radius:50%;border:1.5px dashed var(--cab);color:var(--cab);font-weight:700;line-height:1}
+.u-add:hover{background:var(--cab);color:#fff}
+.mi{flex:1 1 250px;display:flex;align-items:center;gap:10px;padding:6px 8px 6px 10px;border:1px solid var(--border);border-left:5px solid var(--border);border-radius:10px;background:var(--surface);min-width:0}
+.mi.overdue{border-left-color:var(--danger)}.mi.soon{border-left-color:var(--warn)}.mi.ok{border-left-color:var(--ok)}
+.mi-main{display:flex;flex-direction:column;gap:4px;align-items:flex-start;flex:none}
+.mi-ch{display:inline-flex;align-items:center;gap:3px}
+.mi-bl{font-size:10.5px;font-weight:700;text-transform:uppercase;color:var(--text-dim);margin-right:2px}
+.ch-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--cab);color:#fff;font-weight:800;font-size:12.5px}
+.part-pill{display:inline-block;padding:1px 9px;border-radius:999px;font-size:11.5px;font-weight:700;border:1.5px solid var(--cab);color:var(--cab);white-space:nowrap}
+.part-pill.part-both{background:color-mix(in srgb,var(--cab) 14%,transparent)}
+.mi-due{flex:1;min-width:0;font-size:12.5px;line-height:1.35}
+.mi-due small{display:block;font-size:11px;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mi-days{font-weight:700;font-size:12px}
+.mi-days.overdue{color:var(--danger)}.mi-days.soon{color:var(--warn)}.mi-days.ok{color:var(--ok)}
+.mi-act{display:flex;gap:3px;flex:none}
+.mi-act .icon-btn{padding:4px 7px}
+.mi-act .icon-btn[data-act=done]{border-color:var(--cab);color:var(--cab)}
+@media(max-width:620px){.ulab{flex-basis:62px;font-size:13px}.mi{flex-basis:100%}}
 </style>
 </body>
 </html>
