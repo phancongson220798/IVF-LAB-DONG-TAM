@@ -874,6 +874,42 @@ body[data-view="order"] #appBg .fx{background-image:radial-gradient(circle at 25
 }
 </style>
 <script>
+/* Hộp thoại dùng chung (thay confirm/alert của trình duyệt) — cùng kiểu với các pop-up khác */
+(function(){
+  var ov=null, resolveFn=null;
+  function build(){
+    ov=document.createElement("div"); ov.className="overlay"; ov.id="dlgOverlay";
+    ov.innerHTML='<div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="dlgTitle"><h2 id="dlgTitle"></h2><p class="dlg-msg" id="dlgMsg"></p><div class="modal-actions"><button class="btn" id="dlgNo" type="button">Huỷ</button><button class="btn" id="dlgYes" type="button">Đồng ý</button></div></div>';
+    document.body.appendChild(ov);
+    document.getElementById("dlgNo").onclick=function(){ done(false); };
+    document.getElementById("dlgYes").onclick=function(){ done(true); };
+    ov.addEventListener("click",function(e){ if(e.target===ov) done(false); });
+    document.addEventListener("keydown",function(e){
+      if(!resolveFn) return;
+      if(e.key==="Escape") done(false);
+      else if(e.key==="Enter" && !e.isComposing){ e.preventDefault(); done(true); }
+    });
+  }
+  function done(v){ if(!resolveFn) return; var r=resolveFn; resolveFn=null; ov.classList.remove("show"); r(v); }
+  function open(msg,o,isConfirm){
+    o=o||{}; if(!ov) build();
+    if(resolveFn) done(false);
+    document.getElementById("dlgTitle").textContent=o.title||(isConfirm?"Xác nhận":"Thông báo");
+    document.getElementById("dlgMsg").textContent=msg;
+    var no=document.getElementById("dlgNo"), yes=document.getElementById("dlgYes");
+    no.style.display=isConfirm?"":"none";
+    no.textContent=o.cancelText||"Huỷ";
+    yes.textContent=o.okText||(isConfirm?"Đồng ý":"Đóng");
+    yes.className="btn "+(o.danger?"btn-danger":"primary");
+    return new Promise(function(res){ resolveFn=res; ov.classList.add("show"); setTimeout(function(){ yes.focus(); },30); });
+  }
+  window.AppDialog={
+    confirm:function(msg,o){ return open(msg,o,true); },
+    alert:function(msg,o){ return open(msg,o,false); }
+  };
+})();
+</script>
+<script>
 (function(){
   try{ var t=localStorage.getItem("lab_theme"); if(t) document.documentElement.setAttribute("data-theme",t); }catch(e){}
   window.__effTheme=function(){ var c=document.documentElement.getAttribute("data-theme"); return c||(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"); };
@@ -1181,6 +1217,8 @@ window.LabChart=(function(){
     <button type="button" class="sec-btn" data-sec="periodic" role="tab"> Lọc định kỳ <small>CODA và lọc khác</small></button>
   </div>
 
+  <div class="stock-bar no-print" id="stockBar"></div>
+
   <div class="toolbar">
     <div class="toolbar-group view-toggle" id="viewToggle">
       <button class="filter-btn active" data-view="list"><i class="i i-list"></i>Danh sách</button>
@@ -1324,6 +1362,14 @@ window.LabChart=(function(){
   <div id="gasApp">
     <header class="top no-print"><div><h1>Thay khí nuôi cấy</h1><div class="sub">Lịch thay khí N2, CO2, khí trộn</div></div></header>
     <div class="mon-bar no-print"><span class="mon-status" id="gas-status">Đang kết nối…</span></div>
+    <section class="panel gstock no-print">
+      <div class="panel-head"><h2>Kho bình khí</h2></div>
+      <div class="panel-body">
+        <div class="gstk-grid" id="gas-stock-grid"></div>
+        <div id="gas-stock-msg" role="status"></div>
+        <div class="gstk-note">Mỗi lần lưu lịch thay sẽ tự trừ số bình đã thay khỏi kho. Còn 2 bình trở xuống sẽ cảnh báo cần nhập thêm bình khí loại đó.</div>
+      </div>
+    </section>
     <div class="mgrid">
     <section class="panel form-panel">
       <div class="panel-head"><h2>Nhập lịch thay</h2></div>
@@ -1344,6 +1390,7 @@ window.LabChart=(function(){
           <div class="gfield"><label for="gas-date">Ngày thay</label><input type="date" id="gas-date"></div>
           <div class="gfield"><label for="gas-qty">Số lượng bình</label><input type="number" id="gas-qty" min="1" step="1" value="1" inputmode="numeric"></div>
         </div>
+        <div class="gstk-hint" id="gas-stock-hint"></div>
         <div class="gfield">
           <label for="gas-branch">Nhánh thay / Vị trí tủ</label>
           <input type="text" id="gas-branch" placeholder="VD: Nhánh A, Tủ 1">
@@ -1599,7 +1646,12 @@ window.LabChart=(function(){
     </div>
     <div class="mf" id="fTypeWrap">
       <label id="fTypeLabel">Hạng mục bảo trì</label>
-      <input class="inp" type="text" id="fType">
+      <select class="inp" id="fType"></select>
+    </div>
+    <div class="mf" id="fDevWrap">
+      <label>Thiết bị <span class="chb-tools"><a href="#" id="fDvAll">Chọn tất cả</a> · <a href="#" id="fDvNone">Bỏ chọn</a></span></label>
+      <div class="chb-grid" id="fDevices"><label class="chb"><input type="checkbox" value="ASTEC 1"><span>ASTEC 1</span></label><label class="chb"><input type="checkbox" value="ASTEC 2"><span>ASTEC 2</span></label><label class="chb"><input type="checkbox" value="ASTEC 3"><span>ASTEC 3</span></label><label class="chb"><input type="checkbox" value="ASTEC 4"><span>ASTEC 4</span></label><label class="chb"><input type="checkbox" value="ASTEC 5"><span>ASTEC 5</span></label><label class="chb"><input type="checkbox" value="Chamber 1"><span>Chamber 1</span></label><label class="chb"><input type="checkbox" value="Chamber 2"><span>Chamber 2</span></label><label class="chb"><input type="checkbox" value="Workstation 1"><span>Workstation 1</span></label><label class="chb"><input type="checkbox" value="Workstation 2"><span>Workstation 2</span></label><label class="chb"><input type="checkbox" value="LAB"><span>LAB</span></label></div>
+      <div class="hint">Mỗi thiết bị được tích tính là 1 lọc.</div>
     </div>
     <div class="mf" id="fPerformedByWrap">
       <label>Người thực hiện</label>
@@ -1621,6 +1673,10 @@ window.LabChart=(function(){
           </select>
         </div>
       </div>
+    </div>
+    <div class="row2" id="fStockWrap">
+      <div class="mf"><label>Lọc lấy từ kho</label><select class="inp" id="fStockId"></select></div>
+      <div class="mf"><label>Số lọc dùng / lần thay</label><input class="inp" type="number" min="0" step="1" id="fUseQty"></div>
     </div>
     <div class="mf">
       <label>Ghi chú (tuỳ chọn)</label>
@@ -1753,7 +1809,7 @@ window.LabChart=(function(){
   function saveDevice(obj){
     if(db){
       var body = {}; for(var k in obj){ if(k !== "id") body[k] = obj[k]; }
-      db.collection(COL).doc(obj.id).set(body).catch(function(){ alert("Không lưu được lên máy chủ. Vui lòng thử lại."); });
+      db.collection(COL).doc(obj.id).set(body).catch(function(){ AppDialog.alert("Không lưu được lên máy chủ. Vui lòng thử lại.", {title:"Lỗi"}); });
     }else{
       var i = devices.findIndex(function(d){ return d.id === obj.id; });
       if(i >= 0) devices[i] = obj; else devices.push(obj);
@@ -1762,7 +1818,7 @@ window.LabChart=(function(){
   }
   function removeDevice(id){
     if(db){
-      db.collection(COL).doc(id).delete().catch(function(){ alert("Không xóa được. Vui lòng thử lại."); });
+      db.collection(COL).doc(id).delete().catch(function(){ AppDialog.alert("Không xóa được. Vui lòng thử lại.", {title:"Lỗi"}); });
     }else{
       devices = devices.filter(function(d){ return d.id !== id; });
       lsSave(); render();
@@ -2125,7 +2181,7 @@ window.LabChart=(function(){
   });
 
   function doDelete(d){
-    if(confirm('Xóa thiết bị "' + d.name + '" (S/N: ' + (d.sn || "—") + ')?\nThao tác này không thể hoàn tác.')) removeDevice(d.id);
+    AppDialog.confirm('Xóa thiết bị "' + d.name + '" (S/N: ' + (d.sn || "—") + ')?\nThao tác này không thể hoàn tác.', {title:"Xoá thiết bị", okText:"Xoá", danger:true}).then(function(ok){ if(ok) removeDevice(d.id); });
   }
 
   /* ---------- xuất excel ---------- */
@@ -2361,8 +2417,10 @@ window.LabChart=(function(){
 (function(){
   var STORE_KEY = 'equipment-list-v2';
   var SETTINGS_KEY = 'app-settings-v1';
+  var STOCK_KEY = 'filter-stock-v1';
+  var FILTER_TYPES = ["Lọc Coda", "Lọc Gasline Filter", "Lọc HEPA", "Lọc HEPA (Workstation)", "Lọc HEPA (Chamber)"];
   var HISTORY_KEY = 'equipment-history-log-v1';
-  var state = { items: [], history: [], settings: { maintForm:null, filterForm:null, notifyDays: 7 }, activeTab:'filter', section:'incubator', statusFilter:'all', viewMode:'list' };
+  var state = { items: [], history: [], stock: [], settings: { maintForm:null, filterForm:null, notifyDays: 7 }, activeTab:'filter', section:'incubator', statusFilter:'all', viewMode:'list' };
 
 
   var CATEGORY_INFO = {
@@ -2416,10 +2474,7 @@ window.LabChart=(function(){
   var confirmOverlay = document.getElementById('confirmOverlay');
   var pendingConfirmCb = null;
   function showConfirm(msg, cb){
-    document.getElementById('confirmMsg').textContent = msg;
-    pendingConfirmCb = cb;
-    confirmOverlay.classList.add('show');
-    document.body.classList.add('modal-open');
+    AppDialog.confirm(msg, { title:'Xoá mục này?', okText:'Xoá', danger:true }).then(function(ok){ if(ok && cb) cb(); });
   }
   document.getElementById('confirmCancelBtn').onclick = function(){
     confirmOverlay.classList.remove('show'); document.body.classList.remove('modal-open'); pendingConfirmCb = null;
@@ -2474,14 +2529,68 @@ window.LabChart=(function(){
   }
 
   /* Nhãn cảnh báo lọc quá hạn / sắp đến hạn trên ô THAY LỌC ở màn hình chính */
+  // ---- Kho lọc: tồn kho, trừ khi thay, cảnh báo khi chỉ còn đủ 1 lần thay ----
+  function stockById(id){ return state.stock.find(function(x){ return x.id === id; }); }
+  function stockNeed(id){
+    var m = 0;
+    state.items.forEach(function(it){ if(it.stockId === id){ m = Math.max(m, Number(it.useQty) || 0); } });
+    return m || 1;
+  }
+  function stockInfo(sk){
+    var q = Number(sk.qty) || 0, need = stockNeed(sk.id);
+    return { qty:q, need:need, status: q < need ? 'out' : (q < 2*need ? 'low' : 'ok') };
+  }
+  function stockMsg(sk, i){
+    i = i || stockInfo(sk);
+    if(i.status === 'out') return sk.name + ': kho còn ' + i.qty + ', không đủ cho 1 lần thay (cần ' + i.need + ') — cần nhập thêm lọc';
+    if(i.status === 'low') return sk.name + ': kho còn ' + i.qty + ', chỉ còn đủ 1 lần thay — cần nhập thêm lọc';
+    return '';
+  }
+  function stockWarnings(){
+    return state.stock.map(function(sk){ return stockMsg(sk); }).filter(Boolean);
+  }
+  function adjustStock(id, delta){
+    var sk = stockById(id); if(!sk) return null;
+    var before = Number(sk.qty) || 0, after = Math.max(0, before + delta);
+    sk.qty = after; persistStock();
+    if(fdb){
+      var ref = fdb.collection('filter_stock').doc(id), nm = sk.name;
+      fdb.runTransaction(function(tx){
+        return tx.get(ref).then(function(d){
+          var cur = d.exists ? (Number(d.data().qty) || 0) : before;
+          tx.set(ref, { name: nm, qty: Math.max(0, cur + delta) }, { merge:true });
+        });
+      }).catch(function(e){ fbError('Không cập nhật được kho lọc trên Firebase', e); });
+    }
+    return { before:before, after:after, short: before + delta < 0, sk:sk };
+  }
+  function renderStockBar(){
+    var el = document.getElementById('stockBar'); if(!el) return;
+    var chips = state.stock.map(function(sk){
+      var i = stockInfo(sk);
+      return '<div class="stk '+i.status+'"><div class="stk-n">'+escapeHtml(sk.name)+'</div>' +
+        '<div class="stk-q"><b>'+i.qty+'</b> cái</div>' +
+        (i.status === 'ok' ? '' : '<div class="stk-w">'+(i.status === 'out' ? 'Không đủ cho 1 lần thay — cần nhập thêm lọc' : 'Chỉ còn đủ 1 lần thay — cần nhập thêm lọc')+'</div>') +
+        '<div class="stk-u">Mỗi lần thay dùng '+i.need+'</div></div>';
+    }).join('');
+    el.innerHTML = '<div class="stk-head"><span>Kho lọc</span><button class="btn" id="stockManageBtn" type="button">Quản lý kho</button></div>' +
+      '<div class="stk-list">' + (chips || '<span class="stk-empty">Chưa có lọc trong kho. Bấm "Quản lý kho" để nhập số lượng.</span>') + '</div>';
+  }
+
   function updateHomeAlert(allComputed){
     var tile = document.getElementById('filterTileWarn');
     if(!tile) return;
     var due = allComputed.filter(function(c){ return c.category === 'filter' && (c.status === 'overdue' || c.status === 'soon'); });
     var over = due.filter(function(c){ return c.status === 'overdue'; }).length, soon = due.length - over;
-    if(!due.length){ tile.className = 'tile-warn'; tile.textContent = ''; return; }
-    tile.className = 'tile-warn show' + (over ? ' danger' : '');
-    tile.textContent = '' + (over ? over + ' quá hạn' : '') + (over && soon ? ' · ' : '') + (soon ? soon + ' sắp đến hạn' : '');
+    var sw = state.stock.filter(function(sk){ return stockInfo(sk).status !== 'ok'; });
+    var out = sw.some(function(sk){ return stockInfo(sk).status === 'out'; });
+    if(!due.length && !sw.length){ tile.className = 'tile-warn'; tile.textContent = ''; return; }
+    tile.className = 'tile-warn show' + ((over || out) ? ' danger' : '');
+    var parts = [];
+    if(over) parts.push(over + ' quá hạn');
+    if(soon) parts.push(soon + ' sắp đến hạn');
+    if(sw.length) parts.push(sw.length + ' kho lọc cần nhập');
+    tile.textContent = parts.join(' · ');
   }
 
   var statusLabel = { overdue:'Quá hạn', soon:'Sắp đến hạn', ok:'Còn hạn' };
@@ -2499,6 +2608,7 @@ window.LabChart=(function(){
 
     document.getElementById('countFilter').textContent = allComputed.filter(function(c){ return c.category==='filter'; }).length;
     updateHomeAlert(allComputed);
+    renderStockBar();
 
     function statsFor(cat){
       var s = { overdue:0, soon:0, ok:0 };
@@ -2521,16 +2631,18 @@ window.LabChart=(function(){
 
     var bar = document.getElementById('notifyBar');
     var due = tabItems.filter(function(c){ return c.status==='overdue' || c.status==='soon'; });
+    var barParts = [];
     if(due.length){
       due.sort(function(a,b){ return a.daysLeft - b.daysLeft; });
       var names = due.slice(0,4).map(function(c){
         return c.name + ' (' + (c.daysLeft < 0 ? 'quá ' + Math.abs(c.daysLeft) + ' ngày' : 'còn ' + c.daysLeft + ' ngày') + ')';
       }).join(', ');
-      bar.classList.add('show');
-      bar.innerHTML = '<b>Cần chú ý:</b> ' + names + (due.length > 4 ? ' và ' + (due.length-4) + ' mục khác…' : '') + '.';
-    } else {
-      bar.classList.remove('show');
+      barParts.push('<b>Cần chú ý:</b> ' + names + (due.length > 4 ? ' và ' + (due.length-4) + ' mục khác…' : '') + '.');
     }
+    var sw = stockWarnings();
+    if(sw.length) barParts.push('<b>Kho lọc:</b> ' + sw.map(escapeHtml).join('; ') + '.');
+    if(barParts.length){ bar.classList.add('show'); bar.innerHTML = barParts.join('<br>'); }
+    else { bar.classList.remove('show'); }
 
     var wrap = document.getElementById('listWrap');
 
@@ -2556,10 +2668,11 @@ window.LabChart=(function(){
       '<div class="card '+c.status+'">' +
         '<div class="gauge" style="--pct:'+c.pct+'; --gcolor:'+statusColor[c.status]+';">' + daysLabel + '</div>' +
         '<div class="card-body">' +
-          '<div class="card-top"><div><p class="card-name">'+escapeHtml(c.name)+'</p><p class="card-loc">'+escapeHtml(CATEGORY_INFO.filter.label)+'</p></div>' +
+          '<div class="card-top"><div><p class="card-name">'+escapeHtml(c.type||c.name)+'</p>'+((c.devices||[]).length ? '<div class="dev-row">'+devChips(c.devices)+'</div>' : '<p class="card-loc">'+escapeHtml(CATEGORY_INFO.filter.label)+'</p>')+'</div>' +
           '<span class="badge '+c.status+'">'+statusLabel[c.status]+'</span></div>' +
           '<div class="card-meta">' +
             '<div><span class="lbl">'+CATEGORY_INFO[c.category].typeLabel+':</span> <b>'+escapeHtml(c.type||c.name||'—')+'</b></div>' +
+            ((c.devices||[]).length ? '<div><span class="lbl">Số lọc:</span> <b>'+c.devices.length+'</b></div>' : '') +
             '<div><span class="lbl">Chu kỳ:</span> '+intervalText(c.intervalVal, c.intervalUnit)+'</div>' +
             '<div><span class="lbl">Lần gần nhất:</span> '+fmtD(c.lastDate)+'</div>' +
             '<div><span class="lbl">Hạn tiếp theo:</span> <b class="mono">'+fmtD(c.nextDue)+'</b></div>' +
@@ -2627,6 +2740,7 @@ window.LabChart=(function(){
       var subParts = [];
       if(h.category !== 'filter' && h.location) subParts.push(h.location);
       var hc = classify(h); if(hc.group === 'incubator' && !hc.chambers.length && h.type !== autoName(hc.cabinet, hc.chambers, hc.part)) subParts.push(cabLabel(hc.cabinet) + ' · ' + partLabel(hc.part));
+      if(h.devices && h.devices.length) subParts.push(h.devices.join(', '));
       if(h.notes) subParts.push(h.notes);
       return '' +
       '<div class="history-row">' +
@@ -2661,7 +2775,7 @@ window.LabChart=(function(){
     state.history.unshift({
       id: uid(),
       category: item.category,
-      group: classify(item).group, cabinet: classify(item).cabinet, part: classify(item).part, chambers: classify(item).chambers,
+      group: classify(item).group, cabinet: classify(item).cabinet, part: classify(item).part, chambers: classify(item).chambers, devices: item.devices || [],
       itemId: item.id,
       name: item.name,
       type: item.type || '',
@@ -2674,6 +2788,9 @@ window.LabChart=(function(){
     persistHistory();
     cloudSet('filter_history', state.history[0]);
   }
+  function persistStock(){
+    try{ localStorage.setItem(STOCK_KEY, JSON.stringify(state.stock)); }catch(e){}
+  }
   function persistSettings(){
     try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.settings)); }catch(e){}
   }
@@ -2684,7 +2801,7 @@ window.LabChart=(function(){
   function setNote(t){ var el = document.getElementById('filterStoreNote'); if(el) el.textContent = t; }
   function fbError(msg, e){
     var code = e && e.code ? e.code : '';
-    var hint = code === 'permission-denied' ? ' — cần cho phép ghi collection "filters" và "filter_history" trong Rules của Firestore' : (code ? ' (' + code + ')' : '');
+    var hint = code === 'permission-denied' ? ' — cần cho phép ghi collection "filters", "filter_history" và "filter_stock" trong Rules của Firestore' : (code ? ' (' + code + ')' : '');
     toast(msg + hint, 'err');
     setNote(msg + hint + '. Dữ liệu vẫn được giữ trên trình duyệt này.');
   }
@@ -2718,8 +2835,9 @@ window.LabChart=(function(){
     try{ var r1 = localStorage.getItem(STORE_KEY); if(r1) state.items = JSON.parse(r1).filter(function(i){ return i.category === 'filter'; }); }catch(e){}
     try{ var r2 = localStorage.getItem(SETTINGS_KEY); if(r2) state.settings = Object.assign(state.settings, JSON.parse(r2)); }catch(e){}
     try{ var r3 = localStorage.getItem(HISTORY_KEY); if(r3) state.history = JSON.parse(r3).filter(function(h){ return h.category === 'filter'; }); }catch(e){}
+    try{ var r4 = localStorage.getItem(STOCK_KEY); if(r4) state.stock = JSON.parse(r4); }catch(e){}
     render();
-    if(fdb){ setNote('Đang kết nối Firebase...'); watch('filters', 'items', persist); watch('filter_history', 'history', persistHistory); }
+    if(fdb){ setNote('Đang kết nối Firebase...'); watch('filters', 'items', persist); watch('filter_history', 'history', persistHistory); watch('filter_stock', 'stock', persistStock); }
     else setNote('Không kết nối Firebase, dữ liệu lưu trên trình duyệt này.');
   }
 
@@ -2771,27 +2889,82 @@ window.LabChart=(function(){
     document.getElementById('fPart').value = cl.part || 'humidifier';
     document.querySelectorAll('#fChambers input').forEach(function(cb){ cb.checked = (cl.chambers||[]).indexOf(Number(cb.value)) > -1; });
     syncGroupFields();
-    document.getElementById('fType').value = item ? item.type : '';
+    fillTypeSelect(item && cl.group !== 'incubator' ? item.type : '');
+    document.querySelectorAll('#fDevices input').forEach(function(cb){ cb.checked = !!(item && (item.devices||[]).indexOf(cb.value) > -1); });
     document.getElementById('fLastDate').value = item ? item.lastDate : new Date().toISOString().slice(0,10);
     document.getElementById('fIntervalVal').value = item ? item.intervalVal : 3;
     document.getElementById('fIntervalUnit').value = item ? item.intervalUnit : 'month';
     document.getElementById('fNotes').value = item ? (item.notes||'') : '';
+    fillStockFields(item);
+    autoUse();
     overlay.classList.add('show');
     document.body.classList.add('modal-open');
     (cl.group === 'incubator' ? document.getElementById('fCabinet') : document.getElementById('fType')).focus();
+  }
+  function devChecked(){
+    return Array.prototype.slice.call(document.querySelectorAll('#fDevices input:checked')).map(function(c){ return c.value; });
+  }
+  function defaultUse(){
+    if(document.getElementById('fGroup').value !== 'incubator') return devChecked().length;
+    if(document.getElementById('fPart').value === 'humidifier') return 0;
+    var fam = famOf(document.getElementById('fCabinet').value);
+    if(fam && fam.chambers){ return document.querySelectorAll('#fChambers input:checked').length || 1; }
+    return 1;
+  }
+  function autoUse(){
+    var u = document.getElementById('fUseQty'); if(!u) return;
+    var periodic = document.getElementById('fGroup').value !== 'incubator';
+    if(periodic){ var n = devChecked().length; if(n > 0) u.value = n; }   // lọc định kỳ: mỗi thiết bị tích = 1 lọc
+    else if(!u.dataset.touched) u.value = defaultUse();
+  }
+  function fillTypeSelect(val){
+    var sel = document.getElementById('fType'), v = String(val || '').trim(), opts = FILTER_TYPES.slice();
+    var m = opts.filter(function(o){ var a = o.toLowerCase(), b = v.toLowerCase(); return a === b || a === 'lọc ' + b; })[0];
+    if(m) v = m; else if(v) opts.unshift(v);   // giữ nguyên loại lọc cũ nếu không nằm trong danh sách
+    sel.innerHTML = '<option value="">— Chọn loại lọc —</option>' + opts.map(function(o){ return '<option value="'+escapeHtml(o)+'">'+escapeHtml(o)+'</option>'; }).join('');
+    sel.value = v;
+  }
+  function devChips(list){
+    return (list||[]).map(function(d){ return '<span class="dev-chip">'+escapeHtml(d)+'</span>'; }).join('');
+  }
+  function fillStockFields(item){
+    var sel = document.getElementById('fStockId');
+    sel.innerHTML = '<option value="">— Không theo dõi kho —</option>' + state.stock.map(function(sk){
+      return '<option value="'+escapeHtml(sk.id)+'">'+escapeHtml(sk.name)+' (còn '+(Number(sk.qty)||0)+')</option>';
+    }).join('');
+    var want = item && item.stockId ? item.stockId : '';
+    sel.value = want; if(sel.value !== want) sel.value = '';
+    var u = document.getElementById('fUseQty');
+    var has = item && item.useQty !== undefined && item.useQty !== null && item.useQty !== '';
+    u.dataset.touched = has ? '1' : '';
+    u.value = has ? item.useQty : defaultUse();
   }
   function syncGroupFields(){
     var inc = document.getElementById('fGroup').value === 'incubator';
     document.getElementById('fCabWrap').style.display = inc ? '' : 'none';
     document.getElementById('fTypeWrap').style.display = inc ? 'none' : '';
+    document.getElementById('fDevWrap').style.display = inc ? 'none' : '';
+    document.getElementById('fUseQty').readOnly = !inc;
     var fam = famOf(document.getElementById('fCabinet').value);
     document.getElementById('fChamberWrap').style.display = (inc && fam && fam.chambers) ? '' : 'none';
     document.getElementById('fTypeLabel').textContent = CATEGORY_INFO.filter.typeLabel;
   }
-  document.getElementById('fGroup').onchange = syncGroupFields;
-  document.getElementById('fCabinet').onchange = syncGroupFields;
-  document.getElementById('fChAll').onclick = function(e){ e.preventDefault(); document.querySelectorAll('#fChambers input').forEach(function(c){ c.checked = true; }); };
-  document.getElementById('fChNone').onclick = function(e){ e.preventDefault(); document.querySelectorAll('#fChambers input').forEach(function(c){ c.checked = false; }); };
+  document.getElementById('fGroup').onchange = function(){ syncGroupFields(); autoUse(); };
+  document.getElementById('fCabinet').onchange = function(){ syncGroupFields(); autoUse(); };
+  document.getElementById('fPart').onchange = autoUse;
+  document.getElementById('fDevices').addEventListener('change', autoUse);
+  document.getElementById('fDvAll').onclick = function(e){ e.preventDefault(); document.querySelectorAll('#fDevices input').forEach(function(c){ c.checked = true; }); autoUse(); };
+  document.getElementById('fDvNone').onclick = function(e){ e.preventDefault(); document.querySelectorAll('#fDevices input').forEach(function(c){ c.checked = false; }); autoUse(); };
+  document.getElementById('fType').addEventListener('change', function(){
+    var sel = document.getElementById('fStockId'); if(sel.value) return;
+    var v = this.value.toLowerCase();
+    var hit = state.stock.filter(function(sk){ return String(sk.name).toLowerCase() === v; })[0];
+    if(hit) sel.value = hit.id;   // tự chọn loại lọc trong kho nếu trùng tên
+  });
+  document.getElementById('fChambers').addEventListener('change', autoUse);
+  document.getElementById('fUseQty').addEventListener('input', function(){ this.dataset.touched = '1'; });
+  document.getElementById('fChAll').onclick = function(e){ e.preventDefault(); document.querySelectorAll('#fChambers input').forEach(function(c){ c.checked = true; }); autoUse(); };
+  document.getElementById('fChNone').onclick = function(e){ e.preventDefault(); document.querySelectorAll('#fChambers input').forEach(function(c){ c.checked = false; }); autoUse(); };
   function closeModal(){ overlay.classList.remove('show'); document.body.classList.remove('modal-open'); }
 
   document.getElementById('addBtn').onclick = function(){ openModal(null); };
@@ -2805,7 +2978,7 @@ window.LabChart=(function(){
     var type = document.getElementById('fType').value.trim();
     var lastDate = document.getElementById('fLastDate').value;
     var intervalVal = Number(document.getElementById('fIntervalVal').value);
-    var cabinet = '', part = '', chambers = [], name = type;
+    var cabinet = '', part = '', chambers = [], devices = [], name = type;
 
     if(inc){
       cabinet = document.getElementById('fCabinet').value;
@@ -2817,8 +2990,11 @@ window.LabChart=(function(){
         if(!chambers.length){ toast('Chọn ít nhất 1 buồng', 'err'); return; }
       }
       name = type = autoName(cabinet, chambers, part);
-    } else if(!type){
-      toast('Nhập loại lọc', 'err'); return;
+    } else {
+      if(!type){ toast('Chọn loại lọc', 'err'); return; }
+      devices = devChecked();
+      if(!devices.length){ toast('Chọn ít nhất 1 thiết bị', 'err'); return; }
+      name = type + ' · ' + devices.join(', ');
     }
     if(!lastDate){ toast('Chọn ngày gần nhất', 'err'); return; }
     if(!intervalVal || intervalVal <= 0){ toast('Chu kỳ phải lớn hơn 0', 'err'); return; }
@@ -2835,6 +3011,9 @@ window.LabChart=(function(){
       cabinet: cabinet,
       part: part,
       chambers: chambers,
+      devices: devices,
+      stockId: document.getElementById('fStockId').value || '',
+      useQty: inc ? Math.max(0, Math.round(Number(document.getElementById('fUseQty').value) || 0)) : devices.length,
       type: type,
       lastDate: lastDate,
       intervalVal: intervalVal,
@@ -2905,9 +3084,87 @@ window.LabChart=(function(){
       persist();
       cloudSet('filters', item);
       pushHistory(item);
+      var used = Number(item.useQty) || 0, extra = '', warnMsg = '', r = null;
+      if(item.stockId && used > 0){
+        r = adjustStock(item.stockId, -used);
+        if(r){
+          extra = ' · trừ ' + used + ' lọc khỏi kho (còn ' + r.after + ')';
+          var inf = stockInfo(r.sk);
+          if(r.short) warnMsg = 'Kho chỉ có ' + r.before + ' lọc, không đủ ' + used + ' — đã trừ về 0, kiểm tra lại tồn kho';
+          else if(inf.status !== 'ok') warnMsg = stockMsg(r.sk, inf);
+        }
+      }
       render();
-      toast('Đã cập nhật ngày cho "'+item.name+'"', 'ok2');
+      toast('Đã cập nhật ngày cho "'+item.name+'"' + extra, 'ok2');
+      if(warnMsg) toast(warnMsg, 'err');
     }
+  });
+
+  // ---- Quản lý kho lọc ----
+  var stkOv = document.createElement('div');
+  stkOv.className = 'overlay'; stkOv.id = 'stockOverlay';
+  stkOv.innerHTML = '<div class="modal" style="max-width:580px"><h2>Kho lọc</h2>' +
+    '<p class="modal-sub">Nhập số lượng lọc đang có trong kho. Mỗi lần bấm "Đã làm hôm nay" kho tự trừ đúng số lọc của mục đó; khi chỉ còn đủ 1 lần thay sẽ cảnh báo nhập thêm.</p>' +
+    '<div id="stkRows"></div><button class="btn" id="stkAdd" type="button">+ Thêm loại lọc</button>' +
+    '<div class="modal-actions"><button class="btn" id="stkCancel" type="button">Huỷ</button><button class="btn primary" id="stkSave" type="button">Lưu</button></div></div>';
+  document.body.appendChild(stkOv);
+  var stkDraft = [];
+  function stkRead(){
+    stkDraft = Array.prototype.map.call(document.querySelectorAll('#stkRows .stk-row[data-i]'), function(r, i){
+      return { id: stkDraft[i].id, name: r.querySelector('.s-n').value, qty: r.querySelector('.s-q').value, add: r.querySelector('.s-a').value };
+    });
+  }
+  function stkDraw(){
+    var h = '<div class="stk-row h"><span>Tên loại lọc</span><span>Tồn kho</span><span>Nhập thêm</span><span></span></div>';
+    h += stkDraft.map(function(d, i){
+      return '<div class="stk-row" data-i="'+i+'"><input class="inp s-n" type="text" placeholder="VD: Lọc tủ GERI" value="'+escapeHtml(d.name)+'">' +
+        '<input class="inp s-q" type="number" min="0" step="1" value="'+escapeHtml(d.qty)+'">' +
+        '<input class="inp s-a" type="number" min="0" step="1" placeholder="+0" value="'+escapeHtml(d.add)+'">' +
+        '<button class="icon-btn danger" type="button" data-del="'+i+'" title="Xoá loại lọc" aria-label="Xoá"><i class="i i-trash"></i></button></div>';
+    }).join('');
+    document.getElementById('stkRows').innerHTML = h;
+  }
+  function stkOpen(){
+    stkDraft = state.stock.map(function(sk){ return { id: sk.id, name: sk.name, qty: Number(sk.qty)||0, add: '' }; });
+    if(!stkDraft.length) stkDraft.push({ id:'', name:'', qty:0, add:'' });
+    stkDraw(); stkOv.classList.add('show');
+  }
+  function stkClose(){ stkOv.classList.remove('show'); }
+  document.getElementById('stkAdd').onclick = function(){ stkRead(); stkDraft.push({ id:'', name:'', qty:0, add:'' }); stkDraw(); };
+  document.getElementById('stkRows').addEventListener('click', function(e){
+    var b = e.target.closest('button[data-del]'); if(!b) return;
+    stkRead(); stkDraft.splice(Number(b.getAttribute('data-del')), 1); stkDraw();
+  });
+  document.getElementById('stkCancel').onclick = stkClose;
+  stkOv.addEventListener('click', function(e){ if(e.target === stkOv) stkClose(); });
+  document.getElementById('stkSave').onclick = function(){
+    stkRead();
+    var rows = stkDraft.filter(function(d){ return String(d.name).trim() || Number(d.qty) || Number(d.add); });
+    var names = {};
+    for(var i = 0; i < rows.length; i++){
+      var nm = String(rows[i].name).trim();
+      if(!nm){ toast('Nhập tên cho từng loại lọc', 'err'); return; }
+      if(names[nm.toLowerCase()]){ toast('Tên loại lọc bị trùng: ' + nm, 'err'); return; }
+      names[nm.toLowerCase()] = 1;
+    }
+    var keep = {};
+    rows.forEach(function(d){
+      var qty = Math.max(0, Math.round(Number(d.qty) || 0)) + Math.max(0, Math.round(Number(d.add) || 0));
+      var sk = d.id ? stockById(d.id) : null;
+      if(!sk){ sk = { id: uid(), name: '', qty: 0 }; state.stock.push(sk); }
+      sk.name = String(d.name).trim(); sk.qty = qty; keep[sk.id] = 1;
+      cloudSet('filter_stock', sk);
+    });
+    state.stock.filter(function(sk){ return !keep[sk.id]; }).forEach(function(sk){
+      cloudDel('filter_stock', sk.id);
+      state.items.forEach(function(it){ if(it.stockId === sk.id){ it.stockId = ''; persist(); cloudSet('filters', it); } });
+    });
+    state.stock = state.stock.filter(function(sk){ return keep[sk.id]; });
+    persistStock(); render(); stkClose();
+    toast('Đã lưu kho lọc', 'ok2');
+  };
+  document.getElementById('stockBar').addEventListener('click', function(e){
+    if(e.target.closest('#stockManageBtn')) stkOpen();
   });
 
   // ---- List / History view toggle ----
@@ -2939,9 +3196,9 @@ window.LabChart=(function(){
     if(!state.items.length){ toast('Chưa có dữ liệu để xuất', 'err'); return; }
     var list = state.items.map(function(it){ return Object.assign({}, it, computeItem(it), classify(it)); })
       .sort(function(a,b){ return a.daysLeft - b.daysLeft; });
-    var rows = [['TT','Nhóm','Tủ','Buồng','Bộ phận','Hạng mục / Loại lọc','Người thực hiện','Chu kỳ','Lần gần nhất','Hạn tiếp theo','Còn lại (ngày)','Trạng thái','Ghi chú']]
+    var rows = [['TT','Nhóm','Tủ','Buồng / Thiết bị','Bộ phận','Hạng mục / Loại lọc','Người thực hiện','Chu kỳ','Lần gần nhất','Hạn tiếp theo','Còn lại (ngày)','Trạng thái','Ghi chú']]
       .concat(list.map(function(c,i){
-        return [i+1, c.group==='incubator' ? 'Tủ nuôi cấy' : 'Lọc định kỳ', c.group==='incubator' ? cabLabel(c.cabinet) : '', c.group==='incubator' ? chambersText(c.chambers) : '', c.group==='incubator' ? partLabel(c.part) : '', c.type||c.name||'', c.performedBy||'', intervalText(c.intervalVal,c.intervalUnit), fmt(c.lastDate), fmt(c.nextDue), c.daysLeft, statusLabel[c.status], c.notes||''];
+        return [i+1, c.group==='incubator' ? 'Tủ nuôi cấy' : 'Lọc định kỳ', c.group==='incubator' ? cabLabel(c.cabinet) : '', c.group==='incubator' ? chambersText(c.chambers) : (c.devices||[]).join(', '), c.group==='incubator' ? partLabel(c.part) : '', c.type||c.name||'', c.performedBy||'', intervalText(c.intervalVal,c.intervalUnit), fmt(c.lastDate), fmt(c.nextDue), c.daysLeft, statusLabel[c.status], c.notes||''];
       }));
     var ws = XLSX.utils.aoa_to_sheet(rows);
     ws['!cols'] = [6,14,18,18,14,40,20,12,14,14,14,14,30].map(function(w){ return {wch:w}; });
@@ -3026,8 +3283,10 @@ window.LabChart=(function(){
       ov.classList.add("show");
     },
     remove:function(msg,fn){
-      if(!window.confirm(msg)) return;
-      Promise.resolve().then(fn).catch(function(e){ window.alert("Không xoá được: "+err(e)); });
+      AppDialog.confirm(msg,{title:"Xoá bản ghi",okText:"Xoá",danger:true}).then(function(ok){
+        if(!ok) return;
+        return Promise.resolve().then(fn).catch(function(e){ AppDialog.alert("Không xoá được: "+err(e),{title:"Lỗi"}); });
+      });
     }
   };
   document.getElementById("heCancel").onclick=close;
@@ -3768,6 +4027,86 @@ const fmtMonth = (iso) => { const [y, m] = String(iso).split("-"); return `${m}/
 const TRIGAS = "Khí trộn (Trigas)";
 let localData = [];
 
+/* ---------- KHO BÌNH KHÍ ---------- */
+const STOCK_COL = "gas_stock";
+const STOCK_WARN = 2;   // còn ≤ 2 bình thì cảnh báo nhập thêm
+const GAS_STOCK = [
+  { key: "n2", name: "Khí Nitơ (N2)", short: "Nitơ (N2)" },
+  { key: "co2", name: "Khí CO2", short: "CO2" },
+  { key: "trigas", name: TRIGAS, short: "Khí trộn (Trigas)" }
+];
+let stock = { n2: 0, co2: 0, trigas: 0 };
+let stockSeen = {};
+function stockMsg(type, text) { $("stock-msg").innerHTML = `<div class="msg ${type}">${esc(text)}</div>`; }
+function stockStatus(q) { return q <= 0 ? "out" : (q <= STOCK_WARN ? "low" : "ok"); }
+function renderStock() {
+  $("stock-grid").innerHTML = GAS_STOCK.map(g => {
+    const q = stock[g.key] || 0, st = stockSeen[g.key] ? stockStatus(q) : "ok";
+    const warn = !stockSeen[g.key] ? "Chưa nhập số lượng kho"
+      : st === "out" ? `Hết bình ${g.short} — cần nhập thêm bình khí`
+      : st === "low" ? `Chỉ còn ${q} bình — cần nhập thêm bình khí ${g.short}` : "Đủ dùng";
+    return `<div class="gstk ${st}"><div class="gstk-n">${esc(g.short)}</div>
+      <div class="gstk-q"><b>${stockSeen[g.key] ? q : "—"}</b> bình</div><div class="gstk-w">${esc(warn)}</div>
+      <div class="gstk-act"><input type="number" min="1" step="1" placeholder="+ SL" data-add="${g.key}" aria-label="Số bình nhập thêm">
+      <button type="button" class="mbtn alt" data-do="add" data-k="${g.key}">Nhập kho</button>
+      <button type="button" class="mbtn alt" data-do="set" data-k="${g.key}">Chỉnh tồn</button></div></div>`;
+  }).join("");
+  updateStockHint();
+}
+function updateStockHint() {
+  const el = $("stock-hint"); if (!el) return;
+  const g = GAS_STOCK.find(x => x.name === $("gas-type").value);
+  const qty = parseInt($("qty").value, 10) || 0;
+  if (!g || !stockSeen[g.key]) { el.className = "gstk-hint"; el.textContent = ""; return; }
+  const q = stock[g.key] || 0, st = stockStatus(q);
+  el.className = "gstk-hint" + (st === "ok" ? "" : (st === "out" ? " out" : " warn"));
+  el.innerHTML = `Kho còn <strong>${q}</strong> bình ${esc(g.short)}` + (qty > q ? " — không đủ cho số lượng này, kho sẽ về 0" : (st === "low" ? " — cần nhập thêm" : ""));
+}
+function listenStock() {
+  if (!FIREBASE_READY) return renderStock();
+  db.collection(STOCK_COL).onSnapshot((snap) => {
+    stockSeen = {}; stock = { n2: 0, co2: 0, trigas: 0 };
+    snap.docs.forEach(d => { if (d.id in stock) { stock[d.id] = Math.max(0, Number(d.data().qty) || 0); stockSeen[d.id] = true; } });
+    renderStock();
+  }, (err) => {
+    stockMsg("err", "Không đọc được kho bình khí: " + err.message + (err.code === "permission-denied" ? " — cần cho phép đọc/ghi collection \"gas_stock\" trong Rules của Firestore." : ""));
+    renderStock();
+  });
+}
+async function stockSetQty(key, n) {
+  const g = GAS_STOCK.find(x => x.key === key);
+  await db.collection(STOCK_COL).doc(key).set({ name: g.name, qty: n }, { merge: true });
+}
+async function stockAddQty(key) {
+  if (!FIREBASE_READY) return stockMsg("err", "Chưa kết nối Firebase, chưa thể lưu kho.");
+  const g = GAS_STOCK.find(x => x.key === key);
+  const inp = document.querySelector(`#gas-stock-grid input[data-add="${key}"]`);
+  const n = parseInt(inp.value, 10);
+  if (!Number.isInteger(n) || n < 1) return stockMsg("err", "Nhập số bình cần thêm (số nguyên ≥ 1).");
+  try {
+    const ref = db.collection(STOCK_COL).doc(key);
+    const next = await db.runTransaction(async (tx) => {
+      const snap = await tx.get(ref);
+      const cur = snap.exists ? (Number(snap.data().qty) || 0) : 0;
+      tx.set(ref, { name: g.name, qty: cur + n }, { merge: true });
+      return cur + n;
+    });
+    inp.value = "";
+    stockMsg("ok", `Đã nhập thêm ${n} bình ${g.short}. Kho hiện có ${next} bình.`);
+  } catch (e) {
+    stockMsg("err", "Chưa lưu được kho. " + e.message + (e.code === "permission-denied" ? " — cần cho phép ghi collection \"gas_stock\" trong Rules của Firestore." : ""));
+  }
+}
+function stockEditQty(key) {
+  if (!FIREBASE_READY) return stockMsg("err", "Chưa kết nối Firebase, chưa thể lưu kho.");
+  const g = GAS_STOCK.find(x => x.key === key);
+  HistEdit.edit({
+    title: `Chỉnh tồn kho ${g.short}`,
+    fields: [{ key: "qty", label: "Số bình trong kho", type: "number", value: stock[key] || 0, req: true }],
+    onSave: (v) => stockSetQty(key, Math.max(0, Math.round(Number(v.qty) || 0)))
+  });
+}
+
 function showMsg(type, text) { $("submit-msg").innerHTML = `<div class="msg ${type}">${esc(text)}</div>`; }
 function setStatus(cls, text) { const el = $("status"); el.className = "mon-status " + cls; el.textContent = text; }
 
@@ -3821,13 +4160,32 @@ async function submitForm() {
   btn.disabled = true;
   showMsg("info", "Đang lưu...");
   try {
-    await db.collection(COLLECTION_NAME).add({
+    const rec = {
       "Ngày Thay": date, "Loại Khí": gas, "Số S/N (Khí trộn)": snText,
       "Nhánh Thay": branch, "Số Lượng Bình": qty, "Người Thực Hiện": user, createdAt: Date.now()
+    };
+    const gs = GAS_STOCK.find(x => x.name === gas);
+    const sref = db.collection(STOCK_COL).doc(gs.key);
+    // ghi lịch sử + trừ kho trong cùng một giao dịch để số liệu luôn khớp
+    const res = await db.runTransaction(async (tx) => {
+      const snap = await tx.get(sref);
+      tx.set(db.collection(COLLECTION_NAME).doc(), rec);
+      if (!snap.exists) return { tracked: false };   // chưa nhập số lượng kho cho loại khí này
+      const cur = Number(snap.data().qty) || 0, next = Math.max(0, cur - qty);
+      tx.set(sref, { name: gs.name, qty: next }, { merge: true });
+      return { tracked: true, cur, next };
     });
-    showMsg("ok", "Đã lưu lịch thay khí.");
+    let text = "Đã lưu lịch thay khí.", type = "ok";
+    if (res.tracked) {
+      text += ` Đã trừ ${qty} bình khỏi kho (còn ${res.next}).`;
+      if (res.cur < qty) { text += ` Kho chỉ có ${res.cur} bình nên đã trừ về 0 — kiểm tra lại tồn kho.`; type = "warn"; }
+      if (res.next <= STOCK_WARN) { text += ` Cảnh báo: ${gs.short} chỉ còn ${res.next} bình, cần nhập thêm bình khí loại này.`; type = "warn"; }
+    } else {
+      text += " (Chưa nhập số lượng kho cho loại khí này nên chưa trừ kho.)";
+    }
+    showMsg(type, text);
     // giống clear_on_submit: xóa các ô, giữ lại tên người thực hiện cho lần nhập sau
-    $("branch").value = ""; snVals = []; $("qty").value = 1; $("date").value = todayStr(); toggleSN();
+    $("branch").value = ""; snVals = []; $("qty").value = 1; $("date").value = todayStr(); toggleSN(); updateStockHint();
   } catch (e) {
     showMsg("err", "Lỗi mạng, chưa lưu. " + e.message + (e.code === "permission-denied" ? " — cần cho phép ghi collection \"gas_changes\" trong Rules của Firestore." : ""));
   }
@@ -3964,12 +4322,16 @@ function renderStats() {
     try { localStorage.setItem("gas_user", $("user").value); } catch (e) {}
   });
   $("branch").addEventListener("input", () => $("branch").classList.remove("missing"));
-  $("qty").addEventListener("input", toggleSN);
+  $("qty").addEventListener("input", () => { toggleSN(); updateStockHint(); });
+  $("stock-grid").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-do]"); if (!b) return;
+    if (b.dataset.do === "add") stockAddQty(b.dataset.k); else stockEditQty(b.dataset.k);
+  });
   $("sn-list").addEventListener("input", (e) => {
     const el = e.target;
     if (el.dataset.idx !== undefined) { snVals[Number(el.dataset.idx)] = el.value; el.classList.remove("missing"); }
   });
-  $("gas-type").addEventListener("change", toggleSN);
+  $("gas-type").addEventListener("change", () => { toggleSN(); updateStockHint(); });
   $("submit").addEventListener("click", submitForm);
   $("filter-month").addEventListener("change", drawTable);
   $("export-btn").addEventListener("click", exportExcel);
@@ -4003,6 +4365,8 @@ function renderStats() {
   LabChart.tabs($("history-empty").closest(".panel"));
 
   toggleSN();
+  renderStock();
+  listenStock();
   renderHistory();
   listenHistory();
 })();
@@ -4262,9 +4626,9 @@ function exportExcel(){
   ["user","act","mod"].forEach(function(k){ $(k).addEventListener("change",draw); });
   $("q").addEventListener("input",draw);
   $("export").onclick=function(){
-    if(typeof XLSX==="undefined"){ alert("Chưa tải được thư viện xuất Excel"); return; }
+    if(typeof XLSX==="undefined"){ AppDialog.alert("Chưa tải được thư viện xuất Excel",{title:"Xuất Excel"}); return; }
     var out=filtered().map(function(r){ var d=new Date(r.atMs); return {"Thời gian":p2(d.getDate())+"/"+p2(d.getMonth()+1)+"/"+d.getFullYear()+" "+p2(d.getHours())+":"+p2(d.getMinutes())+":"+p2(d.getSeconds()),"Tài khoản":r.email,"Họ tên":r.name,"Thao tác":ACTS[r.action]||r.action,"Mục":MODS[r.col]||r.col,"Mã bản ghi":r.docId,"Nội dung":r.summary}; });
-    if(!out.length){ alert("Không có dữ liệu để xuất"); return; }
+    if(!out.length){ AppDialog.alert("Không có dữ liệu để xuất",{title:"Xuất Excel"}); return; }
     var ws=XLSX.utils.json_to_sheet(out); ws["!cols"]=[18,28,20,12,24,22,60].map(function(w){ return {wch:w}; });
     var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,"Nhật ký"); XLSX.writeFile(wb,"Nhat_ky_hoat_dong.xlsx");
   };
@@ -4719,7 +5083,7 @@ sync();
     if(!email){ msg("Nhập email trước rồi bấm “Quên mật khẩu?”."); $("authEmail").focus(); return; }
     auth.sendPasswordResetEmail(email).then(function(){ msg("Đã gửi email đặt lại mật khẩu tới " + email + ".", true); }).catch(function(e){ msg(errText(e)); });
   });
-  $("btnLogout").addEventListener("click", function(){ if(confirm("Đăng xuất khỏi tài khoản này?")) auth.signOut().then(function(){ location.reload(); }); });
+  $("btnLogout").addEventListener("click", function(){ AppDialog.confirm("Đăng xuất khỏi tài khoản này?",{title:"Đăng xuất",okText:"Đăng xuất"}).then(function(ok){ if(ok) auth.signOut().then(function(){ location.reload(); }); }); });
 
   auth.onAuthStateChanged(function(u){
     Promise.resolve(st.pending).then(function(){
@@ -5165,6 +5529,95 @@ thead th,.print-head,th{color:var(--text-dim);font-weight:500;letter-spacing:.06
 .mi-act{justify-content:flex-end}
 .uhead{display:grid;grid-template-columns:var(--mi-cols);column-gap:10px;margin-left:82px;padding:0 8px 0 16px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-dim)}
 @media(max-width:620px){.uhead{display:none}.mi{grid-template-columns:1fr 1fr;row-gap:6px}.mi-act{grid-column:1/-1;justify-content:flex-start}}
+
+/* ===== Kho lọc + kho bình khí ===== */
+.stock-bar{margin:0 0 14px;padding:10px 14px;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
+.stk-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;font-weight:800;font-size:13px;text-transform:uppercase;letter-spacing:.05em}
+.stk-list{display:flex;flex-wrap:wrap;gap:8px}
+.stk{flex:1 1 190px;max-width:300px;padding:8px 12px;border-radius:10px;border:1.5px solid var(--border);border-left:6px solid var(--ok)}
+.stk.low{border-color:var(--warn);background:var(--warn-soft);color:var(--warn)}
+.stk.out{border-color:var(--danger);background:color-mix(in srgb,var(--danger) 10%,var(--surface));color:var(--danger)}
+.stk-n{font-size:12.5px;font-weight:700}
+.stk-q b{font-size:26px;font-weight:800;line-height:1.1}
+.stk-w{font-weight:700;font-size:12px;margin-top:2px}
+.stk-u{font-size:11px;opacity:.75;margin-top:2px}
+.stk-empty{font-size:12.5px;color:var(--text-dim)}
+.stk-row{display:grid;grid-template-columns:minmax(0,1fr) 84px 84px 34px;gap:8px;align-items:center;margin-bottom:8px}
+.stk-row.h{font-size:10.5px;font-weight:700;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px}
+#gasApp .gstock{margin-bottom:16px}
+.gstk-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media(max-width:700px){.gstk-grid{grid-template-columns:1fr}}
+.gstk{padding:12px 14px;border:1.5px solid var(--border);border-left:6px solid var(--ok);border-radius:12px;background:var(--surface)}
+.gstk.low{border-color:var(--warn);border-left-color:var(--warn);background:var(--warn-soft)}
+.gstk.out{border-color:var(--danger);border-left-color:var(--danger);background:color-mix(in srgb,var(--danger) 10%,var(--surface))}
+.gstk.low .gstk-q,.gstk.low .gstk-w{color:var(--warn)}
+.gstk.out .gstk-q,.gstk.out .gstk-w{color:var(--danger)}
+.gstk-n{font-weight:700;font-size:13px}
+.gstk-q b{font-size:30px;font-weight:800;line-height:1.1}
+.gstk-w{font-size:12.5px;font-weight:700;margin:2px 0 8px;color:var(--text-dim)}
+.gstk-act{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.gstk-act input{width:74px!important;flex:none}
+#gasApp .gstk-act .mbtn{width:auto!important;margin:0!important;padding:6px 10px!important;font-size:12.5px}
+.gstk-hint{font-size:12.5px;margin:-2px 0 12px;color:var(--text-dim)}
+.gstk-hint.warn{color:var(--warn);font-weight:700}.gstk-hint.out{color:var(--danger);font-weight:700}
+.gstk-note{font-size:12px;color:var(--text-dim);margin-top:10px}
+
+.dev-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.dev-chip{padding:2px 9px;border-radius:7px;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);font-weight:700;font-size:12px}
+#fUseQty[readonly]{opacity:.7;cursor:not-allowed}
+
+/* ===== Đồng bộ giao diện pop-up ===== */
+.overlay{background:rgba(10,18,26,.5);align-items:flex-start;padding:24px 14px}
+.overlay .modal{padding:20px 22px!important;max-width:480px;border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.28)}
+#overlay .modal{max-width:640px}
+#viewOverlay .modal,.xmodal,#stockOverlay .modal{max-width:560px}
+#confirmOverlay .modal,#dlgOverlay .modal{max-width:380px}
+#dlgOverlay{z-index:70}
+.overlay .modal h2{margin:0 0 14px!important;padding:0!important;border:0!important;font-size:18px!important;font-weight:800;letter-spacing:0!important;text-transform:none!important;line-height:1.3}
+.overlay .modal h2+.modal-sub{margin-top:-10px}
+.overlay .modal form{padding:0}
+#viewOverlay .modal>div:not(.modal-foot){padding:0!important}
+.overlay .modal-foot,.overlay .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin:18px 0 0;padding:0;border:0;background:none;border-radius:0}
+.overlay .modal label{font-size:12.5px;font-weight:600;color:var(--text-dim);margin-bottom:5px}
+.he-f,.mf{margin-bottom:13px}
+.dlg-msg{margin:0;font-size:13.5px;line-height:1.6;color:var(--text-dim);white-space:pre-line}
+.btn.btn-danger{background:var(--danger);color:#fff;border-color:var(--danger)}
+.btn.btn-danger:hover{filter:brightness(1.08)}
+
+/* ===== Bảng màu tổng: màu nền + màu khối đổi theo từng mục (--bg-a / --bg-b) ===== */
+body{
+  --bg:color-mix(in srgb,var(--bg-a) 15%,#eef2f7);
+  --surface:color-mix(in srgb,var(--bg-a) 4%,#ffffff);
+  --surface-2:color-mix(in srgb,var(--bg-a) 10%,#f8fafc);
+  --border:color-mix(in srgb,var(--bg-a) 22%,#dfe4ea);
+  --border-strong:color-mix(in srgb,var(--bg-a) 34%,#c6ced9);
+  --accent-soft:color-mix(in srgb,var(--bg-a) 16%,#ffffff);
+  --shadow:0 1px 2px color-mix(in srgb,var(--bg-a) 22%,rgba(16,32,48,.08)),0 10px 28px color-mix(in srgb,var(--bg-a) 14%,rgba(16,32,48,.06));
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) body{
+    --bg:color-mix(in srgb,var(--bg-a) 14%,#0a0f14);
+    --surface:color-mix(in srgb,var(--bg-a) 11%,#151c23);
+    --surface-2:color-mix(in srgb,var(--bg-a) 17%,#1b242c);
+    --border:color-mix(in srgb,var(--bg-a) 26%,#2b353e);
+    --border-strong:color-mix(in srgb,var(--bg-a) 38%,#3c4853);
+    --accent-soft:color-mix(in srgb,var(--bg-a) 22%,#12201f);
+    --shadow:0 1px 2px rgba(0,0,0,.45),0 10px 28px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"] body{
+  --bg:color-mix(in srgb,var(--bg-a) 14%,#0a0f14);
+  --surface:color-mix(in srgb,var(--bg-a) 11%,#151c23);
+  --surface-2:color-mix(in srgb,var(--bg-a) 17%,#1b242c);
+  --border:color-mix(in srgb,var(--bg-a) 26%,#2b353e);
+  --border-strong:color-mix(in srgb,var(--bg-a) 38%,#3c4853);
+  --accent-soft:color-mix(in srgb,var(--bg-a) 22%,#12201f);
+  --shadow:0 1px 2px rgba(0,0,0,.45),0 10px 28px rgba(0,0,0,.4);
+}
+/* tiêu đề khối (panel) lấy màu chủ đạo của mục đang xem */
+#monApp,#calApp,#gasApp,#ordApp{--head:color-mix(in srgb,var(--bg-a) 14%,var(--surface))}
+#monApp .panel-head,#calApp .panel-head,#gasApp .panel-head,#ordApp .panel-head{border-bottom-color:var(--border)}
+.cab .cab-part{background:color-mix(in srgb,var(--cab) 6%,var(--surface))}
 </style>
 </body>
 </html>
