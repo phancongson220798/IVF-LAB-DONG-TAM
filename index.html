@@ -910,6 +910,91 @@ body[data-view="order"] #appBg .fx{background-image:radial-gradient(circle at 25
 })();
 </script>
 <script>
+/* Bộ lọc theo cột dùng chung cho các màn lịch sử */
+(function(){
+  var seq=0;
+  function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+  function create(o){
+    var host=o.host,cols=o.columns,sel={},openKey=null,pop=null,id=++seq;
+    function col(k){return cols.filter(function(c){return c.key===k})[0]}
+    function vals(c,r){
+      var v=c.get(r);if(!Array.isArray(v))v=[v];
+      var out=v.map(function(x){x=x==null?"":String(x).trim();return x===""?(c.empty||"(Trống)"):x});
+      return out.length?out:[c.empty||"(Trống)"];
+    }
+    function pass(r,skip){
+      for(var i=0;i<cols.length;i++){var c=cols[i],s=sel[c.key];if(c.key===skip||!s)continue;
+        if(!vals(c,r).some(function(v){return s.has(v)}))return false;}
+      return true;
+    }
+    function options(c){
+      var m=Object.create(null),keys=[];
+      (o.rows()||[]).forEach(function(r){if(!pass(r,c.key))return;
+        vals(c,r).forEach(function(v){if(!(v in m)){m[v]=0;keys.push(v)}m[v]++})});
+      if(sel[c.key])sel[c.key].forEach(function(v){if(!(v in m)){m[v]=0;keys.push(v)}});
+      keys.sort(function(a,b){return a.localeCompare(b,"vi",{numeric:true})});
+      return keys.map(function(k){return{v:k,n:m[k]}});
+    }
+    function btn(c){
+      var s=sel[c.key],t=esc(c.label);
+      if(s)t+=": <b>"+(s.size===1?esc(Array.from(s)[0]):s.size+" giá trị")+"</b>";
+      return '<button type="button" class="cf-btn'+(s?" on":"")+'" data-k="'+c.key+'">'+t+'<i class="cf-car"></i></button>';
+    }
+    function draw(){
+      var any=cols.some(function(c){return sel[c.key]});
+      host.innerHTML='<div class="cf-bar"><span class="cf-ic">Lọc</span>'+cols.map(btn).join("")+(any?'<button type="button" class="cf-clear">Xoá lọc</button>':"")+"</div>";
+    }
+    function place(){
+      if(!pop)return;var b=host.querySelector('[data-k="'+openKey+'"]');if(!b)return;
+      var r=b.getBoundingClientRect(),w=pop.offsetWidth,left=Math.max(8,Math.min(r.left,window.innerWidth-w-8)),top=r.bottom+4;
+      pop.style.left=left+"px";pop.style.top=top+"px";pop.style.maxHeight=Math.max(160,window.innerHeight-top-12)+"px";
+    }
+    function fill(){
+      if(!pop)return;var c=col(openKey),s=sel[c.key],q=(pop.querySelector(".cf-q").value||"").toLowerCase();
+      var list=options(c).filter(function(x){return x.v.toLowerCase().indexOf(q)>-1});
+      pop.querySelector(".cf-list").innerHTML=list.map(function(x){
+        return '<label class="cf-opt"><input type="checkbox" value="'+esc(x.v)+'"'+((!s||s.has(x.v))?" checked":"")+"><span>"+esc(x.v)+"</span><em>"+x.n+"</em></label>";
+      }).join("")||'<div class="cf-none">Không có giá trị</div>';
+    }
+    function closePop(){if(pop){pop.remove();pop=null}openKey=null}
+    function changed(){draw();if(o.onChange)o.onChange()}
+    function openPop(k){
+      closePop();openKey=k;pop=document.createElement("div");pop.className="cf-pop";
+      pop.innerHTML='<input class="cf-q" type="search" placeholder="Tìm giá trị…" autocomplete="off"><div class="cf-acts"><a href="#" data-a="all">Tất cả</a><a href="#" data-a="none">Bỏ chọn</a></div><div class="cf-list"></div>';
+      document.body.appendChild(pop);fill();place();
+      pop.querySelector(".cf-q").addEventListener("input",fill);
+      pop.addEventListener("click",function(e){var a=e.target.closest("[data-a]");if(!a)return;e.preventDefault();
+        sel[k]=a.getAttribute("data-a")==="all"?null:new Set();fill();changed()});
+      pop.addEventListener("change",function(e){
+        var cb=e.target;if(!cb.matches('input[type="checkbox"]'))return;
+        var c=col(k),all=options(c).map(function(x){return x.v});
+        if(!sel[k])sel[k]=new Set(all);
+        cb.checked?sel[k].add(cb.value):sel[k].delete(cb.value);
+        if(all.every(function(v){return sel[k].has(v)}))sel[k]=null;
+        changed();
+      });
+    }
+    host.addEventListener("click",function(e){
+      var b=e.target.closest(".cf-btn");
+      if(b){var k=b.getAttribute("data-k");if(openKey===k)closePop();else openPop(k);return}
+      if(e.target.closest(".cf-clear")){closePop();cols.forEach(function(c){sel[c.key]=null});changed()}
+    });
+    document.addEventListener("mousedown",function(e){if(pop&&!pop.contains(e.target)&&!host.contains(e.target))closePop()});
+    document.addEventListener("keydown",function(e){if(e.key==="Escape")closePop()});
+    window.addEventListener("resize",closePop);window.addEventListener("scroll",place,true);
+    draw();
+    return{
+      test:function(r){return pass(r,null)},
+      apply:function(rows){return rows.filter(function(r){return pass(r,null)})},
+      refresh:function(){draw();if(pop)fill()},
+      reset:function(){closePop();cols.forEach(function(c){sel[c.key]=null});changed()},
+      active:function(){return cols.some(function(c){return sel[c.key]})}
+    };
+  }
+  window.ColFilter={create:create};
+})();
+</script>
+<script>
 (function(){
   try{ var t=localStorage.getItem("lab_theme"); if(t) document.documentElement.setAttribute("data-theme",t); }catch(e){}
   window.__effTheme=function(){ var c=document.documentElement.getAttribute("data-theme"); return c||(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"); };
@@ -1092,17 +1177,17 @@ window.LabChart=(function(){
       <section class="hx-group" aria-label="Thiết bị và chất lượng">
         <h2 class="hx-label">Thiết bị &amp; chất lượng</h2>
         <div class="hx-tiles">
-          <button type="button" class="hx-tile" data-open="devices" style="--t:#003770"><span class="hx-ic"><i class="i i-devices"></i></span><span class="hx-badges"><span class="hx-cnt" id="navCountDev">0</span></span><b>Danh sách thiết bị</b><small>Lý lịch, hiệu chuẩn, mã QR, in phiếu</small></button>
-          <button type="button" class="hx-tile" data-open="monitor" style="--t:#533afd"><span class="hx-ic"><i class="i i-monitor"></i></span><b>Thông số thiết bị</b><small>Ghi nhận hằng ngày, lịch sử, xuất Excel</small></button>
-          <button type="button" class="hx-tile" data-open="calib" style="--t:#ea2261"><span class="hx-ic"><i class="i i-calib"></i></span><b>Hiệu chuẩn tủ nuôi cấy</b><small>CO2, O2, VOCs, độ bụi</small></button>
+          <button type="button" class="hx-tile" data-open="devices" style="--t:#003770"><span class="hx-ic"><i class="i i-devices"></i></span><span class="hx-badges"><span class="hx-cnt" id="navCountDev">0</span></span><b>Danh sách thiết bị</b></button>
+          <button type="button" class="hx-tile" data-open="monitor" style="--t:#533afd"><span class="hx-ic"><i class="i i-monitor"></i></span><b>Thông số thiết bị</b></button>
+          <button type="button" class="hx-tile" data-open="calib" style="--t:#ea2261"><span class="hx-ic"><i class="i i-calib"></i></span><b>Hiệu chuẩn tủ nuôi cấy</b></button>
         </div>
       </section>
       <section class="hx-group" aria-label="Vật tư và thay thế định kỳ">
         <h2 class="hx-label">Vật tư &amp; thay thế định kỳ</h2>
         <div class="hx-tiles">
-          <button type="button" class="hx-tile hx-feat" data-open="filter" style="--t:#665efd"><span class="hx-ic"><i class="i i-filter"></i></span><span class="hx-badges"><span class="hx-cnt" id="countFilter">0</span><span class="tile-warn" id="filterTileWarn"></span></span><b>Thay lọc</b><small>Hạn thay lọc, cảnh báo quá hạn</small></button>
-          <button type="button" class="hx-tile" data-open="gas" style="--t:#d9702a"><span class="hx-ic"><i class="i i-gas"></i></span><b>Thay khí nuôi cấy</b><small>N2, CO2, khí trộn (S/N)</small></button>
-          <button type="button" class="hx-tile" data-open="order" style="--t:#b83fae"><span class="hx-ic"><i class="i i-order"></i></span><b>Theo dõi đặt hàng</b><small>Nitơ lỏng, N2, CO2, khí trộn</small></button>
+          <button type="button" class="hx-tile hx-feat" data-open="filter" style="--t:#665efd"><span class="hx-ic"><i class="i i-filter"></i></span><span class="hx-badges"><span class="hx-cnt" id="countFilter">0</span><span class="tile-warn" id="filterTileWarn"></span></span><b>Thay lọc</b></button>
+          <button type="button" class="hx-tile" data-open="gas" style="--t:#d9702a"><span class="hx-ic"><i class="i i-gas"></i></span><b>Thay khí nuôi cấy</b></button>
+          <button type="button" class="hx-tile" data-open="order" style="--t:#b83fae"><span class="hx-ic"><i class="i i-order"></i></span><b>Theo dõi đặt hàng</b></button>
         </div>
       </section>
     </div>
@@ -1116,7 +1201,7 @@ window.LabChart=(function(){
     <header class="top no-print">
       <div>
         <h1>Danh sách thiết bị</h1>
-        <div class="sub">Lý lịch, lịch hiệu chuẩn và phiếu thông tin</div>
+        
       </div>
       <div class="actions">
         <select id="sort">
@@ -1208,14 +1293,14 @@ window.LabChart=(function(){
     <header class="top no-print">
       <div>
         <h1>Thay lọc</h1>
-        <div class="sub">Lịch thay lọc và nhắc đến hạn</div>
+        
       </div>
     </header>
     <div class="stats-groups" id="statsRow"></div>
   <div class="notify-bar" id="notifyBar"></div>
   <div class="sec-switch no-print" id="secSwitch" role="tablist" aria-label="Nhóm thay lọc">
-    <button type="button" class="sec-btn active" data-sec="incubator" role="tab"> Tủ nuôi cấy <small>BT37 · GERI</small></button>
-    <button type="button" class="sec-btn" data-sec="periodic" role="tab"> Lọc định kỳ <small>CODA và lọc khác</small></button>
+    <button type="button" class="sec-btn active" data-sec="incubator" role="tab"> Tủ nuôi cấy</button>
+    <button type="button" class="sec-btn" data-sec="periodic" role="tab"> Lọc định kỳ</button>
   </div>
 
   <div class="stock-bar no-print" id="stockBar"></div>
@@ -1236,12 +1321,13 @@ window.LabChart=(function(){
     <button class="btn primary" id="addBtn">+ Thêm mục</button>
   </div>
 
+  <div id="histCfInc" class="cf-host no-print" hidden></div><div id="histCfPer" class="cf-host no-print" hidden></div>
   <div id="listWrap"></div>
   <div class="status-note no-print" id="filterStoreNote"></div>
   </div>
 
   <div id="monApp">
-    <header class="top no-print"><div><h1>Thông số thiết bị</h1><div class="sub">Ghi nhận thông số vận hành hằng ngày</div></div></header>
+    <header class="top no-print"><div><h1>Thông số thiết bị</h1></div></header>
     <div class="mon-bar">
       <div class="mon-field"><label for="mon-work-date">Ngày ghi nhận</label><div class="mon-date"><input type="date" id="mon-work-date"><span id="mon-work-dow"></span><button type="button" class="mbtn alt" id="mon-today-btn" title="Về ngày hôm nay" aria-label="Về ngày hôm nay"><i class="i i-today"></i></button></div></div>
       <div class="mon-field"><label for="mon-inspector">Người thực hiện</label><input type="text" id="mon-inspector" autocomplete="name" placeholder="Nhập tên chuyên viên"></div>
@@ -1255,8 +1341,8 @@ window.LabChart=(function(){
         <label for="mon-device">Chọn thiết bị</label>
         <select id="mon-device"></select>
 
-        <p class="device-line"><em>Đang ghi nhận cho:</em> <strong id="mon-cur-device"></strong></p>
-        <p class="caption" id="mon-inspector-caption"></p>
+        <p class="device-line" hidden><em>Đang ghi nhận cho:</em> <strong id="mon-cur-device"></strong></p>
+        <p class="caption" id="mon-inspector-caption" hidden></p>
         <div id="mon-fields"></div>
 
         <div class="note-wrap">
@@ -1274,18 +1360,12 @@ window.LabChart=(function(){
       <div class="panel-body">
         <div id="mon-history-empty" class="msg info" hidden style="margin-top:0">Chưa có dữ liệu.</div>
         <div id="mon-history-body">
-          <div class="filters">
-            <div>
-              <label for="mon-filter-device">Xem theo thiết bị</label>
-              <select id="mon-filter-device"></select>
-            </div>
-          </div>
+          <div id="mon-colf" class="cf-host"></div>
           <div class="tools">
             <div><label for="mon-exp-from">Từ ngày</label><input type="date" id="mon-exp-from"></div>
             <div><label for="mon-exp-to">đến ngày</label><input type="date" id="mon-exp-to"></div>
             <button class="mbtn alt" id="mon-export-btn" type="button"><i class="i i-download"></i>Xuất Excel</button>
           </div>
-          <div class="caption" style="margin-top:6px">Xuất theo thiết bị đang chọn.</div>
           <div id="mon-export-msg" role="status"></div>
           <p class="result-line" id="mon-result-line"></p>
           <div id="mon-no-match" class="msg warn" hidden>Không có dữ liệu phù hợp.</div>
@@ -1297,7 +1377,7 @@ window.LabChart=(function(){
   </div>
 
   <div id="calApp">
-    <header class="top no-print"><div><h1>Hiệu chuẩn tủ nuôi cấy</h1><div class="sub">CO2, O2, VOCs, độ bụi và hiệu chuẩn</div></div></header>
+    <header class="top no-print"><div><h1>Hiệu chuẩn tủ nuôi cấy</h1></div></header>
     <div class="mon-bar">
       <div class="mon-field"><label for="cal-ngay-do">Ngày đo</label><div class="mon-date"><input type="date" id="cal-ngay-do"><span id="cal-work-dow"></span><button type="button" class="mbtn alt" id="cal-today-btn" title="Về ngày hôm nay" aria-label="Về ngày hôm nay"><i class="i i-today"></i></button></div></div>
       <div class="mon-field"><label for="cal-inspector">Chuyên viên</label><input type="text" id="cal-inspector" autocomplete="name" placeholder="Nhập tên chuyên viên"></div>
@@ -1326,15 +1406,12 @@ window.LabChart=(function(){
         <div class="lc-pane" data-pane="list">
         <div id="cal-history-empty" class="msg info" style="margin-top:0" hidden>Chưa có dữ liệu.</div>
         <div id="cal-history-body" hidden>
-          <div class="tools" style="margin-top:0;padding-top:0;border-top:0">
-            <div style="flex:1 1 220px"><label for="cal-filter-hm">Xem theo hạng mục</label><select id="cal-filter-hm"></select></div>
-          </div>
+          <div id="cal-colf" class="cf-host"></div>
           <div class="tools">
             <div><label for="cal-exp-from">Từ ngày</label><input type="date" id="cal-exp-from"></div>
             <div><label for="cal-exp-to">đến ngày</label><input type="date" id="cal-exp-to"></div>
             <button class="mbtn" id="cal-export-btn" type="button"><i class="i i-download"></i>Xuất Excel</button>
           </div>
-          <div style="font-size:.82rem;color:var(--muted);margin-top:6px">Xuất theo hạng mục đang chọn.</div>
           <div id="cal-export-msg" role="status"></div>
           <p class="result-line" id="cal-result-line" style="margin-top:14px"></p>
           <div id="cal-no-match" class="msg warn" hidden>Không có dữ liệu phù hợp.</div>
@@ -1351,7 +1428,7 @@ window.LabChart=(function(){
           <div class="lc-chips" id="cal-st-chips"><button type="button" class="lc-chip" data-r="3">3 tháng</button><button type="button" class="lc-chip" data-r="6">6 tháng</button><button type="button" class="lc-chip" data-r="12">12 tháng</button><button type="button" class="lc-chip" data-r="year">Năm nay</button><button type="button" class="lc-chip" data-r="all">Tất cả</button></div>
           <p class="result-line" id="cal-st-line"></p>
           <div id="cal-charts"></div>
-          <div class="lc-st-title">Thống kê theo tháng <span class="lc-sub">(trung bình, trong ngoặc là thấp nhất – cao nhất)</span></div>
+          <div class="lc-st-title">Thống kê theo tháng </div>
           <div class="lc-scroll"><table class="lc-table"><thead id="cal-st-thead"></thead><tbody id="cal-st-tbody"></tbody></table></div>
         </div>
 
@@ -1361,14 +1438,13 @@ window.LabChart=(function(){
   </div>
 
   <div id="gasApp">
-    <header class="top no-print"><div><h1>Thay khí nuôi cấy</h1><div class="sub">Lịch thay khí N2, CO2, khí trộn</div></div></header>
+    <header class="top no-print"><div><h1>Thay khí nuôi cấy</h1></div></header>
     <div class="mon-bar no-print"><span class="mon-status" id="gas-status">Đang kết nối…</span></div>
     <section class="panel gstock no-print">
       <div class="panel-head"><h2>Kho bình khí</h2></div>
       <div class="panel-body">
         <div class="gstk-grid" id="gas-stock-grid"></div>
         <div id="gas-stock-msg" role="status"></div>
-        <div class="gstk-note">Mỗi lần lưu lịch thay sẽ tự trừ số bình đã thay khỏi kho. Còn 2 bình trở xuống sẽ cảnh báo cần nhập thêm bình khí loại đó.</div>
       </div>
     </section>
     <div class="mgrid">
@@ -1415,6 +1491,7 @@ window.LabChart=(function(){
           <div class="tools">
             <div style="flex:1 1 220px"><label for="gas-filter-month">Xem dữ liệu theo tháng</label><select id="gas-filter-month"></select></div>
           </div>
+          <div id="gas-colf" class="cf-host"></div>
           <div class="tools sep">
             <div><label for="gas-exp-from">Từ ngày</label><input type="date" id="gas-exp-from"></div>
             <div><label for="gas-exp-to">đến ngày</label><input type="date" id="gas-exp-to"></div>
@@ -1450,7 +1527,7 @@ window.LabChart=(function(){
   </div>
 
   <div id="ordApp">
-    <header class="top no-print"><div><h1>Theo dõi đặt hàng</h1><div class="sub">Đơn đặt nitơ lỏng, N2, CO2, khí trộn</div></div></header>
+    <header class="top no-print"><div><h1>Theo dõi đặt hàng</h1></div></header>
     <div class="mon-bar no-print"><span class="mon-status" id="ord-status">Đang kết nối…</span></div>
     <div class="mgrid">
     <section class="panel form-panel">
@@ -1476,6 +1553,7 @@ window.LabChart=(function(){
         <div id="ord-history-empty" class="msg info" style="margin-top:0" hidden>Chưa có đơn.</div>
         <div id="ord-history-body" hidden>
           <div class="tools"><div style="flex:1 1 220px"><label for="ord-filter-month">Xem dữ liệu theo tháng</label><select id="ord-filter-month"></select></div></div>
+          <div id="ord-colf" class="cf-host"></div>
           <div class="tools sep">
             <div><label for="ord-xm">Cách xuất</label><select id="ord-xm"><option value="day">Theo một ngày</option><option value="range">Theo khoảng thời gian</option><option value="all">Toàn bộ</option></select></div>
             <div id="ord-xd1"><label for="ord-exp-from" id="ord-xl1">Ngày</label><input type="date" id="ord-exp-from"></div>
@@ -1499,7 +1577,6 @@ window.LabChart=(function(){
               <div class="ord-more no-print" id="ord-smore"></div>
             </div>
           </div></div>
-          <p class="result-line" style="margin:8px 0 0">Không tính các đơn đã hủy. Số lượng tính theo bình.</p>
         </div>
       </div>
     </section>
@@ -1507,7 +1584,7 @@ window.LabChart=(function(){
   </div>
 
   <div id="auditApp">
-    <header class="top no-print"><div><h1>Nhật ký hoạt động</h1><div class="sub">500 hoạt động gần nhất: ai nhập, sửa, xoá</div></div></header>
+    <header class="top no-print"><div><h1>Nhật ký hoạt động</h1></div></header>
     <div class="mon-bar">
       <div class="mon-field"><label for="aud-user">Tài khoản</label><select id="aud-user" class="inp"></select></div>
       <div class="mon-field"><label for="aud-act">Thao tác</label><select id="aud-act" class="inp"><option value="">Tất cả</option><option value="add">Thêm</option><option value="update">Sửa / Lưu</option><option value="delete">Xoá</option><option value="login">Đăng nhập / Đăng ký</option></select></div>
@@ -1591,8 +1668,7 @@ window.LabChart=(function(){
         <div>
           <label for="f_cycle">Chu kỳ hiệu chuẩn (tháng)</label>
           <input class="inp" id="f_cycle" type="number" min="1" max="120" placeholder="VD: 12">
-          <div class="hint">Tự tính ngày hiệu chuẩn tiếp theo</div>
-        </div>
+                  </div>
         <div>
           <label for="f_cal">Ngày hiệu chuẩn</label>
           <input class="inp" id="f_cal" type="date">
@@ -1634,8 +1710,7 @@ window.LabChart=(function(){
       <div class="mf" id="fChamberWrap">
         <label>Buồng <span class="chb-tools"><a href="#" id="fChAll">Chọn tất cả</a> · <a href="#" id="fChNone">Bỏ chọn</a></span></label>
         <div class="chb-grid" id="fChambers"><label class="chb"><input type="checkbox" value="1"><span>Buồng 1</span></label><label class="chb"><input type="checkbox" value="2"><span>Buồng 2</span></label><label class="chb"><input type="checkbox" value="3"><span>Buồng 3</span></label><label class="chb"><input type="checkbox" value="4"><span>Buồng 4</span></label><label class="chb"><input type="checkbox" value="5"><span>Buồng 5</span></label><label class="chb"><input type="checkbox" value="6"><span>Buồng 6</span></label></div>
-        <div class="hint">Có thể chọn nhiều buồng trong cùng một tủ.</div>
-      </div>
+              </div>
     </div>
     <div class="mf" id="fNameWrap">
       <label>Tên thiết bị</label>
@@ -1652,8 +1727,7 @@ window.LabChart=(function(){
     <div class="mf" id="fDevWrap">
       <label>Thiết bị <span class="chb-tools"><a href="#" id="fDvAll">Chọn tất cả</a> · <a href="#" id="fDvNone">Bỏ chọn</a></span></label>
       <div class="chb-grid" id="fDevices"><label class="chb"><input type="checkbox" value="ASTEC 1"><span>ASTEC 1</span></label><label class="chb"><input type="checkbox" value="ASTEC 2"><span>ASTEC 2</span></label><label class="chb"><input type="checkbox" value="ASTEC 3"><span>ASTEC 3</span></label><label class="chb"><input type="checkbox" value="ASTEC 4"><span>ASTEC 4</span></label><label class="chb"><input type="checkbox" value="ASTEC 5"><span>ASTEC 5</span></label><label class="chb"><input type="checkbox" value="Chamber 1"><span>Chamber 1</span></label><label class="chb"><input type="checkbox" value="Chamber 2"><span>Chamber 2</span></label><label class="chb"><input type="checkbox" value="Workstation 1"><span>Workstation 1</span></label><label class="chb"><input type="checkbox" value="Workstation 2"><span>Workstation 2</span></label><label class="chb"><input type="checkbox" value="LAB"><span>LAB</span></label></div>
-      <div class="hint">Mỗi thiết bị được tích tính là 1 lọc.</div>
-    </div>
+          </div>
     <div class="mf" id="fPerformedByWrap">
       <label>Người thực hiện</label>
       <input class="inp" type="text" id="fPerformedBy">
@@ -2647,6 +2721,7 @@ window.LabChart=(function(){
 
     var wrap = document.getElementById('listWrap');
 
+    showHistFilters('');
     if(state.viewMode === 'history'){
       renderHistory(wrap);
       return;
@@ -2726,14 +2801,49 @@ window.LabChart=(function(){
 
   function fmtD(v){ return window.dBoth(v, fmt(v)); }
 
+  function histBase(){
+    return state.history.filter(function(h){ return h.category === state.activeTab && classify(h).group === state.section; });
+  }
+  var cfInc = ColFilter.create({
+    host: document.getElementById('histCfInc'),
+    columns: [
+      { key:'cab', label:'Tủ', get:function(h){ return cabLabel(classify(h).cabinet); } },
+      { key:'ch', label:'Buồng', empty:'Không có buồng', get:function(h){ return (classify(h).chambers||[]).map(function(n){ return 'Buồng ' + n; }); } },
+      { key:'part', label:'Bộ phận', get:function(h){ return partLabel(classify(h).part); } },
+      { key:'who', label:'Người thực hiện', get:function(h){ return h.performedBy; } }
+    ],
+    rows: histBase, onChange: function(){ render(); }
+  });
+  var cfPer = ColFilter.create({
+    host: document.getElementById('histCfPer'),
+    columns: [
+      { key:'type', label:'Loại lọc', get:function(h){ return h.type || h.name; } },
+      { key:'dev', label:'Thiết bị', get:function(h){ return h.devices || []; } },
+      { key:'who', label:'Người thực hiện', get:function(h){ return h.performedBy; } }
+    ],
+    rows: histBase, onChange: function(){ render(); }
+  });
+  function showHistFilters(which){
+    document.getElementById('histCfInc').hidden = which !== 'incubator';
+    document.getElementById('histCfPer').hidden = which !== 'periodic';
+  }
   function renderHistory(wrap){
-    var rows = state.history.filter(function(h){ return h.category === state.activeTab && classify(h).group === state.section; });
+    var rows = histBase();
+    var cf = state.section === 'incubator' ? cfInc : cfPer;
     rows.sort(function(a,b){
       var d = (b.date||'').localeCompare(a.date||'');
       return d !== 0 ? d : (b.recordedAt||'').localeCompare(a.recordedAt||'');
     });
     if(!rows.length){
-      wrap.innerHTML = '<div class="empty"><div class="display">Chưa có lịch sử '+CATEGORY_INFO[state.activeTab].label.toLowerCase()+'</div><div>Lịch sử tự ghi khi thêm mục hoặc bấm "Đã làm hôm nay".</div></div>';
+      showHistFilters('');
+      wrap.innerHTML = '<div class="empty"><div class="display">Chưa có lịch sử '+CATEGORY_INFO[state.activeTab].label.toLowerCase()+'</div></div>';
+      return;
+    }
+    showHistFilters(state.section);
+    cf.refresh();
+    rows = cf.apply(rows);
+    if(!rows.length){
+      wrap.innerHTML = '<div class="empty"><div class="display">Không có bản ghi phù hợp</div></div>';
       return;
     }
     wrap.innerHTML = '<div class="history-list">' + rows.map(function(h){
@@ -3105,7 +3215,6 @@ window.LabChart=(function(){
   var stkOv = document.createElement('div');
   stkOv.className = 'overlay'; stkOv.id = 'stockOverlay';
   stkOv.innerHTML = '<div class="modal" style="max-width:580px"><h2>Kho lọc</h2>' +
-    '<p class="modal-sub">Nhập số lượng lọc đang có trong kho. Mỗi lần bấm "Đã làm hôm nay" kho tự trừ đúng số lọc của mục đó; khi chỉ còn đủ 1 lần thay sẽ cảnh báo nhập thêm.</p>' +
     '<div id="stkRows"></div><button class="btn" id="stkAdd" type="button">+ Thêm loại lọc</button>' +
     '<div class="modal-actions"><button class="btn" id="stkCancel" type="button">Huỷ</button><button class="btn primary" id="stkSave" type="button">Lưu</button></div></div>';
   document.body.appendChild(stkOv);
@@ -3529,17 +3638,23 @@ function renderHistory(keepFilters) {
   $("history-empty").hidden = !empty;
   $("history-body").hidden = empty;
   if (empty) return;
-  const fd = $("filter-device");
-  const prev = keepFilters ? fd.value : "Tất cả";
-  fd.innerHTML = ["Tất cả", ...Object.keys(DEVICE_CONFIGS)].map(d => `<option>${esc(d)}</option>`).join("");
-  fd.value = prev;
+  cf.refresh();
   drawDays();
 }
 
-function filteredRows() {
-  const device = $("filter-device").value;
-  return device === "Tất cả" ? localData : localData.filter(r => r["Thiết bị"] === device);
-}
+const cf = ColFilter.create({
+  host: $("colf"),
+  columns: [
+    { key: "dev", label: "Thiết bị", get: r => r["Thiết bị"] },
+    { key: "par", label: "Thông số", get: r => r["Thông số"] },
+    { key: "val", label: "Giá trị", get: r => r["Giá trị"] },
+    { key: "who", label: "Chuyên viên", get: r => r["Chuyên viên"] },
+    { key: "note", label: "Ghi chú", get: r => r["Ghi chú"] ? "Có ghi chú" : "Không có" }
+  ],
+  rows: () => localData,
+  onChange: () => drawDays()
+});
+function filteredRows() { return cf.apply(localData); }
 
 const fmtDT = (t) => { const m = String(t ?? "").match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? `${m[3]}/${m[2]}/${m[1]}` : String(t ?? ""); };
 
@@ -3560,7 +3675,7 @@ function drawDays() {
   const groupsByDay = {};
   let totalRecords = 0;
   days.forEach(d => { groupsByDay[d] = groupRows(byDay[d].slice().reverse()); totalRecords += groupsByDay[d].length; });
-  $("result-line").innerHTML = `Thiết bị: <strong>${esc($("filter-device").value)}</strong> · <strong>${days.length}</strong> ngày · <strong>${totalRecords}</strong> bản ghi <span style="color:var(--text-dim)">(mỗi lần ghi của một thiết bị = 1 bản ghi)</span>`;
+  $("result-line").innerHTML = `<strong>${days.length}</strong> ngày · <strong>${totalRecords}</strong> bản ghi`;
   $("no-match").hidden = days.length > 0;
   $("day-list").innerHTML = days.map(day => {
     const groups = groupsByDay[day];
@@ -3622,7 +3737,6 @@ function paintToday() {
     try { localStorage.setItem("inspector_name", $("inspector").value); } catch (e) {}
   });
   $("submit").addEventListener("click", submitForm);
-  $("filter-device").addEventListener("change", drawDays);
   $("export-btn").addEventListener("click", exportExcel);
   $("day-list").addEventListener("toggle", (e) => {
     const day = e.target.dataset && e.target.dataset.day;
@@ -3712,18 +3826,25 @@ let localData = [];
 /* =====================================================================
    FORM ĐỘNG
    ===================================================================== */
+/* Giá trị mặc định: Tủ A = 6% CO2 / 5% O2; BT37 / GERI = 7% CO2 / 5% O2 (ô "hiệu chuẩn" giữ 0 = không hiệu chuẩn) */
+function defaultsFor(hm) {
+  if (/^Tủ A\d$/.test(hm)) return { co2_do: 6, o2_do: 5 };
+  if (hm === "Tủ BT37/ Geri") return { co2_do: 7, o2_do: 5 };
+  return {};
+}
+
 function renderForm() {
   const hm = $("hang-muc").value;
   const { banner, groups } = layoutFor(hm);
   $("banner").innerHTML = `<div class="banner ${banner[0]}">${esc(banner[1])}</div>`;
   let html = "";
   groups.forEach(g => {
-    if (g.title) html += `<div class="group-title">${esc(g.title)}</div>` + (g.hint ? `<div class="chint">${esc(g.hint)}</div>` : "");
+    if (g.title) html += `<div class="group-title">${esc(g.title)}</div>`;
     g.fields.forEach(f => {
       const full = g.full ? " full" : "";
       html += `<div class="${full.trim()}"><label for="cal-in-${f.key}">${esc(f.label)}</label>
         <input type="number" id="cal-in-${f.key}" data-key="${f.key}" min="${f.min}" ${Number.isFinite(f.max) ? `max="${f.max}"` : ""}
-          step="${f.step}" value="${f.dec ? (0).toFixed(f.dec) : 0}" inputmode="decimal"></div>`;
+          step="${f.step}" value="${(() => { const d = defaultsFor(hm)[f.key]; const v = d === undefined ? 0 : d; return f.dec ? v.toFixed(f.dec) : v; })()}" inputmode="decimal"></div>`;
     });
   });
   $("fields").innerHTML = html;
@@ -3795,10 +3916,20 @@ const fmtDay = (iso) => { const [y, m, d] = iso.split("-"); return `${d}/${m}/${
 const dowOf = (iso) => { const [y, m, d] = iso.split("-").map(Number); return DOW[new Date(y, m - 1, d).getDay()]; };
 const SHOW_COLS = COLS.filter(c => c !== "Ngày đo" && c !== "Chuyên viên");
 
-function filteredRows() {
-  const hm = $("filter-hm").value;
-  return hm === "Tất cả" ? localData : localData.filter(r => r["Hạng mục kiểm tra"] === hm);
-}
+const cf = ColFilter.create({
+  host: $("colf"),
+  columns: [
+    { key: "hm", label: "Hạng mục", get: r => r["Hạng mục kiểm tra"] },
+    { key: "who", label: "Chuyên viên", get: r => r["Chuyên viên"] },
+    { key: "co2d", label: "CO2 đo", get: r => r["CO2 Đo Được (%)"] },
+    { key: "co2h", label: "CO2 HC", get: r => r["CO2 Hiệu Chuẩn (%)"] },
+    { key: "o2d", label: "O2 đo", get: r => r["O2 Đo Được (%)"] },
+    { key: "o2h", label: "O2 HC", get: r => r["O2 Hiệu Chuẩn (%)"] }
+  ],
+  rows: () => localData,
+  onChange: () => renderHistory()
+});
+function filteredRows() { return cf.apply(localData); }
 
 function renderHistory() {
   renderStats();
@@ -3806,11 +3937,12 @@ function renderHistory() {
   $("history-empty").hidden = !empty;
   $("history-body").hidden = empty;
   if (empty) return;
+  cf.refresh();
   const rows = filteredRows();
   const byDay = {};
   rows.forEach(r => { const k = r["Ngày đo"] || "—"; (byDay[k] = byDay[k] || []).push(r); });
   const days = Object.keys(byDay).sort().reverse();
-  $("result-line").innerHTML = `Hạng mục: <strong>${esc($("filter-hm").value)}</strong> · <strong>${days.length}</strong> ngày · <strong>${rows.length}</strong> bản ghi`;
+  $("result-line").innerHTML = `<strong>${days.length}</strong> ngày · <strong>${rows.length}</strong> bản ghi`;
   $("no-match").hidden = days.length > 0;
   $("day-list").innerHTML = days.map(day => {
     const list = byDay[day];   // localData đã sắp mới nhất trước
@@ -3960,8 +4092,6 @@ function renderStats() {
    ===================================================================== */
 (function init() {
   $("hang-muc").innerHTML = ALL.map(h => `<option>${esc(h)}</option>`).join("");
-  $("filter-hm").innerHTML = ["Tất cả", ...ALL].map(h => `<option>${esc(h)}</option>`).join("");
-  $("filter-hm").addEventListener("change", renderHistory);
   $("st-hm").innerHTML = ALL.map(h => `<option>${esc(h)}</option>`).join("");
   $("st-to").value = todayStr();
   $("st-from").value = U.monthStartAgo(5);
@@ -4206,12 +4336,26 @@ function renderHistory() {
   const prev = sel.value;
   sel.innerHTML = months.map(m => `<option>${esc(m)}</option>`).join("");
   sel.value = months.includes(prev) ? prev : months[0];
+  cf.refresh();
   drawTable();
 }
 
+const cf = ColFilter.create({
+  host: $("colf"),
+  columns: [
+    { key: "gas", label: "Loại khí", get: r => r["Loại Khí"] },
+    { key: "sn", label: "Số S/N", get: r => r["Số S/N (Khí trộn)"] },
+    { key: "br", label: "Nhánh thay", get: r => r["Nhánh Thay"] },
+    { key: "qty", label: "Số lượng", get: r => r["Số Lượng Bình"] },
+    { key: "who", label: "Người thực hiện", get: r => r["Người Thực Hiện"] }
+  ],
+  rows: () => localData.filter(r => fmtMonth(r["Ngày Thay"]) === $("filter-month").value),
+  onChange: () => drawTable()
+});
+
 function drawTable() {
   const m = $("filter-month").value;
-  const rows = localData.filter(r => fmtMonth(r["Ngày Thay"]) === m);
+  const rows = cf.apply(localData.filter(r => fmtMonth(r["Ngày Thay"]) === m));
   const total = rows.reduce((t, r) => t + (Number(r["Số Lượng Bình"]) || 0), 0);
   $("result-line").innerHTML = `Tháng <strong>${esc(m)}</strong> · <strong>${rows.length}</strong> lần thay · tổng <strong>${total}</strong> bình`;
   $("tbody").innerHTML = rows.map(r => `<tr>
@@ -4477,10 +4621,21 @@ function render(){
   var ys=[String(new Date().getFullYear())]; data.forEach(function(r){var y=String(r[D]).slice(0,4); if(ys.indexOf(y)<0) ys.push(y);});
   ys.sort().reverse(); var yp=$("year").value;
   $("year").innerHTML=ys.map(function(y){return '<option>'+y+'</option>'}).join(""); if(ys.indexOf(yp)>=0) $("year").value=yp;
-  drawTable(); drawStat();
+  cf.refresh(); drawTable(); drawStat();
 }
+var cf=ColFilter.create({
+  host:$("colf"),
+  columns:[
+    {key:"sup",label:"Nhà cung cấp",get:function(r){return r["Nhà Cung Cấp"]}},
+    {key:"no",label:"Số đơn",get:function(r){return r["Số Đơn"]}},
+    {key:"st",label:"Trạng thái",get:function(r){return r[S]}},
+    {key:"who",label:"Người thực hiện",get:function(r){return r["Người Thực Hiện"]}}
+  ],
+  rows:function(){var m=$("filter-month").value;return m?data.filter(function(r){return fm(r[D])===m}):data},
+  onChange:function(){drawTable()}
+});
 function drawTable(){
-  var m=$("filter-month").value,rows=m?data.filter(function(r){return fm(r[D])===m}):data;
+  var m=$("filter-month").value,rows=cf.apply(m?data.filter(function(r){return fm(r[D])===m}):data);
   $("result-line").innerHTML=(m?'Tháng <strong>'+esc(m)+'</strong>':'<strong>Tất cả</strong>')+' · <strong>'+rows.length+'</strong> đơn · '+
     IT.map(function(x){return esc(x[0])+' <strong>'+sum(rows,x[0])+'</strong>'}).join(' · ')+' bình';
   var shown=allH?rows:rows.slice(0,HN);
@@ -5635,6 +5790,56 @@ body{
 /* Nền trang chủ: tím chàm - xanh dương, hợp với màu nhấn và ô nổi bật */
 body[data-view="home"]{--bg-a:#533afd;--bg-b:#1f8fe0}
 body[data-view="home"]{background-image:linear-gradient(165deg,color-mix(in srgb,var(--bg-a) 11%,transparent),color-mix(in srgb,var(--bg-b) 13%,transparent) 70%);background-attachment:fixed}
+
+/* ===== Bộ lọc theo cột ===== */
+.cf-host{margin:0 0 8px}
+.cf-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.cf-ic{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);margin-right:2px}
+.cf-btn,.cf-clear{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:12.5px;cursor:pointer;line-height:1.3;max-width:100%}
+.cf-btn:hover{border-color:var(--accent)}
+.cf-btn.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:600}
+.cf-btn b{font-weight:700;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cf-car{width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid currentColor;opacity:.6}
+.cf-clear{border-style:dashed;color:var(--danger)}
+.cf-pop{position:fixed;z-index:95;width:250px;display:flex;flex-direction:column;gap:6px;padding:8px;border-radius:12px;border:1px solid var(--border-strong);background:var(--surface);box-shadow:0 18px 44px rgba(10,20,40,.24)}
+.cf-q{width:100%;padding:6px 9px;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text);font-size:13px}
+.cf-acts{display:flex;gap:12px;font-size:12px}.cf-acts a{color:var(--accent);text-decoration:none;font-weight:600}
+.cf-list{overflow:auto;display:flex;flex-direction:column;min-height:0}
+.cf-opt{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:7px;cursor:pointer;font-size:13px;margin:0;color:var(--text);font-weight:400;text-transform:none;letter-spacing:0}
+.cf-opt:hover{background:var(--accent-soft)}
+.cf-opt input{width:auto;flex:none;margin:0;accent-color:var(--accent)}
+.cf-opt span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cf-opt em{font-style:normal;font-size:11px;color:var(--text-dim)}
+.cf-none{padding:8px;font-size:12.5px;color:var(--text-dim)}
+
+/* ===== Bỏ mô tả phụ trên giao diện ===== */
+.sub,.modal-sub,.chint,.hint,.gstk-note,.lc-sub,.device-line,#mon-inspector-caption{display:none!important}
+
+/* ===== Lịch sử: thu gọn, bỏ khoảng trống thừa ===== */
+#monApp .mon-bar,#calApp .mon-bar,#gasApp .mon-bar,#ordApp .mon-bar{padding:8px 12px;margin-bottom:10px;gap:10px}
+#monApp .mgrid,#calApp .mgrid,#gasApp .mgrid,#ordApp .mgrid{gap:12px}
+#monApp .panel-head,#calApp .panel-head,#gasApp .panel-head,#ordApp .panel-head{padding:8px 14px}
+#monApp .panel-body,#calApp .panel-body,#gasApp .panel-body,#ordApp .panel-body{padding:10px 12px}
+:is(#monApp,#calApp,#gasApp,#ordApp) .tools{margin-top:6px;padding-top:6px;gap:6px 10px;align-items:end}
+:is(#monApp,#calApp,#gasApp,#ordApp) .tools label{margin-bottom:2px}
+:is(#monApp,#calApp,#gasApp,#ordApp) .result-line{margin:4px 0 6px!important;font-size:12.5px}
+:is(#monApp,#calApp,#gasApp,#ordApp) .msg{margin-top:6px;padding:6px 10px}
+:is(#monApp,#calApp,#gasApp,#ordApp) .day{margin-bottom:5px;border-radius:10px}
+:is(#monApp,#calApp,#gasApp,#ordApp) .day>summary{padding:6px 12px!important;gap:8px;min-height:0}
+:is(#monApp,#calApp,#gasApp,#ordApp) .day .table-scroll{max-height:min(480px,58vh)}
+:is(#monApp,#calApp,#gasApp,#ordApp) th{padding:5px 8px;font-size:10.5px}
+:is(#monApp,#calApp,#gasApp,#ordApp) td{padding:4px 8px;font-size:13px;line-height:1.3}
+#gasApp .table-scroll,#ordApp .table-scroll{max-height:calc(100vh - 230px)}
+#ordApp .ord-hist th,#ordApp .ord-hist td{padding-top:5px;padding-bottom:5px}
+#ordApp .ord-more{margin:4px 0}
+#ordApp .ord-h{margin:12px 0 6px}
+.history-list{gap:6px}
+.history-row{padding:7px 12px;gap:10px}
+.history-sub{margin-top:0}
+@media(max-width:760px){
+  :is(#monApp,#calApp,#gasApp,#ordApp) td{padding:1px 0}
+  .cf-btn{font-size:12px;padding:3px 9px}
+}
 </style>
 </body>
 </html>
