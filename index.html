@@ -1066,18 +1066,20 @@ window.LabChart=(function(){
 <div id="appBg" aria-hidden="true"><i class="b b1"></i><i class="b b2"></i><i class="b b3"></i><div class="fx"></div></div>
 <div class="wrap">
 <div class="topnav no-print" id="appBar">
-    <button class="brand" id="btnHome" type="button" aria-label="Về trang chính"><span class="brand-logo">LD</span><span class="brand-txt"><b>LAB ĐỒNG TÂM</b><small>Quản lý chất lượng</small></span></button>
-    <nav class="mainnav" id="mainNav" aria-label="Điều hướng chính"><i class="nav-ind" id="navInd"></i>
-      <button type="button" data-go="home" class="on"><i class="i i-home"></i><span class="nl">Trang chủ</span></button>
-      <button type="button" data-go="devices"><i class="i i-devices"></i><span class="nl">Thiết bị</span></button>
-      <button type="button" data-go="ops"><i class="i i-ops"></i><span class="nl">Vận hành</span></button>
-      <button type="button" data-go="order"><i class="i i-order"></i><span class="nl">Đặt hàng</span></button>
-    </nav>
+    <button class="brand" id="btnHome" type="button" aria-label="Về trang chính"><span class="brand-logo">LD</span><span class="brand-txt"><b>LAB ĐỒNG TÂM</b></span></button>
+    <div class="app-title" id="appTitle">QUẢN LÝ CHẤT LƯỢNG</div>
     <span class="topnav-title" id="topTitle"></span>
     <div class="acct" id="acct">
       <button type="button" class="acct-btn" id="acctBtn" aria-haspopup="true" aria-expanded="false"><span class="avatar" id="acctAv">?</span><span class="acct-nm" id="acctNm">Tài khoản</span></button>
       <div class="acct-menu" id="acctMenu" role="menu">
         <div class="am-head"><span class="avatar lg" id="acctAv2">?</span><div><b id="acctNm2">Khách</b><small id="acctMail">Chưa đăng nhập</small></div><span class="user-chip" id="userChip" hidden style="display:none"></span></div>
+        <div class="am-nav" role="group" aria-label="Điều hướng chính">
+          <button type="button" class="am-item" data-go="home" data-nav="home" role="menuitem"><i class="i i-home"></i>Trang chủ</button>
+          <button type="button" class="am-item" data-go="devices" data-nav="devices" role="menuitem"><i class="i i-devices"></i>Thiết bị</button>
+          <button type="button" class="am-item" data-go="ops" data-nav="ops" role="menuitem"><i class="i i-ops"></i>Vận hành</button>
+          <button type="button" class="am-item" data-go="order" data-nav="order" role="menuitem"><i class="i i-order"></i>Đặt hàng</button>
+        </div>
+        <div class="am-sep"></div>
         <button type="button" class="am-item" data-go="audit" role="menuitem"><i class="i i-audit"></i>Nhật ký hoạt động</button>
         <button type="button" class="am-item" id="btnExportAll" role="menuitem"><i class="i i-download"></i>Xuất Excel</button>
         <div class="am-item am-theme"><i class="i i-sun"></i>Giao diện sáng / tối<button class="btn" id="btnTheme" type="button" title="Đổi giao diện sáng/tối">Đổi</button></div>
@@ -1086,21 +1088,20 @@ window.LabChart=(function(){
     </div>
   </div>
   <div id="homeApp">
-    <div class="hx-hero"><span class="hx-pill">Lab Đồng Tâm</span><h1>Quản lý chất lượng</h1><p>Chọn một chức năng để bắt đầu.</p></div>
     <div class="hx">
-      <section class="hx-group" aria-label="Vận hành">
-        <h2 class="hx-label">Vận hành</h2>
+      <section class="hx-group" aria-label="Thiết bị và chất lượng">
+        <h2 class="hx-label">Thiết bị &amp; chất lượng</h2>
         <div class="hx-tiles">
+          <button type="button" class="hx-tile" data-open="devices" style="--t:#003770"><span class="hx-ic"><i class="i i-devices"></i></span><span class="hx-badges"><span class="hx-cnt" id="navCountDev">0</span></span><b>Danh sách thiết bị</b><small>Lý lịch, hiệu chuẩn, mã QR, in phiếu</small></button>
           <button type="button" class="hx-tile" data-open="monitor" style="--t:#533afd"><span class="hx-ic"><i class="i i-monitor"></i></span><b>Thông số thiết bị</b><small>Ghi nhận hằng ngày, lịch sử, xuất Excel</small></button>
           <button type="button" class="hx-tile" data-open="calib" style="--t:#ea2261"><span class="hx-ic"><i class="i i-calib"></i></span><b>Hiệu chuẩn tủ nuôi cấy</b><small>CO2, O2, VOCs, độ bụi</small></button>
-          <button type="button" class="hx-tile hx-feat" data-open="filter" style="--t:#665efd"><span class="hx-ic"><i class="i i-filter"></i></span><span class="hx-badges"><span class="hx-cnt" id="countFilter">0</span><span class="tile-warn" id="filterTileWarn"></span></span><b>Thay lọc</b><small>Hạn thay lọc, cảnh báo quá hạn</small></button>
-          <button type="button" class="hx-tile" data-open="gas" style="--t:#d9702a"><span class="hx-ic"><i class="i i-gas"></i></span><b>Thay khí nuôi cấy</b><small>N2, CO2, khí trộn (S/N)</small></button>
         </div>
       </section>
-      <section class="hx-group" aria-label="Quản lý">
-        <h2 class="hx-label">Quản lý</h2>
-        <div class="hx-tiles hx-col">
-          <button type="button" class="hx-tile" data-open="devices" style="--t:#003770"><span class="hx-ic"><i class="i i-devices"></i></span><span class="hx-badges"><span class="hx-cnt" id="navCountDev">0</span></span><b>Danh sách thiết bị</b><small>Lý lịch, hiệu chuẩn, mã QR, in phiếu</small></button>
+      <section class="hx-group" aria-label="Vật tư và thay thế định kỳ">
+        <h2 class="hx-label">Vật tư &amp; thay thế định kỳ</h2>
+        <div class="hx-tiles">
+          <button type="button" class="hx-tile hx-feat" data-open="filter" style="--t:#665efd"><span class="hx-ic"><i class="i i-filter"></i></span><span class="hx-badges"><span class="hx-cnt" id="countFilter">0</span><span class="tile-warn" id="filterTileWarn"></span></span><b>Thay lọc</b><small>Hạn thay lọc, cảnh báo quá hạn</small></button>
+          <button type="button" class="hx-tile" data-open="gas" style="--t:#d9702a"><span class="hx-ic"><i class="i i-gas"></i></span><b>Thay khí nuôi cấy</b><small>N2, CO2, khí trộn (S/N)</small></button>
           <button type="button" class="hx-tile" data-open="order" style="--t:#b83fae"><span class="hx-ic"><i class="i i-order"></i></span><b>Theo dõi đặt hàng</b><small>Nitơ lỏng, N2, CO2, khí trộn</small></button>
         </div>
       </section>
@@ -4859,8 +4860,7 @@ var cur="home",vtT=0;
 function go(v){if(window.__show)window.__show(v,true)}
 function place(ind,btn){if(!ind)return;if(!btn||!btn.offsetWidth){ind.style.opacity=0;return}ind.style.left=btn.offsetLeft+"px";ind.style.width=btn.offsetWidth+"px";ind.style.opacity=1}
 function sync(){var g=G[cur]||cur;
-  $$("#mainNav button[data-go]").forEach(function(b){b.classList.toggle("on",b.getAttribute("data-go")===g)});
-  place($("#navInd"),$("#mainNav button.on"));
+  $$("#acctMenu [data-nav]").forEach(function(b){b.classList.toggle("on",b.getAttribute("data-nav")===g)});
   $$("#opsNav button").forEach(function(b){b.classList.toggle("on",b.getAttribute("data-sub")===cur)});
   place($("#opsInd"),$("#opsNav button.on"));}
 window.__uxView=function(v){
@@ -4870,7 +4870,6 @@ window.__uxView=function(v){
   closeMenu();
 };
 /* điều hướng chính */
-$$("#mainNav button[data-go]").forEach(function(b){b.addEventListener("click",function(){var t=b.getAttribute("data-go");go(t==="ops"?lastOps:t)})});
 $$("#opsNav button[data-sub]").forEach(function(b){b.addEventListener("click",function(){go(b.getAttribute("data-sub"))})});
 window.addEventListener("resize",sync);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(sync);
@@ -4881,7 +4880,7 @@ if(abtn){
   abtn.addEventListener("click",function(e){e.stopPropagation();var o=!acct.classList.contains("open");acct.classList.toggle("open",o);abtn.setAttribute("aria-expanded",o?"true":"false")});
   document.addEventListener("click",function(e){if(!acct.contains(e.target))closeMenu()});
   document.addEventListener("keydown",function(e){if(e.key==="Escape")closeMenu()});
-  $$("#acctMenu [data-go]").forEach(function(b){b.addEventListener("click",function(){closeMenu();go(b.getAttribute("data-go"))})});
+  $$("#acctMenu [data-go]").forEach(function(b){b.addEventListener("click",function(){var t=b.getAttribute("data-go");closeMenu();go(t==="ops"?lastOps:t)})});
 }
 function syncUser(){
   var c=$("#userChip");if(!c)return;
@@ -5618,6 +5617,24 @@ body{
 #monApp,#calApp,#gasApp,#ordApp{--head:color-mix(in srgb,var(--bg-a) 14%,var(--surface))}
 #monApp .panel-head,#calApp .panel-head,#gasApp .panel-head,#ordApp .panel-head{border-bottom-color:var(--border)}
 .cab .cab-part{background:color-mix(in srgb,var(--cab) 6%,var(--surface))}
+
+/* ===== Thanh trên: tiêu đề ở giữa, điều hướng nằm trong menu tài khoản ===== */
+.app-title{flex:1;min-width:0;text-align:center;font-size:clamp(18px,2.3vw,28px);font-weight:300;letter-spacing:-.01em;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.am-nav{display:flex;flex-direction:column;gap:2px}
+.am-sep{height:1px;background:var(--border);margin:6px 4px}
+.am-item.on{background:var(--accent-soft);color:var(--accent);font-weight:700}
+.am-item.on:hover{padding-left:12px}
+@media(max-width:760px){.app-title{font-size:16px;text-align:left}.brand-txt{display:none}}
+/* ===== Màn hình chính: 2 nhóm x 3 ô ===== */
+#homeApp .hx{display:flex;flex-direction:column;gap:clamp(16px,2.2vw,28px);min-height:max(420px,calc(100vh - 150px))}
+#homeApp .hx-group{flex:1}
+#homeApp .hx-tiles{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:1fr}
+.hx-label{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:700;color:var(--text)}
+.hx-label::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--accent)}
+@media(max-width:900px){#homeApp .hx{min-height:0}#homeApp .hx-tiles{grid-template-columns:1fr;grid-template-rows:none}}
+/* Nền trang chủ: tím chàm - xanh dương, hợp với màu nhấn và ô nổi bật */
+body[data-view="home"]{--bg-a:#533afd;--bg-b:#1f8fe0}
+body[data-view="home"]{background-image:linear-gradient(165deg,color-mix(in srgb,var(--bg-a) 11%,transparent),color-mix(in srgb,var(--bg-b) 13%,transparent) 70%);background-attachment:fixed}
 </style>
 </body>
 </html>
