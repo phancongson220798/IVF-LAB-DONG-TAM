@@ -11,7 +11,7 @@
 <link id="manifestLink" rel="manifest" href="">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
@@ -1174,19 +1174,19 @@ window.LabChart=(function(){
   </div>
   <div id="homeApp">
     <div class="hx">
-      <section class="hx-group" aria-label="Thiết bị và chất lượng">
-        <h2 class="hx-label">Thiết bị &amp; chất lượng</h2>
+      <section class="hx-group" aria-label="Vận hành hằng ngày">
+        <h2 class="hx-label">Vận hành hằng ngày</h2>
         <div class="hx-tiles">
-          <button type="button" class="hx-tile" data-open="devices" style="--t:#003770"><span class="hx-ic"><i class="i i-devices"></i></span><span class="hx-badges"><span class="hx-cnt" id="navCountDev">0</span></span><b>Danh sách thiết bị</b></button>
           <button type="button" class="hx-tile" data-open="monitor" style="--t:#533afd"><span class="hx-ic"><i class="i i-monitor"></i></span><b>Thông số thiết bị</b></button>
-          <button type="button" class="hx-tile" data-open="calib" style="--t:#ea2261"><span class="hx-ic"><i class="i i-calib"></i></span><b>Hiệu chuẩn tủ nuôi cấy</b></button>
-        </div>
-      </section>
-      <section class="hx-group" aria-label="Vật tư và thay thế định kỳ">
-        <h2 class="hx-label">Vật tư &amp; thay thế định kỳ</h2>
-        <div class="hx-tiles">
           <button type="button" class="hx-tile hx-feat" data-open="filter" style="--t:#665efd"><span class="hx-ic"><i class="i i-filter"></i></span><span class="hx-badges"><span class="hx-cnt" id="countFilter">0</span><span class="tile-warn" id="filterTileWarn"></span></span><b>Thay lọc</b></button>
           <button type="button" class="hx-tile" data-open="gas" style="--t:#d9702a"><span class="hx-ic"><i class="i i-gas"></i></span><b>Thay khí nuôi cấy</b></button>
+        </div>
+      </section>
+      <section class="hx-group" aria-label="Hiệu chuẩn và quản lý">
+        <h2 class="hx-label">Hiệu chuẩn &amp; quản lý</h2>
+        <div class="hx-tiles">
+          <button type="button" class="hx-tile" data-open="calib" style="--t:#ea2261"><span class="hx-ic"><i class="i i-calib"></i></span><b>Hiệu chuẩn tủ nuôi cấy</b></button>
+          <button type="button" class="hx-tile" data-open="devices" style="--t:#003770"><span class="hx-ic"><i class="i i-devices"></i></span><span class="hx-badges"><span class="hx-cnt" id="navCountDev">0</span></span><b>Danh sách thiết bị</b></button>
           <button type="button" class="hx-tile" data-open="order" style="--t:#b83fae"><span class="hx-ic"><i class="i i-order"></i></span><b>Theo dõi đặt hàng</b></button>
         </div>
       </section>
@@ -1261,11 +1261,9 @@ window.LabChart=(function(){
     </div>
 
     <div class="print-head">
-      <div class="ph-rule"></div>
+      <div class="ph-top"><div class="ph-org"><b>Labo Hỗ trợ Sinh sản</b><span>Hệ thống quản lý chất lượng</span></div><div class="ph-code"><span id="printDate"></span><span class="ph-user"></span></div></div>
       <h2>DANH SÁCH THIẾT BỊ PHÒNG LAB</h2>
-      <div class="ph-rule"></div>
       <div class="ph-stats" id="phStats"></div>
-      <p id="printDate"></p>
     </div>
 
     <div class="card">
@@ -1488,7 +1486,8 @@ window.LabChart=(function(){
         <div class="lc-pane" data-pane="list">
         <div id="gas-history-empty" class="msg info" style="margin-top:0" hidden>Chưa có dữ liệu.</div>
         <div id="gas-history-body" hidden>
-          <div class="tools">
+          <div class="ph-doc"><div class="ph-top"><div class="ph-org"><b>Labo Hỗ trợ Sinh sản</b><span>Hệ thống quản lý chất lượng</span></div><div class="ph-code"><span class="ph-date"></span><span class="ph-user"></span></div></div><h2>LỊCH SỬ THAY KHÍ NUÔI CẤY</h2><div class="ph-sub" id="gas-ph-sub"></div></div>
+                    <div class="tools">
             <div style="flex:1 1 220px"><label for="gas-filter-month">Xem dữ liệu theo tháng</label><select id="gas-filter-month"></select></div>
           </div>
           <div id="gas-colf" class="cf-host"></div>
@@ -1506,6 +1505,7 @@ window.LabChart=(function(){
               <tbody id="gas-tbody"></tbody>
             </table>
           </div>
+          <div class="ph-sign"><div><b>Người lập</b><i></i><span>(Ký, ghi rõ họ tên)</span></div><div><b>Phụ trách phòng LAB</b><i></i><span>(Ký, ghi rõ họ tên)</span></div><div><b>Duyệt</b><i></i><span>(Ký, ghi rõ họ tên)</span></div></div>
         </div>
         </div>
         <div class="lc-pane" data-pane="stats" hidden>
@@ -1552,7 +1552,8 @@ window.LabChart=(function(){
         <div class="ord-tot" id="ord-tot"></div>
         <div id="ord-history-empty" class="msg info" style="margin-top:0" hidden>Chưa có đơn.</div>
         <div id="ord-history-body" hidden>
-          <div class="tools"><div style="flex:1 1 220px"><label for="ord-filter-month">Xem dữ liệu theo tháng</label><select id="ord-filter-month"></select></div></div>
+          <div class="ph-doc"><div class="ph-top"><div class="ph-org"><b>Labo Hỗ trợ Sinh sản</b><span>Hệ thống quản lý chất lượng</span></div><div class="ph-code"><span class="ph-date"></span><span class="ph-user"></span></div></div><h2>LỊCH SỬ ĐẶT HÀNG VẬT TƯ</h2><div class="ph-sub" id="ord-ph-sub"></div></div>
+                    <div class="tools"><div style="flex:1 1 220px"><label for="ord-filter-month">Xem dữ liệu theo tháng</label><select id="ord-filter-month"></select></div></div>
           <div id="ord-colf" class="cf-host"></div>
           <div class="tools sep">
             <div><label for="ord-xm">Cách xuất</label><select id="ord-xm"><option value="day">Theo một ngày</option><option value="range">Theo khoảng thời gian</option><option value="all">Toàn bộ</option></select></div>
@@ -1568,6 +1569,7 @@ window.LabChart=(function(){
             <tbody id="ord-tbody"></tbody>
           </table></div>
           <div class="ord-more no-print" id="ord-hmore"></div>
+          <div class="ph-sign"><div><b>Người lập</b><i></i><span>(Ký, ghi rõ họ tên)</span></div><div><b>Phụ trách phòng LAB</b><i></i><span>(Ký, ghi rõ họ tên)</span></div><div><b>Duyệt</b><i></i><span>(Ký, ghi rõ họ tên)</span></div></div>
           <h3 class="ord-h">Thống kê theo tháng</h3>
           <div class="tools"><div style="flex:0 1 160px"><label for="ord-year">Năm</label><select id="ord-year"></select></div></div>
           <div class="ord-sg"><div class="ord-sgrid">
@@ -2341,26 +2343,21 @@ window.LabChart=(function(){
       ["Tình trạng hiệu chuẩn", st.text],
       ["Ghi chú / vị trí", d.note]
     ];
+    function kv(r){ return '<div class="sh-kv"><span>' + esc(r[0]) + '</span><b>' + esc(r[1] || "—") + '</b></div>'; }
+    var general = rows.slice(0, 7), maint = rows.slice(7, 13), note = rows[13];
     var html =
       '<div class="sheet">' +
-        '<div class="org">Labo Hỗ trợ Sinh sản</div>' +
-        '<div class="ph-rule"></div>' +
+        '<div class="ph-top"><div class="ph-org"><b>Labo Hỗ trợ Sinh sản</b><span>Hệ thống quản lý chất lượng</span></div><div class="ph-code"><span>Ngày in: ' + today() + '</span></div></div>' +
         '<h2>PHIẾU THÔNG TIN THIẾT BỊ</h2>' +
-        '<div class="ph-rule"></div>' +
-        '<div style="font-size:12px;text-align:right;margin-top:4px">Ngày in: ' + today() + '</div>' +
-        '<table><tbody>' +
-          rows.map(function(r){
-            return '<tr><td class="k">' + esc(r[0]) + '</td><td>' + esc(r[1] || "—") + '</td></tr>';
-          }).join("") +
-        '</tbody></table>' +
-        '<div class="qr-block">' +
-          '<img id="qrImg" src="' + qrUrl + '" alt="QR xem online" width="82" height="82" crossorigin="anonymous">' +
-          '<div class="qr-text"><b>Xem thông tin thiết bị online</b><br>Quét mã QR bằng camera điện thoại</div>' +
+        '<div class="sh-hero">' +
+          '<div><div class="sh-name">' + esc(d.name || "—") + '</div><div class="sh-sn">S/N: ' + esc(d.sn || "—") + (d.model ? ' · ' + esc(d.model) : '') + '</div>' +
+          '<span class="sh-st ' + esc(st.key) + '">' + esc(st.text) + '</span></div>' +
+          '<div class="sh-qr"><img id="qrImg" src="' + qrUrl + '" alt="QR xem online" width="86" height="86" crossorigin="anonymous"><small>Quét mã để xem online</small></div>' +
         '</div>' +
-        '<div class="sign">' +
-          '<div>Người lập phiếu</div>' +
-          '<div>Phụ trách phòng LAB</div>' +
-        '</div>' +
+        '<div class="sh-sec"><h3>Thông tin chung</h3><div class="sh-grid">' + general.map(kv).join("") + '</div></div>' +
+        '<div class="sh-sec"><h3>Vận hành &amp; hiệu chuẩn</h3><div class="sh-grid">' + maint.map(kv).join("") + '</div></div>' +
+        '<div class="sh-sec"><h3>Ghi chú / vị trí</h3><div class="sh-note">' + esc(note[1] || "—") + '</div></div>' +
+        '<div class="ph-sign"><div><b>Người lập phiếu</b><i></i><span>(Ký, ghi rõ họ tên)</span></div><div><b>Phụ trách phòng LAB</b><i></i><span>(Ký, ghi rõ họ tên)</span></div></div>' +
       '</div>';
     $("printSingle").innerHTML = html;
     document.body.setAttribute("data-print", "one");
@@ -2706,18 +2703,36 @@ window.LabChart=(function(){
 
     var bar = document.getElementById('notifyBar');
     var due = tabItems.filter(function(c){ return c.status==='overdue' || c.status==='soon'; });
-    var barParts = [];
-    if(due.length){
-      due.sort(function(a,b){ return a.daysLeft - b.daysLeft; });
-      var names = due.slice(0,4).map(function(c){
-        return c.name + ' (' + (c.daysLeft < 0 ? 'quá ' + Math.abs(c.daysLeft) + ' ngày' : 'còn ' + c.daysLeft + ' ngày') + ')';
-      }).join(', ');
-      barParts.push('<b>Cần chú ý:</b> ' + names + (due.length > 4 ? ' và ' + (due.length-4) + ' mục khác…' : '') + '.');
+    var ICON = {
+      danger:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2.5 20h19L12 3z"/><path d="M12 10v4M12 17.5v.01"/></svg>',
+      warn:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+      stock:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>'
+    };
+    function nbCard(kind, title, count, chips){
+      var shown = chips.slice(0, 10).join('') + (chips.length > 10 ? '<span class="nb-more">+' + (chips.length - 10) + ' mục khác</span>' : '');
+      return '<div class="nb-card ' + kind + '"><div class="nb-ic">' + (ICON[kind.indexOf('stock') > -1 ? 'stock' : kind.split(' ')[0]] || ICON.warn) + '</div>' +
+        '<div class="nb-body"><div class="nb-title">' + title + '<span class="nb-n">' + count + '</span></div><div class="nb-chips">' + shown + '</div></div></div>';
     }
-    var sw = stockWarnings();
-    if(sw.length) barParts.push('<b>Kho lọc:</b> ' + sw.map(escapeHtml).join('; ') + '.');
-    if(barParts.length){ bar.classList.add('show'); bar.innerHTML = barParts.join('<br>'); }
-    else { bar.classList.remove('show'); }
+    function dayChip(c){
+      var t = c.daysLeft < 0 ? 'quá ' + Math.abs(c.daysLeft) + ' ngày' : (c.daysLeft === 0 ? 'hôm nay' : 'còn ' + c.daysLeft + ' ngày');
+      return '<span class="nb-chip"><b>' + escapeHtml(c.name) + '</b><em>' + t + '</em></span>';
+    }
+    due.sort(function(a,b){ return a.daysLeft - b.daysLeft; });
+    var overList = due.filter(function(c){ return c.status === 'overdue'; });
+    var soonList = due.filter(function(c){ return c.status === 'soon'; });
+    var cards = [];
+    if(overList.length) cards.push(nbCard('danger', 'Đã quá hạn thay', overList.length, overList.map(dayChip)));
+    if(soonList.length) cards.push(nbCard('warn', 'Sắp đến hạn thay', soonList.length, soonList.map(dayChip)));
+    var lowStock = state.stock.filter(function(sk){ return stockInfo(sk).status !== 'ok'; });
+    if(lowStock.length){
+      var anyOut = lowStock.some(function(sk){ return stockInfo(sk).status === 'out'; });
+      cards.push(nbCard(anyOut ? 'danger stock' : 'warn stock', 'Kho lọc cần nhập thêm', lowStock.length, lowStock.map(function(sk){
+        var i = stockInfo(sk);
+        return '<span class="nb-chip"><b>' + escapeHtml(sk.name) + '</b><em>' + (i.status === 'out' ? 'còn ' + i.qty + ' · không đủ 1 lần thay' : 'còn ' + i.qty + ' · chỉ đủ 1 lần thay') + '</em></span>';
+      })));
+    }
+    if(cards.length){ bar.classList.add('show'); bar.innerHTML = cards.join(''); }
+    else { bar.classList.remove('show'); bar.innerHTML = ''; }
 
     var wrap = document.getElementById('listWrap');
 
@@ -5840,6 +5855,253 @@ body[data-view="home"]{background-image:linear-gradient(165deg,color-mix(in srgb
   :is(#monApp,#calApp,#gasApp,#ordApp) td{padding:1px 0}
   .cf-btn{font-size:12px;padding:3px 9px}
 }
+
+/* ===== Làm mới chuyển động & thao tác (lớp hiệu ứng) ===== */
+@property --pct{syntax:"<number>";inherits:true;initial-value:0}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes gaugeIn{from{--pct:0}}
+@keyframes swapIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes swapFade{from{opacity:0}to{opacity:1}}
+@keyframes popY{from{opacity:0;transform:translateY(-6px) scale(.98)}to{opacity:1;transform:none}}
+html{scroll-behavior:smooth;scroll-padding-top:88px}
+/* 1. vào trang: các khối hiện lần lượt, trồi lên 14px */
+body.vt :is(.hx-group,.hx-tiles>*,.grid>*,.cab-grid>*,.cab-part>*,.stats-groups>*,.uitems>*,.history-list>*,.stock-bar,#maintApp .toolbar,.gstk,.cf-host){animation:rise .55s var(--ease) backwards;animation-delay:calc(var(--i,0)*60ms)}
+body.vt .hx-group:nth-child(2){--i:3}
+body.vt :is(.hx-tiles,.grid,.cab-grid,.cab-part,.stats-groups,.uitems,.history-list)>:nth-child(2){--i:1}
+body.vt :is(.hx-tiles,.grid,.cab-grid,.cab-part,.stats-groups,.uitems,.history-list)>:nth-child(3){--i:2}
+body.vt :is(.hx-tiles,.grid,.cab-grid,.cab-part,.stats-groups,.uitems,.history-list)>:nth-child(4){--i:3}
+body.vt :is(.hx-tiles,.grid,.cab-grid,.cab-part,.stats-groups,.uitems,.history-list)>:nth-child(5){--i:4}
+body.vt :is(.hx-tiles,.grid,.cab-grid,.cab-part,.stats-groups,.uitems,.history-list)>:nth-child(6){--i:5}
+body.vt :is(.hx-tiles,.grid,.cab-grid,.cab-part,.stats-groups,.uitems,.history-list)>:nth-child(7){--i:6}
+body.vt :is(.hx-tiles,.grid,.cab-grid,.cab-part,.stats-groups,.uitems,.history-list)>:nth-child(8){--i:7}
+body.vt :is(.hx-tiles,.grid,.cab-grid,.cab-part,.stats-groups,.uitems,.history-list)>:nth-child(9){--i:8}
+body.vt .gauge{animation:gaugeIn 1s var(--ease) backwards}
+/* 2. đổi bộ lọc / tab: danh sách đổi nội dung mượt, chỉ khi người dùng thao tác */
+.swap-in>*{animation:swapIn .32s var(--ease) both}
+tbody.swap-in>*{animation:swapFade .28s ease both}
+/* 3. phản hồi dưới tay */
+.btn,.mbtn,.icon-btn,.filter-btn,.cf-btn,.cf-clear,.am-item,.sec-btn{transition:transform .16s var(--ease),background-color .18s,border-color .18s,color .18s,box-shadow .2s,opacity .18s}
+:is(.btn,.mbtn,.icon-btn,.filter-btn,.cf-btn,.cf-clear,.am-item,.sec-btn):active{transform:scale(.96)}
+.hx-tile:active{transform:scale(.985)!important;transition-duration:.1s}
+.card,.mi,.history-row,.stk,.gstk{transition:transform .2s var(--ease),box-shadow .2s var(--ease)}
+.card:hover,.mi:hover,.history-row:hover{box-shadow:var(--shadow-2)!important;transform:translateY(-1px)}
+tbody tr{transition:background-color .15s}
+tbody tr:hover td{background:var(--surface-2)}
+/* 4. mở/đóng mục lịch sử mượt, cửa sổ nổi có độ mờ nền */
+:root{interpolate-size:allow-keywords}
+details::details-content{block-size:0;overflow:clip;transition:block-size .3s var(--ease),content-visibility .3s allow-discrete}
+details[open]::details-content{block-size:auto}
+.overlay{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.cf-pop{animation:popY .16s var(--ease)}
+/* 5. thanh trên nổi lên khi cuộn; đổi sáng/tối chuyển màu mượt */
+#appBar.topnav{transition:box-shadow .25s var(--ease)}
+body.scrolled #appBar.topnav{box-shadow:var(--shadow-2)!important}
+html.theme-x *,html.theme-x *::before,html.theme-x *::after{transition:background-color .35s,color .35s,border-color .35s,box-shadow .35s!important}
+
+/* ===== Bảng màu "Aurora": chàm - tím - ngọc, nhiều sắc, không đen trắng ===== */
+html body{--sans:"Plus Jakarta Sans",Inter,system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+--bg:#e9edfc;--surface:#f9faff;--surface-2:#eef1fe;--panel:#f9faff;--field:#ffffff;--border:#d8def8;--border-strong:#b9c3f0;--line:#d8def8;
+--text:#1b2150;--ink:#1b2150;--text-dim:#5a638f;--accent:#4f46e5;--accent-ink:#ffffff;--accent-soft:#e2e5ff;--accent2:#0ea5a4;--on-accent:#ffffff;
+--head:#e6eafd;--zebra:#f2f4ff;--navy:#312e81;--p-deep:#3730a3;--p-press:#3730a3;--hair-in:#c3cbf3;--neutral:#8b93bf;
+--danger:#d61f48;--danger-soft:#ffe3ea;--err-bg:#ffe3ea;--err-ink:#b4173b;--overdue:#d61f48;
+--warn:#b45309;--warn-soft:#fff1cf;--warn-bg:#fff1cf;--warn-ink:#92400e;--soon:#d97706;
+--ok:#047857;--ok-soft:#d3f5e5;--ok-bg:#d3f5e5;--ok-ink:#065f46;--info-bg:#dff1ff;--info-ink:#075985;
+--set-bg:#e8ebff;--set-ink:#3730a3;--soft-bg:#eef1fe;--soft-ink:#3b4272;--voc-bg:#f1e6ff;--voc-ink:#6b21a8;
+--radius:16px;
+--shadow:0 1px 2px rgba(49,46,129,.06),0 10px 28px -14px rgba(79,70,229,.28);
+--shadow-2:0 2px 4px rgba(49,46,129,.08),0 20px 44px -16px rgba(79,70,229,.38);}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) body{--bg:#0d1030;--surface:#161a44;--surface-2:#1e2358;--panel:#161a44;--field:#10133a;--border:#2c3274;--border-strong:#444c9c;--line:#2c3274;
+--text:#e9ebff;--ink:#e9ebff;--text-dim:#a0a9dc;--accent:#a5a8ff;--accent-ink:#0d1030;--accent-soft:#272d70;--accent2:#2dd4bf;--on-accent:#ffffff;
+--head:#1c2158;--zebra:#1a1f4e;--navy:#2b2a8a;--p-deep:#5b5ff0;--p-press:#5b5ff0;--hair-in:#444c9c;--neutral:#8189c4;
+--danger:#ff7a93;--danger-soft:#4a1630;--err-bg:#4a1630;--err-ink:#ff9fb2;--overdue:#ff7a93;
+--warn:#fbbf24;--warn-soft:#42300c;--warn-bg:#42300c;--warn-ink:#fcd34d;--soon:#fbbf24;
+--ok:#34d399;--ok-soft:#0c3a30;--ok-bg:#0c3a30;--ok-ink:#6ee7b7;--info-bg:#0c2f4d;--info-ink:#7dd3fc;
+--set-bg:#272d70;--set-ink:#c7caff;--soft-bg:#1e2358;--soft-ink:#c3c9f2;--voc-bg:#33205c;--voc-ink:#d8b4fe;
+--shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -14px rgba(0,0,0,.6);
+--shadow-2:0 2px 4px rgba(0,0,0,.5),0 22px 48px -16px rgba(0,0,0,.7);}}
+:root[data-theme="dark"] body{--bg:#0d1030;--surface:#161a44;--surface-2:#1e2358;--panel:#161a44;--field:#10133a;--border:#2c3274;--border-strong:#444c9c;--line:#2c3274;
+--text:#e9ebff;--ink:#e9ebff;--text-dim:#a0a9dc;--accent:#a5a8ff;--accent-ink:#0d1030;--accent-soft:#272d70;--accent2:#2dd4bf;--on-accent:#ffffff;
+--head:#1c2158;--zebra:#1a1f4e;--navy:#2b2a8a;--p-deep:#5b5ff0;--p-press:#5b5ff0;--hair-in:#444c9c;--neutral:#8189c4;
+--danger:#ff7a93;--danger-soft:#4a1630;--err-bg:#4a1630;--err-ink:#ff9fb2;--overdue:#ff7a93;
+--warn:#fbbf24;--warn-soft:#42300c;--warn-bg:#42300c;--warn-ink:#fcd34d;--soon:#fbbf24;
+--ok:#34d399;--ok-soft:#0c3a30;--ok-bg:#0c3a30;--ok-ink:#6ee7b7;--info-bg:#0c2f4d;--info-ink:#7dd3fc;
+--set-bg:#272d70;--set-ink:#c7caff;--soft-bg:#1e2358;--soft-ink:#c3c9f2;--voc-bg:#33205c;--voc-ink:#d8b4fe;
+--shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -14px rgba(0,0,0,.6);
+--shadow-2:0 2px 4px rgba(0,0,0,.5),0 22px 48px -16px rgba(0,0,0,.7);}
+html body{background-color:var(--bg)!important;font-family:var(--sans)}
+button,input,select,textarea{font-family:inherit}
+::selection{background:#c7c9ff;color:#1b2150}
+*{scrollbar-color:var(--border-strong) transparent}
+/* nền: các mảng màu mờ */
+body[data-view="home"]{--bg-a:#6366f1;--bg-b:#14b8a6}
+html body{background-image:radial-gradient(900px 520px at 6% -8%,rgba(129,140,248,.32),transparent 62%),radial-gradient(820px 520px at 100% 2%,rgba(45,212,191,.26),transparent 60%),radial-gradient(760px 540px at 55% 112%,rgba(244,114,182,.22),transparent 62%)!important;background-attachment:fixed}
+/* thanh trên */
+#appBar.topnav{background:color-mix(in srgb,var(--surface) 80%,transparent)!important;border:1px solid var(--border)!important;-webkit-backdrop-filter:blur(16px) saturate(1.5);backdrop-filter:blur(16px) saturate(1.5);box-shadow:0 10px 32px -14px rgba(79,70,229,.35)!important}
+.brand-logo{background:linear-gradient(135deg,#6366f1,#a855f7 55%,#ec4899)!important;color:#fff!important;box-shadow:0 6px 16px -6px rgba(124,58,237,.7)}
+.avatar{background:linear-gradient(135deg,#14b8a6,#6366f1)!important;color:#fff!important}
+.app-title{font-weight:800!important;letter-spacing:-.02em;background:linear-gradient(90deg,#4338ca,#7c3aed 50%,#db2777);-webkit-background-clip:text;background-clip:text;color:transparent!important}
+/* nút */
+.btn.primary,.btn.primary:hover,.mbtn:not(.alt),.mbtn:not(.alt):hover,.auth-go{background:linear-gradient(135deg,#5b5ff0,#8b5cf6)!important;border-color:transparent!important;color:#fff!important;box-shadow:0 8px 18px -8px rgba(99,102,241,.8)}
+.btn.primary:hover,.mbtn:not(.alt):hover{filter:brightness(1.07)}
+.btn.btn-danger{background:linear-gradient(135deg,#e11d48,#f43f5e)!important;border-color:transparent!important;color:#fff!important}
+.filter-btn.active,.filter-btn.act{background:linear-gradient(135deg,#5b5ff0,#8b5cf6)!important;border-color:transparent!important;color:#fff!important}
+.sec-btn.active{border-color:var(--accent)!important;background:linear-gradient(135deg,var(--accent-soft),var(--surface))!important;color:var(--accent)!important}
+input:focus,select:focus,textarea:focus,.inp:focus{border-color:var(--accent)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)!important;outline:none}
+.am-item.on{background:var(--accent-soft)!important;color:var(--accent)!important}
+.cf-btn.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+/* trang chủ: mỗi chức năng một màu */
+.hx-tile{--tc:#6366f1;position:relative;overflow:hidden;background:linear-gradient(155deg,color-mix(in srgb,var(--tc) 16%,var(--surface)),var(--surface) 64%)!important;border:1px solid color-mix(in srgb,var(--tc) 26%,var(--border))!important;box-shadow:0 12px 30px -20px var(--tc)!important;color:var(--text)!important}
+.hx-tile:hover,.hx-tile:focus-visible{transform:translateY(-3px);box-shadow:0 20px 44px -18px var(--tc)!important;border-color:var(--tc)!important}
+.hx-tile[data-open="monitor"]{--tc:#0ea5e9}
+.hx-tile[data-open="gas"]{--tc:#10b981}
+.hx-tile[data-open="calib"]{--tc:#8b5cf6}
+.hx-tile[data-open="devices"]{--tc:#14b8a6}
+.hx-tile[data-open="order"]{--tc:#ec4899}
+.hx-ic,:root[data-theme="dark"] .hx-ic{background:linear-gradient(135deg,var(--tc),color-mix(in srgb,var(--tc) 55%,#ffffff))!important;color:#fff!important;border-radius:14px!important;box-shadow:0 10px 20px -10px var(--tc)}
+.hx-cnt,:root[data-theme="dark"] .hx-cnt{background:color-mix(in srgb,var(--tc) 18%,transparent)!important;color:color-mix(in srgb,var(--tc) 70%,var(--text))!important;font-weight:700}
+.hx-feat{background:linear-gradient(135deg,#4f46e5,#7c3aed 55%,#db2777)!important;border:0!important;color:#fff!important;box-shadow:0 22px 44px -20px rgba(124,58,237,.8)!important}
+.hx-feat b,.hx-feat small{color:#fff!important}
+.hx-feat .hx-ic{background:rgba(255,255,255,.22)!important;box-shadow:none}
+.hx-feat .hx-cnt{background:rgba(255,255,255,.22)!important;color:#fff!important}
+#filterTileWarn{background:#fff1cf!important;color:#92400e!important}
+.hx-label{font-size:13px!important;font-weight:800!important;letter-spacing:.02em!important;text-transform:none!important;color:var(--text)!important}
+.hx-label::before{background:linear-gradient(135deg,#6366f1,#ec4899)!important;width:10px!important;height:10px!important;border-radius:4px!important}
+/* khung tủ nuôi cấy lấy lại màu riêng */
+.cab-h{background:linear-gradient(135deg,var(--cab),color-mix(in srgb,var(--cab) 55%,#ec4899))!important;color:#fff!important}
+.cab-h h3,.cab-h .cab-n{color:#fff!important}
+.cab .cab-part{background:color-mix(in srgb,var(--cab) 7%,var(--surface))!important}
+.ulab{background:linear-gradient(135deg,var(--cab),color-mix(in srgb,var(--cab) 60%,#ec4899))!important;color:#fff!important}
+.ch-num{background:var(--cab)!important;color:#fff!important}
+/* thông báo Thay lọc */
+.notify-bar{display:none;padding:0!important;background:transparent!important;border:0!important;margin-bottom:14px}
+.notify-bar.show{display:grid;gap:10px}
+.nb-card{--c:var(--warn);display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border-radius:16px;border:1px solid color-mix(in srgb,var(--c) 38%,var(--border));border-left:6px solid var(--c);background:linear-gradient(100deg,color-mix(in srgb,var(--c) 13%,var(--surface)),var(--surface) 70%);box-shadow:var(--shadow)}
+.nb-card.danger{--c:var(--danger)}.nb-card.warn{--c:var(--soon)}
+.nb-ic{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:#fff;background:var(--c);box-shadow:0 8px 16px -8px var(--c)}
+.nb-body{flex:1;min-width:0}
+.nb-title{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:800;color:var(--text)}
+.nb-n{min-width:24px;padding:1px 8px;border-radius:999px;background:var(--c);color:#fff;font-size:12px;font-weight:800;text-align:center}
+.nb-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.nb-chip{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border-radius:999px;background:var(--surface);border:1px solid color-mix(in srgb,var(--c) 40%,var(--border));font-size:13px;color:var(--text)}
+.nb-chip b{font-weight:700}
+.nb-chip em{font-style:normal;font-weight:800;color:var(--c);white-space:nowrap}
+.nb-more{align-self:center;font-size:12.5px;font-weight:700;color:var(--text-dim)}
+/* Thông số thiết bị: ghim hàng tên cột khi cuộn */
+@media(min-width:761px){
+  #monApp,#calApp{--stick:78px}
+  #monApp .panel,#calApp .panel,#monApp .day,#calApp .day,#monApp .panel-body,#calApp .panel-body{overflow:visible!important}
+  #monApp .day .table-scroll,#calApp .day .table-scroll{overflow:visible!important;max-height:none!important}
+  #monApp .day th,#calApp .day th{position:sticky;top:var(--stick);z-index:5;background:var(--head)!important;box-shadow:0 1px 0 var(--border-strong),0 6px 10px -8px rgba(49,46,129,.35)}
+  #monApp .day>summary,#calApp .day>summary{position:relative;z-index:6}
+}
+/* ===== Mẫu in: tài liệu A4 thống nhất ===== */
+.ph-doc,.ph-sign{display:none}
+.ph-top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;padding-bottom:8px;border-bottom:3px solid #4f46e5}
+.ph-org b{display:block;font-size:12.5pt;color:#312e81;letter-spacing:.02em}
+.ph-org span{display:block;font-size:8pt;color:#6b7194;margin-top:1px}
+.ph-code{text-align:right;font-size:8pt;color:#5a638f;line-height:1.5}
+.ph-code span{display:block}
+.print-head h2,.ph-doc h2,.sheet h2{margin:12px 0 4px;font-size:16pt;text-align:left;letter-spacing:.02em;color:#1b2150;font-weight:800}
+.ph-sub{font-size:9pt;color:#5a638f;margin-bottom:6px}
+.print-head .ph-stats{display:flex;gap:6px;flex-wrap:wrap;border:0;padding:0;margin:8px 0 10px;justify-content:flex-start}
+.print-head .ph-stats span{padding:3px 11px;border-radius:999px;background:#eef1ff;border:1px solid #cfd6f7;font-size:8.5pt;font-weight:700;color:#312e81}
+.ph-sign{grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:18px;margin-top:22px;text-align:center;font-size:9pt;color:#1b2150}
+.ph-sign b{display:block;font-weight:700}
+.ph-sign i{display:block;height:50px;border-bottom:1px dotted #8b93bf;margin:4px 14px 3px}
+.ph-sign span{font-size:8pt;color:#6b7194}
+.sheet{color:#1b2150;background:#fff;font:10pt/1.45 var(--sans)}
+.sh-hero{display:flex;gap:16px;align-items:center;justify-content:space-between;padding:14px 18px;margin-top:6px;border-radius:14px;background:linear-gradient(135deg,#eef1ff,#f4ecff);border:1px solid #d3d9fa}
+.sh-name{font-size:16pt;font-weight:800;color:#312e81;line-height:1.2}
+.sh-sn{font-size:9.5pt;color:#5a638f;margin-top:3px}
+.sh-st{display:inline-block;margin-top:9px;padding:3px 13px;border-radius:999px;font-weight:700;font-size:9pt;border:1.5px solid #8b93bf;color:#3b4272;background:#fff}
+.sh-st.ok{color:#047857;border-color:#34d399;background:#d3f5e5}
+.sh-st.warn{color:#92400e;border-color:#fbbf24;background:#fff1cf}
+.sh-st.due{color:#b4173b;border-color:#fb7185;background:#ffe3ea}
+.sh-qr{text-align:center;flex:none}.sh-qr img{display:block;margin:0 auto 3px}.sh-qr small{font-size:7.5pt;color:#6b7194}
+.sh-sec{margin-top:14px;break-inside:avoid}
+.sh-sec h3{margin:0 0 6px;padding-bottom:4px;font-size:8.5pt;text-transform:uppercase;letter-spacing:.09em;color:#4f46e5;border-bottom:2px solid #e3e6fb}
+.sh-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 22px}
+.sh-kv{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid #e8ebfa;break-inside:avoid}
+.sh-kv span{color:#5a638f;font-size:9pt}.sh-kv b{font-weight:600;text-align:right}
+.sh-note{padding:9px 12px;background:#f4f5ff;border-radius:10px;min-height:34px}
+@page{size:A4;margin:14mm 12mm 18mm}
+@page list-landscape{size:A4 landscape;margin:12mm 10mm 16mm}
+@media print{
+  @page{@bottom-left{content:"Labo Hỗ trợ Sinh sản · Hệ thống quản lý chất lượng";font:7.5pt "Plus Jakarta Sans",system-ui,sans-serif;color:#6b7194}@bottom-right{content:"Trang " counter(page) " / " counter(pages);font:7.5pt "Plus Jakarta Sans",system-ui,sans-serif;color:#6b7194}}
+  html,html body{background:#fff!important;background-image:none!important}
+  body{color:#1b2150!important;font:9.5pt/1.45 var(--sans)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #appBg,.cf-host,.mtabs,.lc-tabs{display:none!important}
+  .wrap{padding:0!important;max-width:none!important}
+  .card,.panel,.panel-body{box-shadow:none!important;border:0!important;background:#fff!important;overflow:visible!important;padding:0!important}
+  #gasApp .panel-head,#ordApp .panel-head{display:none!important}
+  .print-head,.ph-doc,.ph-sign{display:block!important;margin-bottom:10px}
+  .ph-top{display:flex!important}
+  .ph-sign{display:grid!important;break-inside:avoid;page-break-inside:avoid}
+  .ph-doc .ph-sub:empty{display:none}
+  table{width:100%!important;min-width:0!important;border-collapse:collapse!important;table-layout:auto!important}
+  thead{display:table-header-group}
+  tr{break-inside:avoid;page-break-inside:avoid}
+  th{background:#e6eafd!important;color:#2b3270!important;font-size:7.5pt!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:.05em!important;padding:6px 8px!important;border:1px solid #c3cbf3!important;text-align:left;position:static!important;box-shadow:none!important}
+  td{background:#fff!important;color:#1b2150!important;font-size:8.5pt!important;padding:5px 8px!important;border:1px solid #dde2f6!important;width:auto!important;white-space:normal!important;word-break:break-word}
+  tbody tr:nth-child(even) td{background:#f5f6ff!important}
+  td.k{background:#eef1ff!important}
+  .badge{border:1px solid currentColor!important;background:transparent!important;font-weight:700}
+  .result-line{font-size:8.5pt;color:#5a638f;margin:4px 0 6px!important}
+  .ord-tot,.ord-sg .lc-host{break-inside:avoid}
+  .sheet{page-break-inside:avoid}
+}
 </style>
+<script>
+/* lớp thao tác mượt: đổi nội dung danh sách, số chạy, thanh trên, đổi giao diện */
+(function(){
+  var RM=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches,lastUser=0;
+  ["pointerdown","keydown"].forEach(function(ev){document.addEventListener(ev,function(){lastUser=Date.now()},true)});
+  ["listWrap","mon-day-list","cal-day-list","gas-tbody","ord-tbody"].forEach(function(id){
+    var el=document.getElementById(id);if(!el||RM)return;var t=0;
+    new MutationObserver(function(){
+      if(Date.now()-lastUser>700)return;
+      el.classList.remove("swap-in");void el.offsetWidth;el.classList.add("swap-in");
+      clearTimeout(t);t=setTimeout(function(){el.classList.remove("swap-in")},500);
+    }).observe(el,{childList:true});
+  });
+  var sc=false;
+  addEventListener("scroll",function(){var v=(window.scrollY||0)>6;if(v!==sc){sc=v;document.body.classList.toggle("scrolled",v)}},{passive:true});
+  var bt=document.getElementById("btnTheme");
+  if(bt)bt.addEventListener("click",function(){var h=document.documentElement;h.classList.add("theme-x");setTimeout(function(){h.classList.remove("theme-x")},450)});
+  function bindCount(el){
+    if(el._cu)return;el._cu=1;
+    var shown=parseInt(el.textContent,10)||0,raf=0,self=false;
+    var mo=new MutationObserver(function(){
+      mo.takeRecords();if(self)return;
+      var txt=(el.textContent||"").trim();if(!/^\d+$/.test(txt))return;
+      var to=parseInt(txt,10);if(to===shown)return;if(RM){shown=to;return}
+      var from=shown,t0=performance.now(),dur=600;cancelAnimationFrame(raf);
+      (function step(t){
+        var k=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-k,3);
+        self=true;el.textContent=String(Math.round(from+(to-from)*e));mo.takeRecords();self=false;
+        if(k<1)raf=requestAnimationFrame(step);else shown=to;
+      })(t0);
+      shown=to;
+    });
+    mo.observe(el,{childList:true,characterData:true,subtree:true});
+  }
+  document.querySelectorAll(".hx-cnt,.lamp .n").forEach(bindCount);
+})();
+</script>
+<script>
+/* mẫu in: điền ngày giờ, người in, kỳ báo cáo trước khi in */
+window.addEventListener("beforeprint",function(){
+  var d=new Date(),p=function(x){return String(x).padStart(2,"0")};
+  var now=p(d.getDate())+"/"+p(d.getMonth()+1)+"/"+d.getFullYear()+" "+p(d.getHours())+":"+p(d.getMinutes());
+  var c=document.getElementById("userChip"),u=c?(c.textContent||"").replace(/^[^A-Za-z0-9\u00C0-\u1EF9]+/,"").trim():"";
+  document.querySelectorAll(".ph-date").forEach(function(e){e.textContent="Ngày in: "+now});
+  document.querySelectorAll(".ph-user").forEach(function(e){e.textContent=u?"Người in: "+u:""});
+  var pd=document.getElementById("printDate");if(pd)pd.textContent="Ngày in: "+now;
+  [["gas-filter-month","gas-ph-sub"],["ord-filter-month","ord-ph-sub"]].forEach(function(a){
+    var sel=document.getElementById(a[0]),out=document.getElementById(a[1]);
+    if(sel&&out)out.textContent=sel.value?"Kỳ báo cáo: "+sel.value:"";
+  });
+});
+</script>
 </body>
 </html>
