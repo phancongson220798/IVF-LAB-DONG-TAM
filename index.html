@@ -1178,14 +1178,14 @@ window.LabChart=(function(){
         <h2 class="hx-label">Vận hành hằng ngày</h2>
         <div class="hx-tiles">
           <button type="button" class="hx-tile" data-open="monitor" style="--t:#533afd"><span class="hx-ic"><i class="i i-monitor"></i></span><b>Thông số thiết bị</b></button>
+          <button type="button" class="hx-tile" data-open="calib" style="--t:#ea2261"><span class="hx-ic"><i class="i i-calib"></i></span><b>Hiệu chuẩn tủ nuôi cấy</b></button>
           <button type="button" class="hx-tile hx-feat" data-open="filter" style="--t:#665efd"><span class="hx-ic"><i class="i i-filter"></i></span><span class="hx-badges"><span class="hx-cnt" id="countFilter">0</span><span class="tile-warn" id="filterTileWarn"></span></span><b>Thay lọc</b></button>
           <button type="button" class="hx-tile" data-open="gas" style="--t:#d9702a"><span class="hx-ic"><i class="i i-gas"></i></span><b>Thay khí nuôi cấy</b></button>
         </div>
       </section>
-      <section class="hx-group" aria-label="Hiệu chuẩn và quản lý">
-        <h2 class="hx-label">Hiệu chuẩn &amp; quản lý</h2>
-        <div class="hx-tiles">
-          <button type="button" class="hx-tile" data-open="calib" style="--t:#ea2261"><span class="hx-ic"><i class="i i-calib"></i></span><b>Hiệu chuẩn tủ nuôi cấy</b></button>
+      <section class="hx-group" aria-label="Quản lý và đặt hàng">
+        <h2 class="hx-label">Quản lý &amp; đặt hàng</h2>
+        <div class="hx-tiles hx-col">
           <button type="button" class="hx-tile" data-open="devices" style="--t:#003770"><span class="hx-ic"><i class="i i-devices"></i></span><span class="hx-badges"><span class="hx-cnt" id="navCountDev">0</span></span><b>Danh sách thiết bị</b></button>
           <button type="button" class="hx-tile" data-open="order" style="--t:#b83fae"><span class="hx-ic"><i class="i i-order"></i></span><b>Theo dõi đặt hàng</b></button>
         </div>
@@ -1204,15 +1204,6 @@ window.LabChart=(function(){
         
       </div>
       <div class="actions">
-        <select id="sort">
-          <option value="next">Xếp theo hạn hiệu chuẩn</option>
-          <option value="name">Xếp theo tên (A–Z)</option>
-          <option value="install">Xếp theo ngày lắp đặt</option>
-        </select>
-        <div class="colpick-wrap">
-          <button class="btn" id="btnColPick" type="button"><i class="i i-columns"></i>Cột hiển thị</button>
-          <div class="colpick-panel" id="colpickPanel"></div>
-        </div>
         <button class="btn" id="btnExportExcel" hidden><i class="i i-download"></i>Xuất Excel</button>
         <button class="btn" id="btnPrintList"><i class="i i-print"></i>In danh sách</button>
         <button class="btn primary" id="btnAdd">+ Thêm thiết bị</button>
@@ -1253,11 +1244,20 @@ window.LabChart=(function(){
         <option value="broken">Hỏng</option>
       </select>
       <select id="filter">
-        <option value="all">Mọi trạng thái hiệu chuẩn</option>
+        <option value="all">Mọi hiệu chuẩn</option>
         <option value="due">Quá hạn</option>
         <option value="warn">Sắp đến hạn (≤30 ngày)</option>
         <option value="ok">Còn hiệu lực</option>
       </select>
+      <select id="sort" title="Sắp xếp">
+        <option value="next">Xếp theo hạn</option>
+        <option value="name">Xếp theo tên (A–Z)</option>
+        <option value="install">Xếp theo ngày lắp</option>
+      </select>
+      <div class="colpick-wrap">
+        <button class="btn" id="btnColPick" type="button"><i class="i i-columns"></i>Cột hiển thị</button>
+        <div class="colpick-panel" id="colpickPanel"></div>
+      </div>
     </div>
 
     <div class="print-head">
@@ -1282,7 +1282,7 @@ window.LabChart=(function(){
   </div>
 
   <div class="opsnav no-print" id="opsNav" role="tablist" aria-label="Vận hành thiết bị"><i class="ops-ind" id="opsInd"></i>
-    <button type="button" role="tab" data-sub="monitor"><i class="i i-monitor"></i><span class="ol">Thông số thiết bị</span></button>
+    <button type="button" role="tab" data-sub="monitor"><i class="i i-monitor"></i><span class="ol">Thông số</span></button>
     <button type="button" role="tab" data-sub="calib"><i class="i i-calib"></i><span class="ol">Hiệu chuẩn</span></button>
     <button type="button" role="tab" data-sub="filter"><i class="i i-filter"></i><span class="ol">Thay lọc</span><span class="ob" id="opsBadgeFilter"></span></button>
     <button type="button" role="tab" data-sub="gas"><i class="i i-gas"></i><span class="ol">Thay khí</span></button>
@@ -1296,12 +1296,14 @@ window.LabChart=(function(){
     </header>
     <div class="stats-groups" id="statsRow"></div>
   <div class="notify-bar" id="notifyBar"></div>
+  <div class="maint-ctx no-print">
   <div class="sec-switch no-print" id="secSwitch" role="tablist" aria-label="Nhóm thay lọc">
     <button type="button" class="sec-btn active" data-sec="incubator" role="tab"> Tủ nuôi cấy</button>
     <button type="button" class="sec-btn" data-sec="periodic" role="tab"> Lọc định kỳ</button>
   </div>
 
   <div class="stock-bar no-print" id="stockBar"></div>
+  </div>
 
   <div class="toolbar">
     <div class="toolbar-group view-toggle" id="viewToggle">
@@ -1328,7 +1330,7 @@ window.LabChart=(function(){
     <header class="top no-print"><div><h1>Thông số thiết bị</h1></div></header>
     <div class="mon-bar">
       <div class="mon-field"><label for="mon-work-date">Ngày ghi nhận</label><div class="mon-date"><input type="date" id="mon-work-date"><span id="mon-work-dow"></span><button type="button" class="mbtn alt" id="mon-today-btn" title="Về ngày hôm nay" aria-label="Về ngày hôm nay"><i class="i i-today"></i></button></div></div>
-      <div class="mon-field"><label for="mon-inspector">Người thực hiện</label><input type="text" id="mon-inspector" autocomplete="name" placeholder="Nhập tên chuyên viên"></div>
+      <div class="mon-field"><label for="mon-inspector">Người thực hiện</label><input type="text" id="mon-inspector" autocomplete="name" placeholder="Tên chuyên viên"></div>
       <span class="mon-status" id="mon-status">Đang kết nối…</span>
     </div>
     <div class="mgrid">
@@ -1378,7 +1380,7 @@ window.LabChart=(function(){
     <header class="top no-print"><div><h1>Hiệu chuẩn tủ nuôi cấy</h1></div></header>
     <div class="mon-bar">
       <div class="mon-field"><label for="cal-ngay-do">Ngày đo</label><div class="mon-date"><input type="date" id="cal-ngay-do"><span id="cal-work-dow"></span><button type="button" class="mbtn alt" id="cal-today-btn" title="Về ngày hôm nay" aria-label="Về ngày hôm nay"><i class="i i-today"></i></button></div></div>
-      <div class="mon-field"><label for="cal-inspector">Chuyên viên</label><input type="text" id="cal-inspector" autocomplete="name" placeholder="Nhập tên chuyên viên"></div>
+      <div class="mon-field"><label for="cal-inspector">Chuyên viên</label><input type="text" id="cal-inspector" autocomplete="name" placeholder="Tên chuyên viên"></div>
       <span class="mon-status" id="cal-status">Đang kết nối…</span>
     </div>
     <div class="mgrid">
@@ -1466,13 +1468,9 @@ window.LabChart=(function(){
           <div class="gfield"><label for="gas-qty">Số lượng bình</label><input type="number" id="gas-qty" min="1" step="1" value="1" inputmode="numeric"></div>
         </div>
         <div class="gstk-hint" id="gas-stock-hint"></div>
-        <div class="gfield">
-          <label for="gas-branch">Nhánh thay / Vị trí tủ</label>
-          <input type="text" id="gas-branch" placeholder="VD: Nhánh A, Tủ 1">
-        </div>
-        <div class="gfield">
-          <label for="gas-user">Người thực hiện</label>
-          <input type="text" id="gas-user" placeholder="Tên nhân viên" autocomplete="name">
+        <div class="row2">
+          <div class="gfield"><label for="gas-branch">Nhánh thay / Vị trí tủ</label><input type="text" id="gas-branch" placeholder="VD: Nhánh A, Tủ 1"></div>
+          <div class="gfield"><label for="gas-user">Người thực hiện</label><input type="text" id="gas-user" placeholder="Tên nhân viên" autocomplete="name"></div>
         </div>
 
         <button class="mbtn" id="gas-submit" type="button">Lưu</button>
@@ -1537,11 +1535,15 @@ window.LabChart=(function(){
           <div class="gfield"><label for="ord-date">Ngày đặt</label><input type="date" id="ord-date"></div>
           <div class="gfield"><label for="ord-st">Trạng thái</label><select id="ord-st"><option>Đã đặt</option><option>Đã nhận</option><option>Đã hủy</option></select></div>
         </div>
-        <div class="gfield"><label for="ord-sup">Nhà cung cấp</label><input type="text" id="ord-sup" placeholder="Ví dụ: Messer, Linde..."></div>
-        <div class="gfield"><label for="ord-no">Số đơn / số phiếu</label><input type="text" id="ord-no"></div>
+        <div class="row2">
+          <div class="gfield"><label for="ord-sup">Nhà cung cấp</label><input type="text" id="ord-sup" placeholder="VD: Messer, Linde"></div>
+          <div class="gfield"><label for="ord-no">Số đơn / số phiếu</label><input type="text" id="ord-no"></div>
+        </div>
         <div class="gfield"><label>Số lượng (bình), để trống nếu không đặt</label><div id="ord-items"></div></div>
-        <div class="gfield"><label for="ord-user">Người thực hiện</label><input type="text" id="ord-user" placeholder="Tên nhân viên" autocomplete="name"></div>
-        <div class="gfield"><label for="ord-note">Ghi chú</label><input type="text" id="ord-note"></div>
+        <div class="row2">
+          <div class="gfield"><label for="ord-user">Người thực hiện</label><input type="text" id="ord-user" placeholder="Tên nhân viên" autocomplete="name"></div>
+          <div class="gfield"><label for="ord-note">Ghi chú</label><input type="text" id="ord-note"></div>
+        </div>
         <button class="mbtn" id="ord-submit" type="button">Lưu đơn</button>
         <div id="ord-submit-msg" role="status"></div>
       </div>
@@ -1588,10 +1590,10 @@ window.LabChart=(function(){
   <div id="auditApp">
     <header class="top no-print"><div><h1>Nhật ký hoạt động</h1></div></header>
     <div class="mon-bar">
+      <div class="mon-field"><label for="aud-q">Tìm kiếm</label><input id="aud-q" class="inp" type="text" placeholder="Nội dung, tên thiết bị..."></div>
       <div class="mon-field"><label for="aud-user">Tài khoản</label><select id="aud-user" class="inp"></select></div>
       <div class="mon-field"><label for="aud-act">Thao tác</label><select id="aud-act" class="inp"><option value="">Tất cả</option><option value="add">Thêm</option><option value="update">Sửa / Lưu</option><option value="delete">Xoá</option><option value="login">Đăng nhập / Đăng ký</option></select></div>
       <div class="mon-field"><label for="aud-mod">Mục</label><select id="aud-mod" class="inp"></select></div>
-      <div class="mon-field"><label for="aud-q">Tìm kiếm</label><input id="aud-q" class="inp" type="text" placeholder="Nội dung, tên thiết bị..."></div>
       <button class="btn" id="aud-export"><i class="i i-download"></i>Xuất Excel</button>
       <span class="mon-status" id="aud-status">Đang tải…</span>
     </div>
@@ -6103,5 +6105,217 @@ window.addEventListener("beforeprint",function(){
   });
 });
 </script>
+
+<style id="layout-opt">
+/* ===== Bố cục tối ưu theo từng mục ===== */
+/* Trang chủ: nhóm 2x2 + cột 1x2 */
+#homeApp .hx-tiles.hx-col{grid-template-columns:1fr;grid-template-rows:1fr 1fr}
+@media(max-width:900px){#homeApp .hx-tiles.hx-col{grid-template-rows:none}}
+@media(min-width:521px) and (max-width:900px){#homeApp .hx-tiles.hx-col{grid-template-columns:1fr 1fr}}
+
+/* Danh sách thiết bị: thanh lọc gom đủ tìm kiếm, lọc, sắp xếp, cột; tiêu đề chỉ giữ thao tác chính */
+.app-main .toolbar{flex-wrap:wrap!important;overflow:visible!important}
+.app-main .toolbar .field{flex:1 1 280px}
+.app-main .toolbar select{flex:0 1 200px}
+.app-main .toolbar .colpick-wrap{flex:none;margin-left:auto}
+.app-main .toolbar .colpick-panel{right:0;left:auto}
+@media(max-width:700px){.app-main .toolbar select,.app-main .toolbar .colpick-wrap{flex:1 1 45%;margin-left:0}.app-main .toolbar .colpick-wrap .btn{width:100%;justify-content:center}}
+
+/* Thay lọc: nhóm lọc và kho lọc cùng một hàng */
+.maint-ctx{display:grid;gap:12px;margin:0 0 14px}
+.maint-ctx .sec-switch{margin:0}
+.maint-ctx .stock-bar{margin:0}
+.maint-ctx .sec-btn{min-width:0}
+@media(min-width:1100px){.maint-ctx{grid-template-columns:minmax(0,5fr) minmax(0,6fr);align-items:stretch}}
+#maintApp>.maint-ctx{grid-column:1/-1}
+
+/* Form nhập liệu: nút lưu luôn thấy được khi form dài (máy tính) */
+@media(min-width:981px){
+  .form-panel>.panel-body>.mbtn{position:sticky;bottom:0;z-index:3;box-shadow:0 -14px 14px -6px var(--surface)}
+}
+
+/* Nhật ký: tìm kiếm rộng nhất, bộ lọc xếp đều */
+#auditApp .mon-bar{display:flex;flex-wrap:wrap;align-items:end;gap:10px 12px}
+#auditApp .mon-field{flex:1 1 160px;min-width:0}
+#auditApp .mon-field:has(#aud-q){flex:2 1 300px}
+#auditApp .mon-field select,#auditApp .mon-field input{width:100%}
+#auditApp .mon-status{margin-left:auto}
+@media(max-width:760px){#auditApp .mon-field{flex:1 1 45%}#auditApp .mon-field:has(#aud-q){flex:1 1 100%}#auditApp .mon-status{margin-left:0}}
+</style>
+<style id="mobile-opt">
+/* ===== GIAO DIỆN ĐIỆN THOẠI (<=700px): gọn, 1 tay, ít cuộn ===== */
+@media screen and (max-width:700px){
+  html{scroll-padding-top:56px}
+  .wrap{padding:6px 10px calc(14px + env(safe-area-inset-bottom))!important}
+
+  /* Thanh trên cùng: 1 hàng thấp */
+  #appBar.topnav{top:4px!important;padding:4px 8px!important;gap:8px!important;border-radius:14px!important;margin-bottom:8px!important;min-height:0}
+  .brand-logo{width:30px!important;height:30px!important;font-size:12px!important;border-radius:9px!important}
+  .app-title{font-size:13px!important;letter-spacing:.02em}
+  .acct-btn{width:auto;padding:2px!important}
+  .avatar{width:28px;height:28px;font-size:12px}
+
+  /* Thanh vận hành: 4 tab đều nhau, icon trên nhãn */
+  .opsnav{margin:0 0 8px!important;padding:3px!important;border-radius:14px!important;overflow:hidden}
+  .opsnav button{min-width:0!important;flex-direction:column!important;gap:1px!important;padding:6px 2px!important;font-size:11px!important;line-height:1.2;border-radius:11px!important}
+  .opsnav .ol{white-space:nowrap}
+  .opsnav .i{width:18px!important;height:18px!important}
+  .opsnav .ob{position:absolute;top:2px;right:6px;min-width:16px;height:16px;font-size:10px;padding:0 4px}
+
+  /* Tiêu đề trang: ẩn ở nhóm vận hành (đã có tab); thu nhỏ ở trang còn lại */
+  #monApp>header.top,#calApp>header.top,#gasApp>header.top,#maintApp>header.top{display:none!important}
+  header.top{margin:0 0 8px!important;padding:0 2px!important;flex-wrap:nowrap!important;gap:8px!important;align-items:center!important}
+  header.top h1{font-size:17px!important;line-height:1.2;letter-spacing:0!important}
+  header.top .actions{gap:6px!important;flex-wrap:nowrap!important}
+  header.top .actions .btn{padding:7px 11px;font-size:13px;min-height:36px}
+  header.top h1{flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  header.top .actions{flex:none}
+  #btnPrintList{font-size:0!important;width:38px;height:38px;padding:0!important;justify-content:center;gap:0!important}
+  #btnPrintList .i{font-size:18px}
+
+  /* Thanh ngày + người thực hiện: 1 hàng, ẩn trạng thái khi bình thường */
+  .mon-bar{display:grid!important;grid-template-columns:auto minmax(0,1fr)!important;gap:6px 8px!important;padding:8px 10px!important;margin:0 0 8px!important;border-radius:14px!important}
+  .mon-bar label{font-size:11px!important;margin-bottom:2px!important}
+  .mon-bar input[type=text],.mon-bar select{height:40px}
+  .mon-bar .mon-status{grid-column:1/-1;justify-self:start;font-size:11px;padding:2px 9px}
+  .mon-bar .mon-status.ok{display:none}
+  .mon-date .dwrap{flex:0 0 112px!important}
+  .mon-date .mbtn{width:38px!important;height:38px;padding:0!important;margin:0!important;flex:none}
+  .dwrap>.dfmt{min-height:40px!important;padding:0 10px!important;font-size:14px!important}
+  #gasApp>.mon-bar,#ordApp>.mon-bar{display:block!important;padding:0!important;border:0!important;background:none!important;box-shadow:none!important;margin:0 0 6px!important}
+  #gasApp>.mon-bar:has(.mon-status.ok),#ordApp>.mon-bar:has(.mon-status.ok){display:none!important}
+
+  /* Nhập liệu | Lịch sử: thanh phân đoạn mỏng, dính dưới thanh trên */
+  .mtabs{top:46px!important;gap:0!important;padding:3px!important;margin:0 0 8px!important;border-radius:12px;background:var(--surface-2)!important;border:1px solid var(--border);box-shadow:none}
+  .mtab{padding:7px 6px!important;font-size:13.5px!important;border:0!important;border-radius:9px!important;background:transparent!important;color:var(--text-dim)!important}
+  .mtab.active{background:var(--accent)!important;color:#fff!important}
+
+  /* Khung: bỏ tiêu đề thừa, giảm đệm */
+  body .panel{border-radius:14px!important}
+  #monApp .panel-head:not(.lc-head),#calApp .panel-head:not(.lc-head),#gasApp .panel-head:not(.lc-head),#ordApp .panel-head:not(.lc-head){display:none!important}
+  #monApp .panel-head.lc-head,#calApp .panel-head.lc-head,#gasApp .panel-head.lc-head{padding:6px 10px!important}
+  #monApp .panel-head.lc-head h2,#calApp .panel-head.lc-head h2,#gasApp .panel-head.lc-head h2{display:none}
+  .lc-tabs{width:100%}.lc-tabs .lc-tab{flex:1}
+  body #monApp .panel-body,body #calApp .panel-body,body #gasApp .panel-body,body #ordApp .panel-body{padding:10px 12px 12px!important}
+  body .form-panel{overflow:visible!important}
+
+  /* Ô nhập: >=16px để iOS không tự phóng to, cao vừa ngón tay */
+  body input:not([type=checkbox]):not([type=radio]),body select,body textarea{font-size:16px!important}
+  body #monApp input:not([type=checkbox]):not([type=radio]),body #monApp select,body #calApp input:not([type=checkbox]):not([type=radio]),body #calApp select,body #gasApp input:not([type=checkbox]):not([type=radio]),body #gasApp select,body #ordApp input:not([type=checkbox]):not([type=radio]),body #ordApp select{padding:8px 10px!important;min-height:42px}
+  body #monApp textarea,body #calApp textarea{min-height:56px!important;padding:8px 10px!important}
+  body #monApp label,body #calApp label,body #gasApp label,body #ordApp label{font-size:12px!important;margin-bottom:3px!important}
+  #gasApp .gfield,#ordApp .gfield{margin-top:9px!important}
+  #gasApp .row2,#ordApp .row2,#calApp .row2{grid-template-columns:1fr 1fr!important;gap:8px!important;margin-top:9px!important}
+  #monApp #mon-fields,#calApp #cal-fields{gap:7px 8px!important;margin-top:9px!important}
+  #monApp .note-wrap,#calApp .note-wrap{margin-top:9px!important}
+  #calApp .group-title{margin:6px 0 0!important;padding:4px 10px!important;font-size:.85rem}
+  #calApp .banner{margin:10px 0 8px!important;padding:6px 10px!important}
+
+  /* Nút lưu: dính đáy màn hình để luôn bấm được */
+  .form-panel>.panel-body>.mbtn{position:sticky!important;bottom:calc(8px + env(safe-area-inset-bottom));z-index:8;margin-top:12px!important;min-height:46px;padding:11px!important;border-radius:12px!important;box-shadow:0 8px 22px -6px rgba(15,23,42,.45)}
+
+  /* Số lượng đặt hàng: 2 cột */
+  #ordApp #ord-items{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  #ordApp .ord-item{grid-template-columns:auto minmax(0,1fr)!important;gap:6px!important;margin:0!important}
+  #ordApp .ord-item>:nth-child(3){display:none}
+  #ordApp .ord-item>:first-child{font-size:11.5px;padding:3px 8px;white-space:nowrap}
+
+  /* Kho bình khí: mỗi loại 2 dòng */
+  #gasApp .gstock>.panel-head{display:none}
+  #gasApp .gstock{margin-bottom:8px!important}
+  .gstk-grid{gap:6px!important}
+  .gstk{display:grid;grid-template-columns:1fr auto;grid-template-areas:"n q" "w w" "a a";gap:2px 8px;align-items:baseline;padding:8px 10px!important;border-radius:11px!important}
+  .gstk-n{grid-area:n;font-size:13.5px!important}
+  .gstk-q{grid-area:q;text-align:right}.gstk-q b{font-size:22px!important}
+  .gstk-w{grid-area:w;margin:0!important;font-size:11.5px!important}
+  .gstk.ok .gstk-w{display:none}
+  .gstk-act{grid-area:a;margin-top:4px;flex-wrap:nowrap!important}
+  .gstk-act input{width:64px!important;min-height:36px!important}
+  #gasApp .gstk-act .mbtn{flex:1;padding:8px 6px!important;min-height:36px;font-size:12.5px;white-space:nowrap}
+  .gstk-hint{margin:6px 0 0!important;font-size:12px!important}
+
+  /* Lịch sử dạng thẻ: sát hơn */
+  #monApp .day,#calApp .day{margin-top:8px!important;border-radius:12px!important}
+  #monApp tbody tr,#calApp tbody tr,#gasApp tbody tr,#ordApp tbody tr{padding:8px 12px!important}
+  .result-line{margin:6px 0 6px!important;font-size:12.5px!important}
+  .cf-btn{font-size:12px}
+  .lc-chips{gap:5px!important;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.lc-chips::-webkit-scrollbar{display:none}
+  .lc-chip{flex:none;padding:5px 10px!important;font-size:12.5px!important}
+  #ordApp .ord-tot{margin-bottom:8px!important}
+
+  /* ===== Trang chủ: lưới 2 cột, mỗi ô thấp ===== */
+  #homeApp .hx{display:block!important;min-height:0!important}
+  #homeApp .hx-group{gap:6px;margin:0 0 12px}
+  #homeApp .hx-label{margin:0 0 0 2px;font-size:11px!important}
+  #homeApp .hx-tiles,#homeApp .hx-tiles.hx-col{display:grid!important;grid-template-columns:1fr 1fr!important;grid-template-rows:none!important;gap:8px!important}
+  #homeApp .hx-tile{min-height:0!important;height:92px;padding:10px 12px!important;border-radius:14px!important;justify-content:flex-end}
+  #homeApp .hx-ic{width:34px!important;height:34px!important;left:12px;top:10px;border-radius:10px!important}
+  #homeApp .hx-tile b{font-size:14px!important;line-height:1.2;text-transform:none!important;letter-spacing:0!important;font-weight:600!important}
+  #homeApp .hx-badges{top:10px!important;right:10px!important}
+  #homeApp .hx-cnt{font-size:12px!important;min-width:26px!important;padding:2px 8px!important}
+
+  /* ===== Danh sách thiết bị ===== */
+  .lamps{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px!important;margin:0 0 8px!important}
+  .lamp-group{display:contents!important}.lamp-gl{display:none!important}
+  .lamp{flex-direction:column;gap:0!important;padding:6px 2px 5px!important;border-radius:12px!important;box-shadow:none!important;position:relative;justify-content:center;min-width:0}
+  .lamp .led{position:absolute;top:6px;right:6px;width:7px!important;height:7px!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--lc) 22%,transparent)!important}
+  .lamp .n{font-size:18px!important;line-height:1.1}
+  .lamp .l{font-size:10.5px!important;white-space:normal!important;text-align:center;line-height:1.15}
+  .app-main .toolbar{display:flex!important;flex-wrap:wrap!important;gap:6px!important;margin-bottom:8px!important}
+  .app-main .toolbar>*{flex:1 1 calc(50% - 3px)!important;min-width:0!important}
+  .app-main .toolbar .field{flex:1 1 calc(100% - 54px)!important}
+  .app-main .toolbar .colpick-wrap{flex:0 0 42px!important;margin:0!important;order:1}
+  .app-main .toolbar>select{order:2}
+  #maintApp .stk-empty{display:none}
+  .app-main .toolbar .colpick-wrap #btnColPick{font-size:0;width:42px;height:42px;padding:0;justify-content:center;gap:0}
+  .app-main .toolbar .colpick-wrap #btnColPick .i{font-size:18px}
+  .app-main .toolbar input,.app-main .toolbar select{min-height:42px;padding-top:8px;padding-bottom:8px}
+  .app-main tbody tr:not(.grp){padding:9px 11px 7px!important;margin-bottom:8px!important;border-radius:12px!important}
+  .app-main .status-note{font-size:11.5px}
+
+  /* ===== Thay lọc ===== */
+  #maintApp .stats-groups{display:grid!important;grid-template-columns:1fr;gap:6px!important;margin-bottom:8px!important}
+  #maintApp .stats-group{min-width:0!important;display:flex;align-items:center;gap:8px}
+  #maintApp .stats-group-label{flex:0 0 64px;margin:0!important;font-size:10.5px!important;line-height:1.2;letter-spacing:.03em!important}
+  #maintApp .stats-row{flex:1;display:flex;gap:6px;min-width:0}
+  #maintApp .stat-chip{min-width:0!important;display:flex;align-items:baseline;justify-content:center;gap:5px;padding:6px 4px!important;box-shadow:none!important}
+  #maintApp .stat-chip .n{font-size:18px!important}
+  #maintApp .stat-chip .l{font-size:10px!important;margin:0!important;text-transform:none!important;letter-spacing:0!important;white-space:nowrap}
+  .maint-ctx{gap:6px!important;margin:0 0 8px!important}
+  .sec-switch{gap:0!important;padding:3px;border:1px solid var(--border);border-radius:12px;background:var(--surface-2)}
+  .sec-btn{padding:8px 6px!important;font-size:13.5px!important;border:0!important;border-radius:9px!important;box-shadow:none!important;min-width:0!important}
+  .stock-bar{padding:7px 10px!important;margin:0!important;border-radius:12px!important}
+  .stk-head{margin-bottom:4px!important;font-size:12px!important}
+  .stk-list{gap:6px}.stk{flex:1 1 40%!important;padding:5px 9px!important}
+  #maintApp .toolbar{display:flex!important;flex-wrap:wrap!important;overflow:visible!important;gap:6px!important;padding:6px!important;margin-bottom:8px!important;border-radius:14px!important}
+  #maintApp .toolbar .spacer{display:none}
+  #maintApp .toolbar .toolbar-group{flex-wrap:nowrap;gap:4px}
+  #maintApp .toolbar #viewToggle{flex:1 1 100%;border:0;padding:0}
+  #maintApp .toolbar #viewToggle .filter-btn{flex:1}
+  #maintApp .toolbar #statusFilters{flex:1 1 100%;order:3}
+  #maintApp .toolbar #statusFilters .filter-btn{flex:1;padding:6px 4px}
+  #maintApp .toolbar .filter-btn,#maintApp .toolbar .btn{padding:7px 10px;font-size:12.5px;min-height:34px;white-space:nowrap}
+  #maintApp .toolbar #addBtn{position:fixed;right:14px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:40;width:54px;height:54px;padding:0!important;border-radius:50%!important;font-size:0!important;display:grid;place-items:center;box-shadow:0 10px 26px -6px rgba(15,23,42,.55)}
+  #maintApp .toolbar #addBtn::before{content:"+";font-size:30px;font-weight:400;line-height:1;color:#fff}
+  #maintApp{padding-bottom:64px}
+  .urow{min-height:0!important;gap:6px!important}
+  .ulab{flex-basis:54px!important;padding:3px 6px!important;font-size:13px!important}
+  .cab>.cab-part{padding:6px 8px!important}
+  .cab-h{padding:10px 14px!important}.cab .cab-h h3{font-size:15px!important}
+  #maintApp .toolbar #exportFilterBtn{display:none}
+
+  /* ===== Nhật ký ===== */
+  #auditApp .mon-bar{display:flex!important;flex-wrap:wrap;gap:6px 8px!important}
+  #auditApp .mon-field{flex:1 1 calc(50% - 4px)!important}
+  #auditApp .mon-field:has(#aud-q){flex:1 1 100%!important}
+  .aud-line{margin:0 0 6px!important;font-size:12px}
+
+  /* Hộp thoại: sát mép, cuộn trong */
+  .overlay{padding:8px!important}
+  .modal h2{padding:12px 14px!important;font-size:15px!important}
+  .modal form{padding:12px 14px!important}
+  .modal-foot{padding:10px 14px!important}
+}
+</style>
 </body>
 </html>
